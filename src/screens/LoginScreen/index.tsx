@@ -30,7 +30,7 @@ import {
 import {ToasterTypes, colorList} from '../../styles/global.styles';
 import {addLoginDetails} from '../../redux/actions';
 import {CustomLoaderRound} from '@components/CustomLoaderRound';
-import {getStoreData, storeData} from '../../utils/commonUtil';
+import {clearStoreData, getStoreData, storeData} from '../../utils/commonUtil';
 import {Button} from 'react-native-paper';
 
 const LoginScreen = ({navigation}: any) => {
@@ -71,15 +71,11 @@ const LoginScreen = ({navigation}: any) => {
   }, []);
 
   const getRememberMeData = async () => {
-    const loginData = await getStoreData('loginData');
+    const result = await getStoreData('loginData');
     // console.log('loginData', loginData);
-
-    if (loginData) {
+    if (result) {
       setIsRememberMe(true);
-      setLoginData({
-        username: loginData?.username,
-        password: loginData?.password,
-      });
+      setLoginData(result);
     }
   };
 
@@ -115,6 +111,16 @@ const LoginScreen = ({navigation}: any) => {
       mutate(loginData);
     }
   };
+
+const handleRememberPassword = async ()=>{
+    if(isRememberMe){
+      const result = await getStoreData('loginData');
+       if(result){clearStoreData("loginData")}
+       setIsRememberMe(false)
+    }else{
+       setIsRememberMe(true)
+    }
+}
 
   return (
     <SafeAreaView
@@ -249,7 +255,7 @@ const LoginScreen = ({navigation}: any) => {
               </View>
               <View style={styles.rememberForgotWrapper}>
                 <TouchableOpacity
-                  onPress={() => setIsRememberMe(prev => !prev)}
+                  onPress={handleRememberPassword}
                   style={{flexDirection: 'row'}}>
                   {isRememberMe ? (
                     <View style={styles.rememberMeCheckBoxFill}>

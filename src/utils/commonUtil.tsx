@@ -24,3 +24,12 @@ export const getStoreData = async (key: string) => {
     return false;
   }
 };
+
+export const clearStoreData = async (key:string)=>{
+    try {
+      await AsyncStorage.removeItem(key)
+      return true
+    } catch (error) {
+      return false
+    }
+}
