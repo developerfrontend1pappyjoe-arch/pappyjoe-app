@@ -18,10 +18,7 @@ import Icons from 'react-native-vector-icons/MaterialIcons';
 
 import ImageView from 'react-native-image-viewing';
 import Pdf from 'react-native-pdf';
-
-import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {CustomModal} from '../../../../components/CustomModal';
 import lodash from 'lodash';
 import {colorList} from '../../../../styles/global.styles';
@@ -30,7 +27,6 @@ import {styles} from '../../appoinmentDetails.styles';
 
 import {AddFilesPopup} from './AddFiles';
 import {CloseLargeImage} from '../../../../assets';
-import {ShareModal} from '../ShareModal';
 import {ShareModalContents} from './ShareModalContents';
 import moment from 'moment';
 import {CustomImageViewer} from './ImageViewer';
