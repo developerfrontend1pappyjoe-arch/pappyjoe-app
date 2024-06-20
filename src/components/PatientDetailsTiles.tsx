@@ -75,7 +75,7 @@ export const PatientDetailsTiles = memo(
               <TouchableOpacity
                 style={{ marginRight: 8 }}
                 onPress={() => {
-                  console.log("clicked----------------------------------------");
+                  // console.log("clicked----------------------------------------");
                   
                   patientDetails?.Photo !== ""
                     ? (setImageViewData([{ uri: patientDetails?.Photo }]),
