@@ -38,7 +38,7 @@ export const AddNote = () => {
     }
   };
   const AddNewToList = (data: unknown) => {
-    console.log('Add Item', searchValue, data);
+    // console.log('Add Item', searchValue, data);
     const selectedTemp = [...selectedItem];
     if (data && data?.id) {
       const isAlreadyAdded = selectedTemp.some(

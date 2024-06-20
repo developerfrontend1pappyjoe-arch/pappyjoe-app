@@ -30,7 +30,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
   useEffect(() => {
     if (!hasPermission) {
       requestPermission().then(res => {
-        console.log('Rqqq Permissin is Done', res);
+        // console.log('Rqqq Permissin is Done', res);
       });
     }
   }, [hasPermission, requestPermission]);
@@ -81,7 +81,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
         ]);
       })
       .catch(err => {
-        console.log('Errrrrrrr add files', err);
+        // console.log('Errrrrrrr add files', err);
         Alert.alert(
           'Success',
           err?.response.data?.message || 'Something Went Wrong',

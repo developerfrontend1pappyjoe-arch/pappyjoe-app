@@ -167,7 +167,7 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
   const getPatient = async (params = '') => {
     try {
       const {data} = await getPatientService({search: params});
-      console.log('data ===> ', data.data);
+      // console.log('data ===> ', data.data);
 
       if (_.isEqual(data?.data, [[]])) {
         setPatientList([]);

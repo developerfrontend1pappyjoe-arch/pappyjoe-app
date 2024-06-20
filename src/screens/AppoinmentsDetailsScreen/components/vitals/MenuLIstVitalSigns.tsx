@@ -58,13 +58,13 @@ export const MenuListDetailsVitalSigns = ({patientDetails}: any) => {
           .sort((a, b) => new Date(b) - new Date(a));
 
         sortedDates.forEach(date => {
-          console.log('Processing date:', date);
+          // console.log('Processing date:', date);
           res?.data?.data.forEach(obj => {
-            console.log(
-              'Checking object with added_date and ID:',
-              obj.added_date,
-              obj.id,
-            );
+            // console.log(
+            //   'Checking object with added_date and ID:',
+            //   obj.added_date,
+            //   obj.id,
+            // );
             if (obj.added_date === date) {
               if (!groupedData[date]) {
                 groupedData[date] = [];
@@ -135,14 +135,14 @@ export const MenuListDetailsVitalSigns = ({patientDetails}: any) => {
           }
         })
         .catch(err => {
-          console.log('Errrrrr in delete vitals', err?.response?.data?.message);
+          // console.log('Errrrrr in delete vitals', err?.response?.data?.message);
           Alert.alert(
             'Error',
             err?.response?.data?.message || 'Error, Please try again later',
           );
         });
     } catch (err) {
-      console.log('Errrrrr in delete vitals', err?.response?.data?.message);
+      // console.log('Errrrrr in delete vitals', err?.response?.data?.message);
     }
   };
 
@@ -168,7 +168,7 @@ export const MenuListDetailsVitalSigns = ({patientDetails}: any) => {
           showsVerticalScrollIndicator={false}>
           {Object.keys(vitalsList)?.length ? (
             Object.entries(vitalsList)?.map(([k, v], ids) => {
-              console.log('ids ====>', ids);
+              // console.log('ids ====>', ids);
 
               const capitalizeFirstLetter = (string: any) =>
                 string.charAt(0).toUpperCase() + string.slice(1) + ' ';

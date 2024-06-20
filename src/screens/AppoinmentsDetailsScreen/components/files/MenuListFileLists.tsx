@@ -67,7 +67,7 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
       axios
         .get(`${API_URL.fileslist}?patient_id=${patientDetails?.id}`)
         .then(res => {
-          console.log('Files Data ===> 2223333', res?.data?.data);
+          // console.log('Files Data ===> 2223333', res?.data?.data);
           setLoading(false);
           if (
             res?.data?.data?.length &&
@@ -86,13 +86,13 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
               acc[curr.date].push(curr);
               return acc;
             }, {});
-            console.log('Finals ===> ', groupedData);
+            // console.log('Finals ===> ', groupedData);
 
             setFileList(groupedData);
           }
         })
         .catch(err => {
-          console.log('Error for geting files ', err);
+          // console.log('Error for geting files ', err);
         });
     } catch (error) {
       console.error('Err in getFileList Details....', error);
@@ -137,11 +137,11 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
           },
         })
         .then(res => {
-          console.log('data', res.data);
+          // console.log('data', res.data);
           setLoading(false);
           if (res?.status === 200) {
             setLoading(false);
-            console.log('Resss', res.data);
+            // console.log('Resss', res.data);
 
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {
@@ -157,7 +157,7 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
           }
         })
         .catch(err => {
-          console.log('Error for geting files ', err);
+          // console.log('Error for geting files ', err);
           Alert.alert(
             err?.response?.data?.message ||
               'Somthing went wrong,please try agin later',
@@ -194,7 +194,7 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
         discretionary: true,
         progress: res => {
           const progress = (res.bytesWritten / res.contentLength) * 100;
-          console.log(`Progress: ${progress.toFixed(2)}%`);
+          // console.log(`Progress: ${progress.toFixed(2)}%`);
           seDownloadProgress({index: index, progress: progress.toFixed(2)});
         },
       };
@@ -202,7 +202,7 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
       return new Promise((resolve, reject) => {
         RNFS.downloadFile(options)
           .promise.then(response => {
-            console.log('File downloaded!', response);
+            // console.log('File downloaded!', response);
             // setLoading(false);
             Alert.alert(
               'Info',
@@ -213,7 +213,7 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
             resolve(downloadDest);
           })
           .catch(err => {
-            console.log('Download error:', err);
+            // console.log('Download error:', err);
             reject(err);
           });
       });
@@ -229,8 +229,8 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
       url?.file,
       url?.file?.split('/').pop(),
     );
-    console.log('Resss', resultFilePath);
-    console.log('handleDownloadFiles ===>', url);
+    // console.log('Resss', resultFilePath);
+    // console.log('handleDownloadFiles ===>', url);
   };
 
   return (
@@ -582,20 +582,20 @@ export const MenuListDetailsFileList = ({patientDetails}: any) => {
                                             numberOfPages,
                                             filePath,
                                           ) => {
-                                            console.log(
-                                              `Number of pages: ${numberOfPages}`,
-                                            );
+                                            // console.log(
+                                            //   `Number of pages: ${numberOfPages}`,
+                                            // );
                                           }}
                                           onPageChanged={(
                                             page,
                                             numberOfPages,
                                           ) => {
-                                            console.log(
-                                              `Current page: ${page}`,
-                                            );
+                                            // console.log(
+                                            //   `Current page: ${page}`,
+                                            // );
                                           }}
                                           onError={error => {
-                                            console.log('Errrrrrrrr', error);
+                                            // console.log('Errrrrrrrr', error);
                                           }}
                                           style={{
                                             flex: 1,

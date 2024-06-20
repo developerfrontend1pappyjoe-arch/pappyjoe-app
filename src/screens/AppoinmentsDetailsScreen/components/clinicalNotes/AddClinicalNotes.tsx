@@ -21,7 +21,7 @@ export const AddComplaintPopups = ({
   patientDetails,
   editData,
 }) => {
-  console.log('editData ===> ', editData?.data);
+  // console.log('editData ===> ', editData?.data);
 
   const [isLoading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState({
@@ -35,7 +35,7 @@ export const AddComplaintPopups = ({
 
   useEffect(() => {
     if (editData) {
-      console.log('editData?.complaints ====>', editData?.data);
+      // console.log('editData?.complaints ====>', editData?.data);
 
       setSelectedData({
         complaints: editData?.data?.complaint || [],
@@ -48,13 +48,13 @@ export const AddComplaintPopups = ({
     }
   }, []);
 
-  console.log('selectedData ===> ', selectedData);
+  // console.log('selectedData ===> ', selectedData);
 
   const handleSetSelected = (type, data) => {
     setSelectedData(prev => ({...prev, [type]: data}));
   };
 
-  console.log('Selected Dataa ====> ', selectedData);
+  // console.log('Selected Dataa ====> ', selectedData);
 
   const arrayObjectToString = (list: any) => {
     const result = list.map(item => item.notes);
@@ -81,12 +81,12 @@ export const AddComplaintPopups = ({
       payload.unique_id = editData?.id;
     }
 
-    console.log(' --- > payload ---> ', payload);
+    // console.log(' --- > payload ---> ', payload);
 
     axios
       .post(`${API_URL.clinicNotes}`, payload)
       .then(({data}) => {
-        console.log('REs Clinical Note Add ===> ', data);
+        // console.log('REs Clinical Note Add ===> ', data);
         setLoading(false);
 
         if (data?.status == 200) {
@@ -112,10 +112,10 @@ export const AddComplaintPopups = ({
         }
       })
       .catch(err => {
-        console.log(
-          'Add Clinincal Note Addd Errrrr',
-          err.response?.data?.message,
-        );
+        // console.log(
+        //   'Add Clinincal Note Addd Errrrr',
+        //   err.response?.data?.message,
+        // );
         setLoading(false);
         Alert.alert('Error', err.response?.data?.message);
       });

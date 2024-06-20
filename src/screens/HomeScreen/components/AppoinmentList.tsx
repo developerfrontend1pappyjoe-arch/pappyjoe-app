@@ -59,7 +59,7 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
           if (res.data?.status == 200) {
             Linking.openURL(`${res.data?.data[0]?.url}`);
           }
-          console.log('Rewsss Dataaaa', res?.data);
+          // console.log('Rewsss Dataaaa', res?.data);
         })
         .catch(err => {
           Alert.alert('Error', err?.response?.data?.message);

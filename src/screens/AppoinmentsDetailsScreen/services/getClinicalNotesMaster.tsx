@@ -7,12 +7,12 @@ export const clinicalNotesMaster = async (params: string, search: string) => {
       search !== ''
         ? `${API_URL.getClinicalNotesMaster}?type=${params}&searchterm=${search}`
         : `${API_URL.getClinicalNotesMaster}?type=${params}`;
-    console.log('Url ====> ', URL);
+    // console.log('Url ====> ', URL);
 
     const {data} = await axios.get(URL);
     return data;
   } catch (err) {
-    console.log('Errror ===> in clinicalNotesMaster', err);
+    // console.log('Errror ===> in clinicalNotesMaster', err);
     return null;
   }
 };

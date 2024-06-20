@@ -81,7 +81,7 @@ export const MenuListPrescription = ({patientDetails}: any) => {
   };
 
   const handleUpdatePrescriptionApi = async (details: any) => {
-    console.log(':GOING To DElete Multi Files ', details);
+    // console.log(':GOING To DElete Multi Files ', details);
     setLoading(true);
     const payload = {
       patient_id: patientDetails?.id,
@@ -117,7 +117,7 @@ export const MenuListPrescription = ({patientDetails}: any) => {
       const res = await axios.post(API_URL.addPrescription, payload);
       if (res && res.status === 200) {
         setLoading(false);
-        console.log('Resss', res.data);
+        // console.log('Resss', res.data);
         setTimeout(() => {
           Alert.alert('Success', res?.data?.message || 'Added Successfully', [
             {
@@ -185,9 +185,9 @@ export const MenuListPrescription = ({patientDetails}: any) => {
 
   const handleDeletePriscription = (list: any) => {
     const temp = {...prescriptionList?.original};
-    console.log('temp =====> ', temp);
+    // console.log('temp =====> ', temp);
     if (Object.keys(temp.print)) {
-      console.log('Object.keys(temp.print)', Object.keys(temp.print));
+      // console.log('Object.keys(temp.print)', Object.keys(temp.print));
       delete temp.print;
     }
 

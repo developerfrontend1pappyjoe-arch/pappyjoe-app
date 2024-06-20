@@ -31,7 +31,7 @@ export const ProfileProfile = ({ navigation, route }: any) => {
     if(patientDetails.Photo){
       getFileDetails();
     }
-    console.log(patientDetails);
+    // console.log(patientDetails);
   }, [patientDetails]);
 
   const handleConfirmImage = async (file) => {
@@ -130,12 +130,12 @@ export const ProfileProfile = ({ navigation, route }: any) => {
       return new Promise((resolve, reject) => {
         RNFS.downloadFile(options)
           .promise.then((response) => {
-            console.log("File downloaded!", response);
+            // console.log("File downloaded!", response);
             setLoading(false);
             resolve(downloadDest);
           })
           .catch((err) => {
-            console.log("Download error:", err);
+            // console.log("Download error:", err);
             reject(err);
           });
       });
@@ -174,7 +174,7 @@ export const ProfileProfile = ({ navigation, route }: any) => {
     if(imagePreview?.uri){
       urlContent = imagePreview?.uri
     }
-    console.log(urlContent);
+    // console.log(urlContent);
    return urlContent 
   }, [patientDetails, imageFile, imagePreview]);
 

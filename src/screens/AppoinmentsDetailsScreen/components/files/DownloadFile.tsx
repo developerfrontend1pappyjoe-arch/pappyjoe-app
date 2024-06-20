@@ -12,24 +12,24 @@ export const DownloadFile = url => {
         discretionary: true,
         progress: res => {
           const progress = (res.bytesWritten / res.contentLength) * 100;
-          console.log(`Progress: ${progress.toFixed(2)}%`);
+          // console.log(`Progress: ${progress.toFixed(2)}%`);
         },
       };
 
       return new Promise((resolve, reject) => {
         RNFS.downloadFile(options)
           .promise.then(response => {
-            console.log('File downloaded!', response);
+            // console.log('File downloaded!', response);
             // setLoading(false);
             resolve(downloadDest);
           })
           .catch(err => {
-            console.log('Download error:', err);
+            // console.log('Download error:', err);
             reject(err);
           });
       });
     } catch (error) {
-      console.error('Error downloading file:', error);
+      // console.error('Error downloading file:', error);
       return Promise.reject(error);
     }
   };

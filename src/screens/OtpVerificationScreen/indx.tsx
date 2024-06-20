@@ -31,7 +31,7 @@ export const OTPVerificationScreen = ({
   },
   ...rest
 }: any) => {
-  console.log('data =====> IN OTP verify Screen ===> ', data);
+  // console.log('data =====> IN OTP verify Screen ===> ', data);
 
   const toast = useToast();
 
@@ -48,7 +48,7 @@ export const OTPVerificationScreen = ({
   const {mutate, isLoading, error} = useMutation({
     mutationFn: checkOTPVerification,
     onSuccess: (res: any) => {
-      console.log('Ressss', res.data);
+      // console.log('Ressss', res.data);
       toast.show('Successfull...!!!', {
         type: ToasterTypes.success,
       });
@@ -57,7 +57,7 @@ export const OTPVerificationScreen = ({
       }, 1500);
     },
     onError: (err: any) => {
-      console.log('Errrrr', err.response.data.message);
+      // console.log('Errrrr', err.response.data.message);
       toast.show(err.response.data.message, {
         type: ToasterTypes.error,
       });
@@ -98,7 +98,7 @@ export const OTPVerificationScreen = ({
             codeInputFieldStyle={styles.otpInput}
             codeInputHighlightStyle={styles.otpInputHighlighted}
             onCodeFilled={code => {
-              console.log(`Code is ${code}, you are good to go!`);
+              // console.log(`Code is ${code}, you are good to go!`);
             }}
           />
         </View>

@@ -8,11 +8,11 @@ export const VideoPlayer = ({visible, hideModal, url}: any) => {
   const playerRef = useRef(null);
 
   const onBuffer = (text: any) => {
-    console.log('Buffer ===> ', text);
+    // console.log('Buffer ===> ', text);
   };
 
   const videoError = (err: any) => {
-    console.log('Eroor on Video play ===> ', err);
+    // console.log('Eroor on Video play ===> ', err);
   };
 
   return (

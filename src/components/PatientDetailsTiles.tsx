@@ -25,7 +25,7 @@ interface ImageObject {
 
 export const PatientDetailsTiles = memo(
   ({ patientId }: PatientDetailsTileProps) => {
-    console.log("😇 ===> ", patientId);
+    // console.log("😇 ===> ", patientId);
 
     const [imageViews, setImageViews] = useState(false);
     const [imageViewData, setImageViewData] = useState<ImageObject[]>([]);
