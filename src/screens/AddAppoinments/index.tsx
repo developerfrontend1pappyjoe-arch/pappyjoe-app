@@ -83,6 +83,7 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
     slot: slotsOptions[3],
     queuestatus: '',
     phoneNUmber: '',
+    mobile:""
   });
 
   const [errorMessages, setErrorMessages] = useState({
@@ -95,6 +96,7 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
     notes: '',
     slot: '',
     queuestatus: '',
+    mobile:""
   });
 
   useEffect(() => {
@@ -103,10 +105,20 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
   }, []);
 
   const handleChange = (field, value) => {
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [field]: value,
-    }));
+    // console.log(field,"--------------------------->",value.mobile); 
+    if(field == "patient_id"){
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        mobile:value.mobile,
+        [field]: value,
+      }));
+    }else{
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [field]: value,
+      }));
+    }
+
     setErrorMessages(prevErrorMessages => ({
       ...prevErrorMessages,
       [field]: '',
@@ -374,7 +386,6 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
 
             <View>
               {/* <Text style={styles.label}>Doctors</Text> */}
-
               <Dropdown
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
@@ -393,7 +404,6 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                 value={formData?.doctor_id}
                 onChange={item => handleChange('doctor_id', item)}
               />
-
               {errorMessages['doctor_id'] && (
                 <Text style={styles.errorMessage}>
                   {errorMessages['doctor_id']}
@@ -405,14 +415,14 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
               <Text style={styles.label}>Phone Number</Text>
               <TextInput
                 placeholder="Phone Number"
-                value={formData?.notes}
-                onChangeText={text => handleChange('notes', text)}
+                value={formData?.mobile}
+                onChangeText={text => handleChange('mobile', text)}
                 multiline
-                style={[styles.input, {height: 100}]}
+                style={[styles.input]}
               />
-              {errorMessages['notes'] && (
+              {errorMessages['mobile'] && (
                 <Text style={styles.errorMessage}>
-                  {errorMessages['notes']}
+                  {errorMessages['mobile']}
                 </Text>
               )}
             </View>
