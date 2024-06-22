@@ -99,6 +99,7 @@ export const ShareModalContents = memo(
         onDismiss={closeMenu}
         anchor={
           <Button
+            compact
             mode="elevated"
             onPress={openMenu}
             style={{

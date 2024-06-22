@@ -24,13 +24,10 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
   const [showCamera, setShowCamera] = useState<boolean>(false);
   const [showVideo, setShowVideo] = useState<boolean>(false);
   const [showVideoData, setShowVideoData] = useState(null);
-
   const {hasPermission, requestPermission} = useCameraPermission();
-
   useEffect(() => {
     if (!hasPermission) {
       requestPermission().then(res => {
-        // console.log('Rqqq Permissin is Done', res);
       });
     }
   }, [hasPermission, requestPermission]);
