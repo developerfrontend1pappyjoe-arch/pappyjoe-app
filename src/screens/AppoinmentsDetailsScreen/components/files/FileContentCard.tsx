@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import { ActivityIndicator, Button, Card, Icon, Text } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Icon,
+  Text,
+} from "react-native-paper";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { colorList } from "styles/global.styles";
 import RNFS from "react-native-fs";
@@ -8,10 +13,10 @@ import { Alert } from "react-native";
 import { ShareModalContents } from "./ShareModalContents";
 import { API_URL } from "utils/constants";
 import { axiosInstance as axios } from "../../../../config/axios.config.custom";
-import extensions from "./fileExtentionTypes";
+import extensions, { allFileTypes } from "./fileExtentionTypes";
 import { TouchableOpacity } from "react-native";
 import { ExtentionTypes } from "./fileExtentionTypes";
-function FileContentCard({ keyId, fileData,handleShowFileViewer }) {
+function FileContentCard({ keyId, fileData, handleShowFileViewer,handleDelete }) {
   const [openedShareListId, setOpenedShareListId] = useState(null);
   const handleOpenShareModal = () => setOpenedShareListId(keyId);
   const handleCloseShareModal = () => setOpenedShareListId(null);
@@ -28,7 +33,6 @@ function FileContentCard({ keyId, fileData,handleShowFileViewer }) {
       if (!isDirectoryExist) {
         await RNFS.mkdir(`${RNFS.DownloadDirectoryPath}/Pappyjoe`);
       }
-
       const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`;
       const options = {
         fromUrl: url,
@@ -70,7 +74,7 @@ function FileContentCard({ keyId, fileData,handleShowFileViewer }) {
   const handleDownloadFiles = useCallback(() => {
     setIsDownloadClicked(true);
     downloadFile(fileData?.file, fileData?.file?.split("/").pop());
-  },[]);
+  }, []);
 
   const handleDeleteFilesApi = async () => {
     try {
@@ -82,7 +86,8 @@ function FileContentCard({ keyId, fileData,handleShowFileViewer }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (result.status == 200) {
-        Alert.alert("File deleted",result.data.message);
+        Alert.alert("File deleted", result.data.message);
+        handleDelete()
       }
     } catch (error) {
       Alert.alert("Somthing went wrong,please try agin later");
@@ -97,35 +102,57 @@ function FileContentCard({ keyId, fileData,handleShowFileViewer }) {
         onPress: () => handleDeleteFilesApi(fileData?.id),
       },
     ]);
-  },[]);
+  }, []);
 
   const getFileName = (url: string) => {
     return url.split("/").pop();
   };
 
-  const checkFileDownloaded =async () => {
-    const fileName = fileData?.file?.split("/").pop()
+  const checkFileDownloaded = async () => {
+    const fileName = fileData?.file?.split("/").pop();
     const sanitizedFileName = fileName.replace(/\s/g, "");
-  const result = await RNFS.exists(
-        `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`
-      )
-      setIsAlreadyDownloaded(result)
+    const result = await RNFS.exists(
+      `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`
+    );
+    setIsAlreadyDownloaded(result);
   };
 
-const checkFileType = useCallback(()=>{
-    const fileExtention : ExtentionTypes =  (fileData.file.split('/').pop())?.split('.').pop()
-   const type = extensions[fileExtention];
-   handleShowFileViewer({type,url:fileData.file}) 
-  },[])
+  const checkFileType = useCallback(() => {
+    const fileExtention: ExtentionTypes = fileData.file
+      .split("/")
+      .pop()
+      ?.split(".")
+      .pop();
+    const type = extensions[fileExtention];
+    handleShowFileViewer({ type, url: fileData.file });
+  }, []);
+
+  const checkExtention = (url: string) => {
+    const name = url.split("/").pop();
+    const ex = name?.split(".").pop();
+    return extensions[ex];
+  };
 
   useEffect(() => {
     checkFileDownloaded();
   }, []);
   return (
     <>
-      <Card key={`imageContainer${keyId}`}>
+      <Card key={`imageContainer${keyId}`} style={{backgroundColor:colorList.white}}>
         <TouchableOpacity onPress={checkFileType} style={{ padding: 4 }}>
-          <Card.Cover source={{ uri: fileData.file }} />
+          {checkExtention(fileData.file) == allFileTypes.image && (
+            <Card.Cover source={{ uri: fileData.file }} />
+          )}
+          {checkExtention(fileData.file) == allFileTypes.video && (
+          <View style={{justifyContent:'center',alignItems:"center"}}>
+            <Icon color={colorList.primary} size={100} source={"play-circle"}/>
+          </View>
+          )}
+          {checkExtention(fileData.file) == allFileTypes.doc && (
+          <View style={{justifyContent:'center',alignItems:"center"}}>
+            <Icon color={colorList.Grey1} size={100} source={"file-document"}/>
+          </View>
+          )}
         </TouchableOpacity>
         <Card.Content>
           <Text variant="bodyMedium">{getFileName(fileData.file)}</Text>
@@ -134,7 +161,7 @@ const checkFileType = useCallback(()=>{
           {downloadProgress > 0 && (
             <Text>Downloading {downloadProgress} % </Text>
           )}
-          {(!isAlreadyDownloaded && !isDownloadCicked) && (
+          {!isAlreadyDownloaded && !isDownloadCicked && (
             <Button
               compact
               mode="elevated"
@@ -147,7 +174,7 @@ const checkFileType = useCallback(()=>{
               onPress={handleDownloadFiles}
             >
               <Icons name="download" size={20} />
-            </Button> 
+            </Button>
           )}
           {isAlreadyDownloaded && (
             <Icon

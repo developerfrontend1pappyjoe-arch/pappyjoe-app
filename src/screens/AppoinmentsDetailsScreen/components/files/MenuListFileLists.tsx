@@ -10,44 +10,28 @@ import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
 import { Dimensions, ScrollView, View, Alert, StyleSheet } from "react-native";
 import { Button, Card, Divider, Icon, Surface, Text } from "react-native-paper";
 import { NoDataAvailable } from "../../../../components/NoDataAvailable";
-import Icons from "react-native-vector-icons/MaterialIcons";
-import ImageView from "react-native-image-viewing";
-import Pdf from "react-native-pdf";
 import RNFS from "react-native-fs";
+import FileViewer from 'react-native-file-viewer';
 import { CustomModal } from "../../../../components/CustomModal";
 import lodash from "lodash";
 import { colorList } from "../../../../styles/global.styles";
 import { CustomAddButton } from "../../../../components/CustomAddButton";
 import { styles } from "../../appoinmentDetails.styles";
 import { AddFilesPopup } from "./AddFiles";
-import { CloseLargeImage } from "../../../../assets";
-import { ShareModalContents } from "./ShareModalContents";
 import moment from "moment";
 import { CustomImageViewer } from "./ImageViewer";
 import { axiosInstance as axios } from "../../../../config/axios.config.custom";
 import { VideoPlayer } from "./VideoPlayer";
 import FileContentCard from "./FileContentCard";
-import { ExtentionTypes,allFileTypes } from "./fileExtentionTypes";
+import { ExtentionTypes, allFileTypes } from "./fileExtentionTypes";
 type ShowFileViewerType = { type: ExtentionTypes | null; url: string };
 export const MenuListDetailsFileList = ({ patientDetails }: any) => {
   const [isLoading, setLoading] = useState(false);
   const [isPopup, setIspoup] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [fileList, setFileList] = useState(null);
-  const [imageViews, setImageViews] = useState(false);
-  const [imageViewData, setImageViewData] = useState([]);
   const [showFileViewer, setShowFileViewer] = useState<ShowFileViewerType>();
-  const [docList, setDocs] = useState({
-    image: [],
-    pdf: null,
-    doc: null,
-  });
-  const [visible, setIsVisible] = useState({
-    image: false,
-    pdf: false,
-  });
-  const [isVideoPlayer, setIsVideoPlayer] = useState(false);
-  const [isVideoPlayerUrl, setIsVideoPlayerUrl] = useState(null);
+  const [deletedFiles,setDeletedFiles] = useState([])
   const getFileListApi = async () => {
     setLoading(true);
     try {
@@ -86,20 +70,64 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
       setFileList(null);
     }
   };
-
+const handleDelete = ()=>{
+  getFileListApi(); 
+}
   const allFiles = useMemo(() => {
     if (fileList && Object.entries(fileList)?.length) {
-      return Object.entries(fileList) || [];
+      return  Object.entries(fileList) || [];
+      
     }
     return [];
   }, [fileList]);
 
   const handleShowFileViewer = useCallback(
-    (params: ShowFileViewerType) => {
-      console.log(params);
-      
+   async (params: ShowFileViewerType) => {
+    if(params.type == allFileTypes.doc){
+      viewFile(params.url)
+    }else{
       setShowFileViewer(params);
-    },[showFileViewer]);
+    }
+
+    },
+    [showFileViewer]
+  );
+  const viewFile = async (uri: string) => {
+    const fileName = uri.split('/').pop();
+    const sanitizedFileName = fileName?.replace(/\s/g, "")
+    const destinationUri = `${RNFS.CachesDirectoryPath}/${sanitizedFileName}`;
+    const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`;
+    try {
+      const isCleared = await clearCache();
+      if (!isCleared) {
+        throw new Error('Failed to clear cache');
+      }
+      const fileExists = await RNFS.exists(destinationUri);
+      const isAlreadyDownloaded = await RNFS.exists(downloadDest);
+      if(isAlreadyDownloaded){
+        await FileViewer.open(`file://${downloadDest}`, { displayName: sanitizedFileName });
+        return
+      }
+      if (!fileExists) {
+        await RNFS.downloadFile({ fromUrl: uri, toFile: destinationUri }).promise;
+      }
+      await FileViewer.open(`file://${destinationUri}`, { displayName: sanitizedFileName });
+    } catch (error) {
+      console.log('Error:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+    }
+  };
+  const clearCache = async () => {
+    try {
+      const files = await RNFS.readDir(RNFS.CachesDirectoryPath);
+      for (const file of files) {
+        await RNFS.unlink(file.path);
+      }
+      return true
+    } catch (error) {
+      return false
+    }
+  }
 
   useEffect(() => {
     getFileListApi();
@@ -107,6 +135,7 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
       setRefetch(false);
     }, 1000);
   }, [refetch]);
+
   return (
     <View style={{ flex: 1, borderRadius: 10 }}>
       {isLoading ? (
@@ -123,7 +152,7 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
                 <Surface
                   key={ids}
                   style={{
-                    backgroundColor: colorList.white,
+                    // backgroundColor: colorList.white,
                     borderRadius: 8,
                     padding: 10,
                     margin: 2,
@@ -143,6 +172,7 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
                   {val?.map((item: any, index: number) => {
                     return (
                       <FileContentCard
+                      handleDelete={handleDelete}
                         key={`${ids}${index}`}
                         keyId={`${ids}${index}`}
                         fileData={item}
@@ -154,21 +184,25 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
               );
             })}
             {allFiles.length == 0 && <NoDataAvailable />}
-              <CustomImageViewer
-                visible={showFileViewer?.type == allFileTypes.image}
-                close={() => setShowFileViewer({type:null,url:""})}
-                img={[{uri:showFileViewer?.url}]}
-              />
-              <CustomModal
-                show={showFileViewer?.type == allFileTypes.video}
-                close={() => setShowFileViewer({type:null,url:""})}
-              >
-               {showFileViewer?.type == allFileTypes.video && <VideoPlayer
+            <CustomImageViewer
+              visible={showFileViewer?.type == allFileTypes.image}
+              close={() => setShowFileViewer({ type: null, url: "" })}
+              img={[{ uri: showFileViewer?.url }]}
+            />
+            <CustomModal
+              show={showFileViewer?.type == allFileTypes.video}
+              close={() => setShowFileViewer({ type: null, url: "" })}
+            >
+              {showFileViewer?.type == allFileTypes.video && (
+                <VideoPlayer
                   visible={showFileViewer?.type == allFileTypes.video}
-                  hideModal={() => {setShowFileViewer({type:null,url:""});}}
+                  hideModal={() => {
+                    setShowFileViewer({ type: null, url: "" });
+                  }}
                   url={showFileViewer.url}
-                />}
-              </CustomModal>
+                />
+              )}
+            </CustomModal> 
           </ScrollView>
 
           <View
