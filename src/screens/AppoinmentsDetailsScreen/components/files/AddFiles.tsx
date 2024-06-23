@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {API_URL} from '../../../../utils/constants';
-import {Alert, Dimensions, Image, TouchableOpacity, View} from 'react-native';
+import {Alert, Dimensions, Image, TouchableOpacity, View,ScrollView} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import {useCameraPermission} from 'react-native-vision-camera';
@@ -95,7 +95,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
   };
 
   const handleConfirmImage = (image: any) => {
-    const imgList = [];
+    const imgList = [...imageFiles];
     imgList.push(image);
     setImageFiles(imgList);
     setTimeout(() => {
@@ -128,7 +128,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
   const [imageViews, setImageViews] = useState(false);
   const [imageViewData, setImageViewData] = useState([]);
   const [editFileName, setEditFileName] = useState({
-    isEdit: false,
+    isEdit: -1,
     name: '',
     extension: '',
   });
@@ -139,9 +139,9 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
     path: string,
   ) => {
     const filesObjList = [...imageFiles];
-    const newPath = `${RNFS.DocumentDirectoryPath}/${name}`;
-    await RNFS.moveFile(path, newPath);
-    filesObjList[index].uri = `file://${newPath}`;
+    // const newPath = `${RNFS.DocumentDirectoryPath}/${name}`;
+    // await RNFS.moveFile(path, newPath);
+    // filesObjList[index].uri = `file://${newPath}`;
     filesObjList[index].name = name;
     filesObjList[index].fileName = name;
     setImageFiles(filesObjList);
@@ -154,10 +154,10 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
   ) => {
     const nameOnly = fileName.split('.')[0];
     const ext = fileName.split('.')[1];
-    if (!editFileName.isEdit) {
-      setEditFileName(prev => ({...prev, isEdit: true, name: nameOnly, ext}));
+    if (!(editFileName.isEdit > -1)) {
+      setEditFileName(prev => ({...prev, isEdit: index, name: nameOnly, ext}));
     } else {
-      setEditFileName(prev => ({...prev, isEdit: false, ext}));
+      setEditFileName(prev => ({...prev, isEdit: -1, ext}));
       Alert.alert('Info', 'Are you sure,you want to change the name ?', [
         {text: 'No'},
         {
@@ -235,8 +235,9 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
           </View>
         </View>
 
-        <View style={{marginVertical: 20}}>
-          {imageFiles?.length
+        <View style={{marginVertical: 20,height:"60%"}}>
+         <ScrollView>
+         {imageFiles?.length
             ? imageFiles?.map((item: any, index: number) => {
                 return (
                   <View key={index}>
@@ -279,7 +280,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
                         justifyContent: 'space-between',
                         alignItems: 'center',
                       }}>
-                      {editFileName?.isEdit ? (
+                      {editFileName?.isEdit == index ? (
                         <TextInput
                           mode="flat"
                           value={editFileName?.name}
@@ -302,7 +303,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
                         }
                         style={{backgroundColor: colorList.socondary}}
                         labelStyle={{color: colorList.white}}>
-                        <Icons name="edit" size={20} />
+                        <Icons name={editFileName.isEdit == index ? "check" : "edit"} size={20} />
                       </Button>
                     </View>
                     <Divider style={{marginVertical: 10}} />
@@ -408,6 +409,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
               No Files Uploaded...!
             </Text>
           )}
+         </ScrollView>
         </View>
 
         {isLoading ? (
