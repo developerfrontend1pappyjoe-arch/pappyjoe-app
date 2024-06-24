@@ -8,10 +8,9 @@ import React, {
 import { API_URL } from "../../../../utils/constants";
 import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
 import { Dimensions, ScrollView, View, Alert, StyleSheet } from "react-native";
-import { Button, Card, Divider, Icon, Surface, Text } from "react-native-paper";
+import {Divider, Surface, Text } from "react-native-paper";
 import { NoDataAvailable } from "../../../../components/NoDataAvailable";
 import RNFS from "react-native-fs";
-import FileViewer from 'react-native-file-viewer';
 import { CustomModal } from "../../../../components/CustomModal";
 import lodash from "lodash";
 import { colorList } from "../../../../styles/global.styles";
@@ -31,7 +30,6 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
   const [refetch, setRefetch] = useState(false);
   const [fileList, setFileList] = useState(null);
   const [showFileViewer, setShowFileViewer] = useState<ShowFileViewerType>();
-  const [deletedFiles,setDeletedFiles] = useState([])
   const getFileListApi = async () => {
     setLoading(true);
     try {
@@ -73,6 +71,7 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
 const handleDelete = ()=>{
   getFileListApi(); 
 }
+
   const allFiles = useMemo(() => {
     if (fileList && Object.entries(fileList)?.length) {
       return  Object.entries(fileList) || [];
@@ -83,51 +82,10 @@ const handleDelete = ()=>{
 
   const handleShowFileViewer = useCallback(
    async (params: ShowFileViewerType) => {
-    if(params.type == allFileTypes.doc){
-      viewFile(params.url)
-    }else{
-      setShowFileViewer(params);
-    }
-
+    setShowFileViewer(params);
     },
     [showFileViewer]
   );
-  const viewFile = async (uri: string) => {
-    const fileName = uri.split('/').pop();
-    const sanitizedFileName = fileName?.replace(/\s/g, "")
-    const destinationUri = `${RNFS.CachesDirectoryPath}/${sanitizedFileName}`;
-    const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`;
-    try {
-      const isCleared = await clearCache();
-      if (!isCleared) {
-        throw new Error('Failed to clear cache');
-      }
-      const fileExists = await RNFS.exists(destinationUri);
-      const isAlreadyDownloaded = await RNFS.exists(downloadDest);
-      if(isAlreadyDownloaded){
-        await FileViewer.open(`file://${downloadDest}`, { displayName: sanitizedFileName });
-        return
-      }
-      if (!fileExists) {
-        await RNFS.downloadFile({ fromUrl: uri, toFile: destinationUri }).promise;
-      }
-      await FileViewer.open(`file://${destinationUri}`, { displayName: sanitizedFileName });
-    } catch (error) {
-      console.log('Error:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
-    }
-  };
-  const clearCache = async () => {
-    try {
-      const files = await RNFS.readDir(RNFS.CachesDirectoryPath);
-      for (const file of files) {
-        await RNFS.unlink(file.path);
-      }
-      return true
-    } catch (error) {
-      return false
-    }
-  }
 
   useEffect(() => {
     getFileListApi();

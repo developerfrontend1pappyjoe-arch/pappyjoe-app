@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {API_URL} from '../../../../utils/constants';
 import {Alert, Dimensions, Image, TouchableOpacity, View,ScrollView} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
@@ -315,7 +315,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
           {videoFiles?.length
             ? videoFiles?.map((item: any, index: number) => {
                 return (
-                  <>
+                  <Fragment key={`videoList${index}`}>
                     <View>
                       <Text style={{marginVertical: 10}}>{item?.fileName}</Text>
                       <View
@@ -355,7 +355,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
                       </View>
                     </View>
                     <Divider style={{marginVertical: 10}} />
-                  </>
+                  </Fragment>
                 );
               })
             : null}
@@ -363,7 +363,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
           {files?.length
             ? files?.map((li: any, index: number) => {
                 return (
-                  <>
+                  <Fragment key={`videoList${index}`}>
                     <View
                       style={{
                         flexDirection: 'row',
@@ -395,7 +395,7 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
                       </View>
                     </View>
                     <Divider />
-                  </>
+                  </Fragment>
                 );
               })
             : null}

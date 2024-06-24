@@ -1,8 +1,7 @@
-import { Fragment, useRef } from "react";
-import { Alert, Dimensions, Image, Platform, TouchableOpacity, View } from "react-native";
-import { Button, Icon, Modal, Portal, Surface, Text } from "react-native-paper";
+import { useRef } from "react";
+import { Alert, Dimensions, TouchableOpacity, View } from "react-native";
+import { Icon } from "react-native-paper";
 import Video from "react-native-video";
-import { CloseIcon } from "../../../../assets";
 import { colorList } from "styles/global.styles";
 
 export const VideoPlayer = ({ visible, hideModal, url }: any) => {
@@ -37,7 +36,7 @@ export const VideoPlayer = ({ visible, hideModal, url }: any) => {
             flex: 1,
             borderRadius: 8,
           }}
-          controls
+          controls={true}
         ></Video>
       </View>
   );
