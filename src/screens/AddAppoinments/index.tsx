@@ -403,7 +403,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
                   maxHeight={300}
                   labelField="Name"
                   valueField="Name"
-                  searchField={searchField}
+                  // searchField={searchField}
                   placeholder={"Patients"}
                   searchPlaceholder={"Search..."}
                   search
