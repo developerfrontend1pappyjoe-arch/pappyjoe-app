@@ -32,6 +32,7 @@ import {
   Icon,
   List,
   TextInput as PaperInput,
+  Text as MetText
 } from "react-native-paper";
 type SearchResultType = {
   status: number;
@@ -115,7 +116,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
   }, []);
 
   const handleChange = (field, value) => {
-    // console.log(field,"--------------------------->",value.mobile);
+    console.log(field,"--------------------------->",value);
     if (field == "patient_id") {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -360,7 +361,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
         <List.Item
           title={`${item?.Name} ${item?.age && "| " + item?.age} ${item?.gender != "0" ? "| " + item?.gender : ""}`}
           description={`Mob: ${item?.mobile}`}
-          // left={(props) => <List.Icon {...props} icon="account" />}
+          right={(props) => <MetText variant="labelSmall" {...props}>({item?.Patient_Id})</MetText>}
         />
         <Divider />
       </React.Fragment>
@@ -408,14 +409,14 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
                   search
                   value={formData?.patient_id || ""}
                   onChange={(item) => handleChange("patient_id", item)}
-                  onChangeText={handleSearchChange}
+                  // onChangeText={handleSearchChange}
                   renderItem={renderDropdownItem}
                   renderInputSearch={(onChange) => (
                     <PaperInput
                       value={searchText}
                       mode="outlined"
                       outlineStyle={{ borderColor: colorList.primary }}
-                      onChangeText={onChange}
+                      onChangeText={handleSearchChange}
                       style={{ margin: 3, height: 50 }}
                       right={
                         <PaperInput.Affix
