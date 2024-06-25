@@ -285,8 +285,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
     formDetails.append("repeat", formData?.repeat?.Name);
     if (formData?.notes?.trim() !== "")
       formDetails.append("notes", formData?.notes?.trim());
-    formDetails.append("slot", formData?.slot?.Name);
-
+      formDetails.append("slot", formData?.slot?.Name);
     if (data?.mode === "edit") {
       formDetails.append("app_id", data?.data?.Appointment_Id);
     }
@@ -403,7 +402,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
                   maxHeight={300}
                   labelField="Name"
                   valueField="Name"
-                  // searchField={searchField}
+                  searchField={searchField}
                   placeholder={"Patients"}
                   searchPlaceholder={"Search..."}
                   search
