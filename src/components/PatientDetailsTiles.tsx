@@ -14,6 +14,7 @@ import { CustomImageViewer } from "../screens/AppoinmentsDetailsScreen/component
 import { getPatientService } from "services/getPatientList";
 import { CustomContentLoader } from "./CustomContentLoader";
 import { PatientDataProps } from "types/PatientDetailsTypes";
+import { checkCountryCode } from "utils/commonUtils";
 
 interface PatientDetailsTileProps {
   patientId: string;
@@ -56,14 +57,14 @@ export const PatientDetailsTiles = memo(
       }
     };
 
-    const openDialer = () =>
+    const openDialer = () =>{
       Linking.openURL(
-        `tel:${patientDetails?.country_code}${patientDetails?.mobile}`
-      );
+        `tel:+${checkCountryCode(patientDetails?.country_code)}${patientDetails?.mobile}`
+      );}
 
     const openWhatsApp = () =>
       Linking.openURL(
-        `whatsapp://send?text=Hai&phone=${patientDetails?.country_code}${patientDetails?.mobile}`
+        `whatsapp://send?text=Hai&phone=${checkCountryCode(patientDetails?.country_code)}${patientDetails?.mobile}`
       );
 
     if (isLoading) return <CustomContentLoader tWidth={"50%"} pHeight={15} />;

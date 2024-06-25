@@ -33,12 +33,13 @@ import {
   Button,
 } from 'react-native-paper';
 import {axiosInstance as axios} from '../../../config/axios.config.custom';
+import { checkCountryCode } from 'utils/commonUtils';
 
 export const AppoinmentList = ({data, navigate, refetch}: any) => {
   const [isLoading, setLoading] = useState(false);
 
   const openDialer = () =>
-    Linking.openURL(`tel:${data?.Patient_country_code}${data?.Patient_Mobile}`);
+    Linking.openURL(`tel:+${checkCountryCode(data?.Patient_country_code)}${data?.Patient_Mobile}`);
 
   const openWhatsApp = () => {
     try {

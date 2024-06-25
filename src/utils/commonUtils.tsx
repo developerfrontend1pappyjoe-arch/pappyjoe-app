@@ -19,10 +19,21 @@ const isRequiredField = (text: string) => {
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
+const checkCountryCode = (cc:string)=>{
+  if(cc){
+    if (cc.includes('+')) {
+      const corrected = cc.replace(/\+/g, '');
+      return corrected
+    }
+    return cc
+  }
+    return ""
+}
 export {
   isValidPhoneNumber,
   isValidEmail,
   isRequiredField,
   deviceWidth,
   deviceHeight,
+  checkCountryCode
 };

@@ -358,7 +358,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
     return (
       <React.Fragment key={index}>
         <List.Item
-          title={`${item?.Name} ${item?.age && "| " + item?.age} ${item?.gender != "0" ? "| " + item?.gender : ""}`}
+          title={`${item?.Name} ${item?.age ? ("| " + item?.age) : ""} ${item?.gender ? (item?.gender != "0" ? `| ${item?.gender}` : "") : ""}`}
           description={`Mob: ${item?.mobile}`}
           right={(props) => <MetText variant="labelSmall" {...props}>({item?.Patient_Id})</MetText>}
         />
