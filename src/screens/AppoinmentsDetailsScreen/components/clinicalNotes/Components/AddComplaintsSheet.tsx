@@ -18,7 +18,7 @@ export const AddComplaintsSheet = () => {
     bottomSheetModalRef.current?.dismiss();
   }, []);
   const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
+    // console.log('handleSheetChanges', index);
   }, []);
 
   return (

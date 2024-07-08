@@ -28,19 +28,19 @@ export const ShareModalContents = memo(
           discretionary: true,
           progress: res => {
             const progress = (res.bytesWritten / res.contentLength) * 100;
-            console.log(`Progress: ${progress.toFixed(2)}%`);
+            // console.log(`Progress: ${progress.toFixed(2)}%`);
           },
         };
 
         return new Promise((resolve, reject) => {
           RNFS.downloadFile(options)
             .promise.then(response => {
-              console.log('File downloaded!', response);
+              // console.log('File downloaded!', response);
               setLoading(false);
               resolve(downloadDest);
             })
             .catch(err => {
-              console.log('Download error:', err);
+              // console.log('Download error:', err);
               reject(err);
             });
         });
@@ -76,15 +76,15 @@ export const ShareModalContents = memo(
           subject: 'Files',
           url: `file://${resultFilePath}`,
         };
-        console.log('shareType --------> ', shareType, whatsAppoptions);
+        // console.log('shareType --------> ', shareType, whatsAppoptions);
 
         if (shareType == 'mail') {
           Share.shareSingle(emailOptions)
             .then(res => {
-              console.log(res);
+              // console.log(res);
             })
             .catch(err => {
-              err && console.log(err);
+              // err && console.log(err);
             });
         } else await Share.shareSingle(whatsAppoptions);
       } catch (err) {

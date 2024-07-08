@@ -86,7 +86,7 @@ export const MenuListDetailsProcedure = ({patientDetails}: any) => {
   };
 
   const handleUpdateProcedureApi = async (details: any) => {
-    console.log(':GOING To DElete One only', details);
+    // console.log(':GOING To DElete One only', details);
     setLoading(true);
     const payload = {
       patient_id: patientDetails?.id,
@@ -109,17 +109,17 @@ export const MenuListDetailsProcedure = ({patientDetails}: any) => {
       newArrOfArr[index] = newItem;
     });
 
-    console.log('Final list off Arrr', newArrOfArr);
+    // console.log('Final list off Arrr', newArrOfArr);
 
     payload.items = newArrOfArr;
 
-    console.log('Payloads ==== >', payload);
+    // console.log('Payloads ==== >', payload);
 
     try {
       const res = await axios.post(API_URL.addTreatments, payload);
       if (res && res.status === 200) {
         setLoading(false);
-        console.log('Resss', res.data);
+        // console.log('Resss', res.data);
         setTimeout(() => {
           Alert.alert('Success', res?.data?.message || 'Added Successfully', [
             {
@@ -229,8 +229,8 @@ export const MenuListDetailsProcedure = ({patientDetails}: any) => {
   };
 
   const handlePrintProcedure = (obj: any) => {
-    console.log('Printttttt ====> Url', obj?.unique_id);
-    console.log('Printttttt ====> Url Origninal ', procedureList);
+    // console.log('Printttttt ====> Url', obj?.unique_id);
+    // console.log('Printttttt ====> Url Origninal ', procedureList);
 
     // Linking.openURL(procedureList?.original?.print[url?.unique_id]?.url)
     //   .then(res => console.log('Success', res))

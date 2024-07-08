@@ -6841,6 +6841,11 @@ react-native-email@^2.1.0:
   dependencies:
     qs "6.10.3"
 
+react-native-file-viewer@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.npmjs.org/react-native-file-viewer/-/react-native-file-viewer-2.1.5.tgz"
+  integrity sha512-MGC6sx9jsqHdefhVQ6o0akdsPGpkXgiIbpygb2Sg4g4bh7v6K1cardLV1NwGB9A6u1yICOSDT/MOC//9Ez6EUg==
+
 react-native-fs@^2.13.0, react-native-fs@^2.20.0:
   version "2.20.0"
   resolved "https://registry.npmjs.org/react-native-fs/-/react-native-fs-2.20.0.tgz"
@@ -6869,6 +6874,11 @@ react-native-image-picker@^7.1.0:
   version "7.1.2"
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.1.2.tgz"
   integrity sha512-b5y5nP60RIPxlAXlptn2QwlIuZWCUDWa/YPUVjgHc0Ih60mRiOg1PSzf0IjHSLeOZShCpirpvSPGnDExIpTRUg==
+
+react-native-image-resizer@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.npmjs.org/react-native-image-resizer/-/react-native-image-resizer-1.4.5.tgz"
+  integrity sha512-33EgL3C9pyvjKpullAB6fWyD5QhoYEpNNB9rxNvUsrpAnL2mHBW7PTrUCCZudJeB6Weg7nbweKrSw1nnto5aqg==
 
 react-native-image-viewing@^0.2.2:
   version "0.2.2"
@@ -6993,7 +7003,7 @@ react-native-vision-camera@^3.8.2:
   resolved "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-3.9.2.tgz"
   integrity sha512-watHRWbeH7CBYq/5sPj2fpZj87V8J5nGdmYO61aYsDLuJ2Pkij7anAzBf8B8oZiyoSUuYpAzX4lIIi+LjWVedA==
 
-react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", "react-native@>= 0.55.x", "react-native@>= 0.62", "react-native@>= 0.64.3", react-native@>=0.46, react-native@>=0.57.0, react-native@>=0.59, react-native@>=0.61.3, react-native@>=0.62.x, react-native@>=0.70.0, react-native@0.72.5:
+react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", "react-native@>= 0.55.x", "react-native@>= 0.62", "react-native@>= 0.64.3", react-native@>=0.46, react-native@>=0.47, react-native@>=0.57.0, react-native@>=0.59, react-native@>=0.61.3, react-native@>=0.62.x, react-native@>=0.70.0, react-native@>=v0.40.0, react-native@0.72.5:
   version "0.72.5"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.72.5.tgz"
   integrity sha512-oIewslu5DBwOmo7x5rdzZlZXCqDIna0R4dUwVpfmVteORYLr4yaZo5wQnMeR+H7x54GaMhmgeqp0ZpULtulJFg==

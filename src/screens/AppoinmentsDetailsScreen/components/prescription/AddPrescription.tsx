@@ -114,9 +114,9 @@ export const AddPrescriptionPopups = ({
         temp.notes = datas?.notes || '';
         temp.musage = usages || '';
         temp.internalnote = datas?.note || '';
-        temp.review_date = datas?.review_date || '';
+        temp.review_date = datas?.nextreview || '';
         setStartDate(new Date(datas.date_time))
-        setReviewDate(new Date(datas.nextreview))
+        setReviewDate(new Date(datas?.nextreview))  
         setFormData(prev => ({...prev, ...temp}));
         setMedicineList(prev => {
           const newMedicineList = [...prev, tempMed];
@@ -354,7 +354,7 @@ export const AddPrescriptionPopups = ({
       payload.items = newItem;
     } else {
       formDataList?.forEach((el, index) => {
-        console.log('el ====> ', el);
+        // console.log('el ====> ', el);
 
         if (el.duration_type) el.duration_type = el.duration_type.text;
         if (el.food) el.food = el?.food?.name || '';
@@ -371,7 +371,7 @@ export const AddPrescriptionPopups = ({
         const res = await axios.post(API_URL.addPrescription, payload);
         if (res && res.status === 200) {
           setLoader(false);
-          console.log('Resss Update Prescription', res.data);
+          // console.log('Resss Update Prescription', res.data);
           setTimeout(() => {
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {
@@ -394,7 +394,7 @@ export const AddPrescriptionPopups = ({
 
         if (res && res.status === 200) {
           setLoader(false);
-          console.log('Resss', res.data);
+          // console.log('Resss', res.data);
           setTimeout(() => {
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {
@@ -432,7 +432,7 @@ export const AddPrescriptionPopups = ({
     const newErrorMessages = {...errorMessages};
 
     requiredFields.forEach(field => {
-      console.log('formData[field]', field, formData.medicine_id);
+      // console.log('formData[field]', field, formData.medicine_id);
 
       if (formData[field] === '' || !formData[field]) {
         newErrorMessages[field] = '* required';

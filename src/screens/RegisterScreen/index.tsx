@@ -45,11 +45,11 @@ export const RegisterScreen = ({navigation}: any) => {
   const getCountryListApi = () => {
     getCountriesList()
       .then(res => {
-        console.log('Res Country List', res?.data);
+        // console.log('Res Country List', res?.data);
         setCountriesList(res?.data?.country);
       })
       .catch(err => {
-        console.log('Errrrr', err);
+        // console.log('Errrrr', err);
         setCountriesList([]);
       });
   };
@@ -89,7 +89,7 @@ export const RegisterScreen = ({navigation}: any) => {
       }, 1500);
     },
     onError: (err: any) => {
-      console.log('Errrrr', err.response.data.message);
+      // console.log('Errrrr', err.response.data.message);
       toast.show(err.response.data.message, {
         type: ToasterTypes.error,
       });
@@ -139,8 +139,8 @@ export const RegisterScreen = ({navigation}: any) => {
       formData.append('country_code', registerData?.country);
       formData.append('mobile', registerData?.phoneNumber);
 
-      console.log('Payloads', formData);
-      console.log('Payloads registerData', registerData);
+      // console.log('Payloads', formData);
+      // console.log('Payloads registerData', registerData);
 
       mutate(formData);
     }

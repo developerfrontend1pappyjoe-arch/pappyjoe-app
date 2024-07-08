@@ -1,8 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useEffect, useState} from 'react';
-
+import React, {useEffect} from 'react';
 import {NavigationList} from './NavigationList';
 import LoginScreen from '../screens/LoginScreen';
 import {RegisterScreen} from '../screens/RegisterScreen';
@@ -20,7 +19,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {handleLoggedInStatus} from '../redux/actions';
 import {AppoinmentDetails} from '../screens/AppoinmentsDetailsScreen';
 import {PatientDetails} from '../screens/PatientDetails';
-
 import {SplashScreen} from '../screens/SplashScreen';
 import {AddPatients} from '../screens/AddPatientScreen';
 import {AddNewAppoinments} from '../screens/AddAppoinments';

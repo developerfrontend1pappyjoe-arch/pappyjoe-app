@@ -36,7 +36,7 @@ export const AddPrescriptionForm = ({
   const [medicineUnit, setMedicineUnitList] = useState<any>([]);
   const [isloading, setLoader] = useState(false);
 
-  console.log('Finalzzzz data===============', data);
+  // console.log('Finalzzzz data===============', data);
 
   useEffect(() => {
     getMedicineListApi();

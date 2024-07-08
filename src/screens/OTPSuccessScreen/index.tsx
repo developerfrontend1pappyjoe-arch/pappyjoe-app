@@ -13,11 +13,11 @@ export const OTPSuccesScreen = ({
     params: {data},
   },
 }: any) => {
-  console.log('params 00000', data);
+  // console.log('params 00000', data);
 
-  const resentEmail = () => {
-    return console.log('Resend');
-  };
+  // const resentEmail = () => {
+  //   return console.log('Resend');
+  // };
 
   return (
     <View style={styles.container}>

@@ -15,7 +15,7 @@ export const ListPrescriptionForms = ({
   const [expanded, setExpanded] = useState(0);
 
   const handlePress = index => {
-    console.log('index', index === expanded);
+    // console.log('index', index === expanded);
     setExpanded(index);
   };
 
