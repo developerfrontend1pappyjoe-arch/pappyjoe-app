@@ -44,7 +44,7 @@ export const CustomDropdownWithSearch = ({
   type,
 }: CustomDropdownWithSearchProps) => {
   const onBlur = e => {
-    console.log('Reeeeeee', e);
+    // console.log('Reeeeeee', e);
   };
 
   console.warn('complaintsItems==>', data);

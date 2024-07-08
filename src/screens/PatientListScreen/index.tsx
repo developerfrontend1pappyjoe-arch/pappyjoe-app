@@ -98,7 +98,7 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
       useCallback(() => {
         getPatientListApi();
         return () => {
-          console.log('Un Foxuzzed In Patient Listing ');
+          // console.log('Un Foxuzzed In Patient Listing ');
 
           setSearchParams('');
           setPatientList([]);
@@ -136,7 +136,7 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
           searchParams,
           `start=${page === 1 ? 0 : page * 10 - 11}&limit=10`,
         );
-        console.log('data===> 121212', data);
+        // console.log('data===> 121212', data);
 
         if (data?.status == 200) {
           if (_.isEqual([[]], data.data)) {
@@ -150,11 +150,11 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
           setLoading(false);
           setRefreshing(false);
 
-          console.log('searchParams + page', searchParams, page);
+          // console.log('searchParams + page', searchParams, page);
         }
       } catch (err) {
         setLoading(false);
-        console.log('Errr in getPatientListApi', err);
+        // console.log('Errr in getPatientListApi', err);
       }
     };
 
@@ -162,7 +162,7 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
       getPatientListApi();
     }, [page]);
 
-    console.log('patiantList ==> ', patiantList);
+    // console.log('patiantList ==> ', patiantList);
 
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: colorList.white}}>

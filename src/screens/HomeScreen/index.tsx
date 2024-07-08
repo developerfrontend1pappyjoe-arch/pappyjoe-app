@@ -110,7 +110,7 @@ export const HomeScreen = memo(({navigation}: any) => {
         params,
       )}`;
 
-      console.log('URL -----> ', Url);
+      // console.log('URL -----> ', Url);
 
       const {data} = await axios.get(Url);
       if (data) {

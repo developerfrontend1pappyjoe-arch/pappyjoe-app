@@ -31,7 +31,7 @@ function CustomMultiselect({
   const displayText = defaultValue != '' ? defaultValue : label;
   const [text, setText] = useState('');
 
-  console.log('selected ====> @@@@ ', selected);
+  // console.log('selected ====> @@@@ ', selected);
 
   const onSearch = (value: string) => {
     setText(value);

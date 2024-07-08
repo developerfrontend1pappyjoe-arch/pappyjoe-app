@@ -33,12 +33,13 @@ import {
   Button,
 } from 'react-native-paper';
 import {axiosInstance as axios} from '../../../config/axios.config.custom';
+import { checkCountryCode } from 'utils/commonUtils';
 
 export const AppoinmentList = ({data, navigate, refetch}: any) => {
   const [isLoading, setLoading] = useState(false);
 
   const openDialer = () =>
-    Linking.openURL(`tel:${data?.Patient_country_code}${data?.Patient_Mobile}`);
+    Linking.openURL(`tel:+${checkCountryCode(data?.Patient_country_code)}${data?.Patient_Mobile}`);
 
   const openWhatsApp = () => {
     try {
@@ -59,7 +60,7 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
           if (res.data?.status == 200) {
             Linking.openURL(`${res.data?.data[0]?.url}`);
           }
-          console.log('Rewsss Dataaaa', res?.data);
+          // console.log('Rewsss Dataaaa', res?.data);
         })
         .catch(err => {
           Alert.alert('Error', err?.response?.data?.message);
