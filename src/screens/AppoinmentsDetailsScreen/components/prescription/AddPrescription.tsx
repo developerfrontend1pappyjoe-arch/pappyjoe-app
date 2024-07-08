@@ -116,8 +116,9 @@ export const AddPrescriptionPopups = ({
         temp.notes = datas?.notes || '';
         temp.musage = usages || '';
         temp.internalnote = datas?.note || '';
-        temp.review_date = datas?.review_date || '';
-
+        temp.review_date = datas?.nextreview || '';
+        setStartDate(new Date(datas.date_time))
+        setReviewDate(new Date(datas?.nextreview))    
         setFormData(prev => ({...prev, ...temp}));
         setMedicineList(prev => {
           const newMedicineList = [...prev, tempMed];
@@ -529,7 +530,7 @@ export const AddPrescriptionPopups = ({
                   mode="outlined"
                   value={moment(reviewDate).format('DD-MM-YYYY')}
                   onPressIn={() => setReviewDateModal(true)}
-                  label="Review Date"
+                  label="Next review"
                 />
               </View>
               <DatePicker
