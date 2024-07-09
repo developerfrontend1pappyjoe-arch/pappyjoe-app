@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {View } from "react-native";
-import { Button, Card, Icon, Text,ActivityIndicator } from "react-native-paper";
+import { PermissionsAndroid, Platform, View } from "react-native";
+import {
+  Button,
+  Card,
+  Icon,
+  Text,
+  ActivityIndicator,
+} from "react-native-paper";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { colorList } from "styles/global.styles";
 import RNFS from "react-native-fs";
@@ -73,9 +79,52 @@ function FileContentCard({
       return Promise.reject(error);
     }
   };
-  const handleDownloadFiles = useCallback(() => {
-    setIsDownloadClicked(true);
-    downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+
+  const checkStoragePermission = async () => {
+    if (Platform.OS === "android") {
+      try {
+        const hasPermission = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+        );
+        return hasPermission;
+      } catch (error) {
+        Alert.alert("Error", "Permission check error");
+        return false;
+      }
+    }
+  };
+
+  const requestStoragePermission = async () => {
+    if (Platform.OS === "android") {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: "Storage Permission",
+            message: "PappyJoe needs access to your storage to save and upload files.",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          }
+        );
+
+        return PermissionsAndroid.RESULTS.GRANTED;
+      } catch (error) {
+        Alert.alert("Error", "Permission request error");
+        return false;
+      }
+    }
+  };
+
+  const handleDownloadFiles = useCallback(async () => {
+    if (await checkStoragePermission()) {
+      setIsDownloadClicked(true);
+      downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+    } else {
+      if (await requestStoragePermission()) {
+        downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+      }
+    }
   }, []);
 
   const handleDeleteFilesApi = async () => {
@@ -166,15 +215,14 @@ function FileContentCard({
   };
 
   const checkFileType = useCallback(async () => {
-    const fileName = fileData.file.split("/").pop()
+    const fileName = fileData.file.split("/").pop();
     const fileExtention: ExtentionTypes = fileName?.split(".").pop();
     const type = extensions[fileExtention];
-    const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${fileName}`
     if (type == allFileTypes.doc) {
       setFileOpenLoading(true);
       viewFile(fileData.file);
     } else {
-      handleShowFileViewer({ type, url:fileData.file});
+      handleShowFileViewer({ type, url: fileData.file });
     }
   }, []);
 
@@ -183,6 +231,20 @@ function FileContentCard({
     const ex = name?.split(".").pop();
     return extensions[ex];
   };
+
+ const deleteFromLocal =async ()=>{
+  const fileName = fileData.file.split("/").pop();
+  const sanitizedFileName = fileName?.replace(/\s/g, "");
+  const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`;
+ try{
+  await RNFS.unlink(downloadDest);
+  setIsAlreadyDownloaded(false)
+  Alert.alert('Success', 'File deleted successfully');
+ }catch(error){
+  Alert.alert('Error', 'Failed to delete file');
+ }
+     
+ }
 
   useEffect(() => {
     checkFileDownloaded();
@@ -209,7 +271,7 @@ function FileContentCard({
           {checkExtention(fileData.file) == allFileTypes.doc && (
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               {fileOpenLoading ? (
-                <View style={{flexDirection:"row",gap:5}}>
+                <View style={{ flexDirection: "row", gap: 5 }}>
                   <Text>Opening file</Text>
                   <ActivityIndicator size={20} />
                 </View>
@@ -228,7 +290,7 @@ function FileContentCard({
         </Card.Content>
         <Card.Actions style={{ gap: 10 }}>
           {downloadProgress > 0 && (
-            <Text>Downloading {downloadProgress} % </Text>
+            <Text> <Icon color={colorList.blue} size={20} source={"download"} /> {downloadProgress} % </Text>
           )}
           {!isAlreadyDownloaded && !isDownloadCicked && (
             <Button
@@ -246,11 +308,11 @@ function FileContentCard({
             </Button>
           )}
           {isAlreadyDownloaded && (
-            <Icon
-              size={30}
-              color={colorList.primary}
-              source="check-underline"
-            />
+             <Icon
+               size={25}
+               color={colorList.socondary}
+               source="check-underline"
+             />
           )}
           <Button
             compact

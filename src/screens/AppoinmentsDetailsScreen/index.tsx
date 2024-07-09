@@ -22,6 +22,7 @@ import {NavigationList} from '../../routes/NavigationList';
 import {MenuListPrescription} from './components/prescription/MenuListPrescription';
 import { getPatientService} from '../../services/getPatientList';
 import {useFocusEffect} from '@react-navigation/native';
+import { clearStoreData, storeData } from "utils/commonUtil";
 
 const MenuList = [
   {id: 1, name: 'Vital Signs'},
@@ -67,6 +68,10 @@ export const AppoinmentDetails = ({navigation, route}: any) => {
     if (patientId) {
       getPatientDetails(patientId);
     }
+    return ()=>{
+      clearStoreData("patientData")
+      setPatientDetails(null)
+    }
   }, [patientId]);
 
   useFocusEffect(
@@ -86,6 +91,7 @@ export const AppoinmentDetails = ({navigation, route}: any) => {
       setLoading(false);
       if (data?.status === 200) {
         setPatientDetails(data?.data[0]);
+        storeData("patientData",data?.data[0])
       } else {
         setPatientDetails(null);
       }

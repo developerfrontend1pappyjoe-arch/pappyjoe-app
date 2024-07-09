@@ -1,11 +1,13 @@
-import {memo, useState} from 'react';
-import {Alert} from 'react-native';
+import {memo, useEffect, useState} from 'react';
+import {Alert, Text} from 'react-native';
 import {Button, Menu, Divider} from 'react-native-paper';
 import {colorList} from '../../../../styles/global.styles';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import {CustomLoaderRound} from '../../../../components/CustomLoaderRound';
 import Icons from 'react-native-vector-icons/MaterialIcons'
+import { getStoreData } from 'utils/commonUtil';
+import extensions, { ExtentionTypes } from './fileExtentionTypes';
 
 interface ShareModalContentsTypes {
   open: boolean;
@@ -16,6 +18,7 @@ interface ShareModalContentsTypes {
 
 export const ShareModalContents = memo(
   ({open, data, closeMenu, openMenu}: ShareModalContentsTypes) => {
+    const [patientData,setPatientData] = useState<any>()
     const [isLoading, setLoading] = useState(false);
     const downloadFiles = async (url, fileName) => {
       try {
@@ -53,25 +56,35 @@ export const ShareModalContents = memo(
     const handleFileShare = async (url: string, shareType: string) => {
       try {
         setLoading(true);
-        const resultFilePath = await downloadFiles(url, url?.split('/').pop());
+        const fileName = url?.split('/').pop() || ""
+        const sanitizedFileName = fileName.replace(/\s/g, "");
+        const result = await RNFS.exists(
+          `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`
+        );
+        const resultFilePath = result ? `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}` : await downloadFiles(url, fileName);
+       console.log(patientData);
         const type = url?.split('/').pop()?.split('.').pop();
-        const mimeType =
-          type === 'pdf'
-            ? `${'application'}/${'pdf'}`
-            : type === 'jpeg'
-            ? `${'application'}/${'pdf'}`
-            : '';
+        const mimeType = `${extensions[type]}/${type}`
+        
+        // const mimeType =
+        //   type === 'pdf'
+        //     ? `${'application'}/${'pdf'}`
+        //     : type === 'jpeg'
+        //     ? `${'application'}/${'pdf'}`
+        //     : '';
+        
         const whatsAppoptions = {
           type: mimeType,
-          // message: 'Helloo',
+          // message: `Image ${url}`,
           url: `file://${resultFilePath}`,
           social: Share.Social.WHATSAPP,
+          whatsAppNumber:`${patientData.country_code}${patientData.mobile}`
         };
-
         const emailOptions = {
+          type: mimeType,
           title: 'Files',
           message: 'Files ',
-          email: data?.email,
+          email: patientData.email,
           social: Share.Social.EMAIL,
           subject: 'Files',
           url: `file://${resultFilePath}`,
@@ -81,18 +94,32 @@ export const ShareModalContents = memo(
         if (shareType == 'mail') {
           Share.shareSingle(emailOptions)
             .then(res => {
-              // console.log(res);
+              setLoading(false);
             })
             .catch(err => {
-              // err && console.log(err);
+              setLoading(false);
             });
-        } else await Share.shareSingle(whatsAppoptions);
+        } else{ 
+          await Share.shareSingle(whatsAppoptions);
+          setLoading(false);
+        }
       } catch (err) {
         console.error('err ===== ', err.message);
         Alert.alert('Warning', err.message || 'No Whatsapp Found');
       }
     };
 
+const getPatientData = async ()=>{
+  const data = await getStoreData("patientData")
+  setPatientData(data)
+}
+
+useEffect(()=>{
+  getPatientData()
+  return ()=>{
+    setPatientData(null)
+  }
+},[])
     return (
       <Menu
         visible={open}
@@ -115,7 +142,7 @@ export const ShareModalContents = memo(
           <>
             <Menu.Item
               onPress={() => handleFileShare(data?.file, 'mail')}
-              title="Email"
+              title={<Text>Email</Text>}
             />
             <Divider />
             <Menu.Item
