@@ -35,7 +35,7 @@ function FileContentCard({
   const [downloadProgress, seDownloadProgress] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [fileOpenLoading, setFileOpenLoading] = useState(false);
-  const downloadFile = async (url, fileName) => {
+  const downloadFile = async (url, fileName): Promise<boolean> => {
     try {
       const sanitizedFileName = fileName.replace(/\s/g, "");
       const isDirectoryExist = await RNFS.exists(
@@ -68,18 +68,19 @@ function FileContentCard({
             );
             seDownloadProgress(0);
             setIsAlreadyDownloaded(true);
-            resolve(downloadDest);
+            setIsDownloadClicked(false);
+            resolve(true);
           })
           .catch((err) => {
             setIsDownloadClicked(false);
             console.log("Download error:", err);
-            reject(err);
+            reject(false);
           });
       });
     } catch (error) {
       console.error("Error downloading file:", error);
       setIsDownloadClicked(false);
-      return Promise.reject(error);
+      return Promise.reject(false);
     }
   };
 
@@ -120,16 +121,20 @@ function FileContentCard({
     }
   };
 
-  const handleDownloadFiles = useCallback(async () => {
+  const startDownload = async () => {
     if (await checkStoragePermission()) {
-      setIsDownloadClicked(true);
-      downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+      await downloadFile(fileData?.file, fileData?.file?.split("/").pop());
     } else {
       if (await requestStoragePermission()) {
-        downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+        await downloadFile(fileData?.file, fileData?.file?.split("/").pop());
       }
     }
-  }, []);
+  };
+
+  const handleDownloadFiles = () => {
+    setIsDownloadClicked(true);
+    startDownload();
+  };
 
   const handleDeleteFilesApi = async () => {
     try {
@@ -142,7 +147,6 @@ function FileContentCard({
       });
       if (result.status == 200) {
         Alert.alert("File deleted", result.data.message);
-        setLoading(false);
         handleDelete();
       }
     } catch (error) {
@@ -155,15 +159,15 @@ function FileContentCard({
     return url.split("/").pop();
   };
 
-  const checkFileDownloaded = useCallback(async () => {
+  const checkFileDownloaded = async () => {
     const fileName = fileData?.file?.split("/").pop();
     const sanitizedFileName = fileName.replace(/\s/g, "");
-    console.log(sanitizedFileName);
     const result = await RNFS.exists(
       `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`
     );
+    setIsDownloadClicked(false);
     setIsAlreadyDownloaded(result);
-  }, [isAlreadyDownloaded]);
+  };
 
   const clearCache = async () => {
     try {
@@ -221,7 +225,7 @@ function FileContentCard({
     } else {
       handleShowFileViewer({ type, url: fileData.file });
     }
-  }, []);
+  }, [fileData]);
 
   const checkExtention = (url: string) => {
     const name = url.split("/").pop();
@@ -276,7 +280,7 @@ function FileContentCard({
       setIsAlreadyDownloaded(false);
       setFileOpenLoading(false);
     };
-  }, []);
+  }, [fileData]);
   return (
     <>
       <Card
@@ -324,12 +328,12 @@ function FileContentCard({
               {downloadProgress} %{" "}
             </Text>
           )}
-          {!isAlreadyDownloaded && !isDownloadCicked && (
+          {!isAlreadyDownloaded && !isDownloadCicked && !isLoading && (
             <Button
               compact
               mode="elevated"
               loading={isDownloadCicked}
-              disabled={isDownloadCicked}
+              disabled={isDownloadCicked || isLoading}
               contentStyle={{
                 backgroundColor: colorList.primary,
               }}
@@ -364,13 +368,11 @@ function FileContentCard({
             anchor={
               <Button
                 mode="elevated"
-                disabled={isLoading}
+                disabled={isLoading || isDownloadCicked}
                 loading={isLoading}
                 contentStyle={{ backgroundColor: colorList.red }}
                 labelStyle={{ color: colorList.white }}
-                onPress={() => {
-                  deleteFile();
-                }}
+                onPress={deleteFile}
               >
                 <Icons name="delete" size={20} />
               </Button>
@@ -384,16 +386,18 @@ function FileContentCard({
             <Divider />
             <Menu.Item onPress={deleteFromLocal} title="Delete from local" />
           </Menu>
-          <ShareModalContents
-            open={openedShareListId === keyId}
-            openMenu={handleOpenShareModal}
-            closeMenu={handleCloseShareModal}
-            data={fileData}
-          />
+          {!isLoading && (
+            <ShareModalContents
+              open={openedShareListId === keyId}
+              openMenu={handleOpenShareModal}
+              closeMenu={handleCloseShareModal}
+              data={fileData}
+            />
+          )}
         </Card.Actions>
       </Card>
     </>
   );
 }
 
-export default FileContentCard;
+export default React.memo(FileContentCard);
