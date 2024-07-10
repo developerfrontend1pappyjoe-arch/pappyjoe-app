@@ -7,8 +7,15 @@ import React, {
 } from "react";
 import { API_URL } from "../../../../utils/constants";
 import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
-import { Dimensions, ScrollView, View, Alert, StyleSheet } from "react-native";
-import {Divider, Surface, Text } from "react-native-paper";
+import {
+  Dimensions,
+  ScrollView,
+  View,
+  Alert,
+  StyleSheet,
+  RefreshControl,
+} from "react-native";
+import { Divider, Surface, Text } from "react-native-paper";
 import { NoDataAvailable } from "../../../../components/NoDataAvailable";
 import RNFS from "react-native-fs";
 import { CustomModal } from "../../../../components/CustomModal";
@@ -68,24 +75,29 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
       setFileList(null);
     }
   };
-const handleDelete = ()=>{
-  getFileListApi(); 
-}
+  const handleDelete = () => {
+    getFileListApi();
+  };
 
   const allFiles = useMemo(() => {
     if (fileList && Object.entries(fileList)?.length) {
-      return  Object.entries(fileList) || [];
-      
+      const data = Object.entries(fileList) || [];
+      console.log(data);
+      return Object.entries(fileList) || [];
     }
     return [];
   }, [fileList]);
 
   const handleShowFileViewer = useCallback(
-   async (params: ShowFileViewerType) => {
-    setShowFileViewer(params);
+    async (params: ShowFileViewerType) => {
+      setShowFileViewer(params);
     },
     [showFileViewer]
   );
+
+  const onRefresh = useCallback(() => {
+    getFileListApi();
+  }, []);
 
   useEffect(() => {
     getFileListApi();
@@ -96,11 +108,11 @@ const handleDelete = ()=>{
 
   return (
     <View style={{ flex: 1, borderRadius: 10 }}>
-      {isLoading ? (
-        <CustomLoaderRound />
-      ) : (
-        <>
+            <>
           <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+            }
             style={{
               maxHeight: Dimensions.get("screen").height * 0.55,
             }}
@@ -130,7 +142,7 @@ const handleDelete = ()=>{
                   {val?.map((item: any, index: number) => {
                     return (
                       <FileContentCard
-                      handleDelete={handleDelete}
+                        handleDelete={handleDelete}
                         key={`${ids}${index}`}
                         keyId={`${ids}${index}`}
                         fileData={item}
@@ -141,7 +153,7 @@ const handleDelete = ()=>{
                 </Surface>
               );
             })}
-            {allFiles.length == 0 && <NoDataAvailable />}
+            {(allFiles.length == 0 && !isLoading) && <NoDataAvailable />}
             <CustomImageViewer
               visible={showFileViewer?.type == allFileTypes.image}
               close={() => setShowFileViewer({ type: null, url: "" })}
@@ -160,7 +172,7 @@ const handleDelete = ()=>{
                   url={showFileViewer.url}
                 />
               )}
-            </CustomModal> 
+            </CustomModal>
           </ScrollView>
 
           <View
@@ -178,7 +190,6 @@ const handleDelete = ()=>{
             />
           </CustomModal>
         </>
-      )}
     </View>
   );
 };
