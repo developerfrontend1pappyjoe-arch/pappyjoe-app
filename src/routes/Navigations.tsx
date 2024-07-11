@@ -1,4 +1,4 @@
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React, {useEffect} from 'react';
@@ -24,7 +24,10 @@ import {AddPatients} from '../screens/AddPatientScreen';
 import {AddNewAppoinments} from '../screens/AddAppoinments';
 
 import {ProfileProfile} from '../screens/PatientProfileEdit';
-
+import UpdateScreen from 'components/UpdateScreen';
+import SpInAppUpdates from "sp-react-native-in-app-updates";
+import { Platform } from 'react-native';
+const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -64,6 +67,26 @@ const BottomHomeNavigation = () => {
 };
 
 const AuthCheck = ({navigation}: any) => {
+  const checkUpdate = () => {
+    try {
+      inAppUpdates
+        .checkNeedsUpdate({ curVersion: "1.4" })
+        .then((result) => {
+          navigation.navigate(NavigationList.update);
+          if (result.shouldUpdate) {
+            if (Platform.OS === "android") {
+              navigation.navigate(NavigationList.update);
+            }
+          }
+        })
+        .catch((e) => {
+          navigation.navigate(NavigationList.update);
+          console.log("Error in update check");
+        });
+    } catch (error) {
+      console.log("Error in update check");
+    }
+  };
   const dispatch = useDispatch();
   const isLoggedIn = useSelector<any>(state => state.isLoggedIn);
   const token = useSelector<any>(
@@ -76,6 +99,7 @@ const AuthCheck = ({navigation}: any) => {
     } else {
       dispatch(handleLoggedInStatus(false));
     }
+    checkUpdate()
   }, [dispatch]);
 
   useEffect(() => {
@@ -113,6 +137,7 @@ const AuthCheck = ({navigation}: any) => {
 };
 
 export const NavigationContainers = () => {
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={NavigationList.auth}>
@@ -169,6 +194,11 @@ export const NavigationContainers = () => {
         <Stack.Screen
           name={NavigationList.patientProfile}
           component={ProfileProfile}
+          options={{headerShown: false, animation: 'slide_from_right'}}
+        />
+        <Stack.Screen
+          name={NavigationList.update}
+          component={UpdateScreen}
           options={{headerShown: false, animation: 'slide_from_right'}}
         />
       </Stack.Navigator>
