@@ -1,6 +1,5 @@
 import React from "react";
 import { Alert, Image, Linking, TouchableOpacity, View } from "react-native";
-import { CustomHeaderDesc } from "./CustomHeaderDesc";
 import { colorList } from "styles/global.styles";
 import { Button, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -75,17 +74,30 @@ function UpdateScreen() {
             New update
           </Text>
 
+          <Text
+            style={{
+              fontSize: 12,
+              lineHeight: 18,
+              fontWeight: "400",
+              color: colorList.Grey1,
+              textAlign: "center",
+              paddingHorizontal: 23,
+            }}
+          >
+            PappyJoe new update is available on the Play Store. Update now to
+            enjoy the latest features and performance improvements.
+          </Text>
           <Button
             icon={"update"}
             onPress={openPlayStore}
             contentStyle={{
               backgroundColor: colorList.socondary,
-              flexDirection: 'row-reverse'
+              flexDirection: "row-reverse",
             }}
             labelStyle={{ color: colorList.white }}
             mode="elevated"
           >
-            Update
+            Update now
           </Button>
         </View>
         <TouchableOpacity
