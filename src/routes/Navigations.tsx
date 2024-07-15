@@ -82,10 +82,10 @@ const AuthCheck = ({ navigation }: any) => {
           }
         })
         .catch((e) => {
-          console.log("Error in update check 1", e);
+          console.log("Error in update check 1");
         });
     } catch (error) {
-      console.log("Error in update check 2", error);
+      console.log("Error in update check 2");
     }
   };
 

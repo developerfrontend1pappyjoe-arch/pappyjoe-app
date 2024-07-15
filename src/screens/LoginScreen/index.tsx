@@ -33,7 +33,7 @@ import {CustomLoaderRound} from '@components/CustomLoaderRound';
 import {clearStoreData, getStoreData, storeData} from '../../utils/commonUtil';
 import {Button} from 'react-native-paper';
 
-const LoginScreen = ({navigation}: any) => {
+const LoginScreen = ({navigation,route:{params}}: any) => {
   const toast = useToast();
   const dispatch = useDispatch();
   const saveLoginDataToStore = (data: any) => dispatch(addLoginDetails(data));
@@ -66,9 +66,6 @@ const LoginScreen = ({navigation}: any) => {
   });
   const [errors, setErrors] = useState({username: '', password: ''});
 
-  useEffect(() => {
-    getRememberMeData();
-  }, []);
 
   const getRememberMeData = async () => {
     const result = await getStoreData('loginData');
@@ -121,6 +118,22 @@ const handleRememberPassword = async ()=>{
        setIsRememberMe(true)
     }
 }
+
+useEffect(() => {
+  getRememberMeData();
+  console.log(params);
+}, []);
+
+useEffect(() => {
+  console.log("params---------------------------->",params);
+  if(params?.data?.email && params?.data?.password){
+     const {email,password} = params.data
+     setLoginData({
+      username:email,
+      password
+     })
+  }
+}, [params]);
 
   return (
     <SafeAreaView

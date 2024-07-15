@@ -4,6 +4,7 @@ import {CustomHeaderDesc} from '../../components/CustomHeaderDesc';
 import {CustomButton} from '../../components/CustomButton';
 import {NavigationList} from '../../routes/NavigationList';
 import {colorList} from '../../styles/global.styles';
+import React, { useEffect } from 'react';
 
 const OTPSuccessHeaderImage = require('../../assets/OTPSuccessScreen/OTPSuccessImageHeader.png');
 
@@ -18,7 +19,9 @@ export const OTPSuccesScreen = ({
   // const resentEmail = () => {
   //   return console.log('Resend');
   // };
-
+useEffect(()=>{
+  console.log("data-------------------------->",data);
+},[data])
   return (
     <View style={styles.container}>
       <View style={styles.headerIamgeContainer}>
@@ -40,9 +43,9 @@ export const OTPSuccesScreen = ({
         </View>
         <View style={styles.btnSession}>
           <CustomButton
-            btnName="Take me Home"
+            btnName="Login to continue"
             bgColor={colorList.socondary}
-            navigate={() => navigation.navigate(NavigationList.home)}
+            navigate={() => navigation.navigate(NavigationList.login,{data})}
           />
         </View>
       </View>
