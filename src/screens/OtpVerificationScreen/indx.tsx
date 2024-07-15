@@ -1,18 +1,23 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { CustomButton } from "../../components/CustomButton";
 import { NavigationList } from "../../routes/NavigationList";
 import { styles } from "./otpVerification.styles";
 import { CustomHeaderDesc } from "../../components/CustomHeaderDesc";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { API_URL } from "../../utils/constants";
 import { useToast } from "react-native-toast-notifications";
 import { ToasterTypes } from "../../styles/global.styles";
 import { CustomLoaderRound } from "../../components/CustomLoaderRound";
 import { axiosInstance as axios } from "../../config/axios.config.custom";
-import SmsRetriever from "react-native-sms-retriever";
+
 const OTPVerificationHeaderImage = require("../../assets/OTPVverificationScreen/OTPVerificationImage.png");
 export const OTPVerificationScreen = ({
   navigation,
@@ -79,31 +84,6 @@ export const OTPVerificationScreen = ({
     return "";
   };
 
-  const smsListener = async () => {
-    try {
-      const registered = await SmsRetriever.startSmsRetriever();
-      console.log(registered);
-      if (registered) {
-        SmsRetriever.addSmsListener((event) => {
-          if (event.message) {
-            const filteredOtp = extractOtpFromMessage(event.message);
-            if ((filteredOtp as string).length == 7) {
-              setOtp(filteredOtp as string);
-            }
-          }
-        });
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error));
-    }
-  };
-
-  useEffect(() => {
-    smsListener();
-    return () => {
-      SmsRetriever.removeSmsListener();
-    };
-  }, []);
 
   return (
     <>

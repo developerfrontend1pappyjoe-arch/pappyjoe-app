@@ -1,7 +1,8 @@
-import React, {useState, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Dropdown} from 'react-native-element-dropdown';
-import {Chip, Divider, Text} from 'react-native-paper';
+import React, { useState, useMemo } from "react";
+import { StyleSheet, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import { Chip, Divider, List, Text, TextInput } from "react-native-paper";
+import { colorList } from "styles/global.styles";
 
 type SelectorType = {
   readonly options: any[];
@@ -28,8 +29,8 @@ function CustomMultiselect({
   type,
 }: SelectorType) {
   const [isFocus, setIsFocus] = useState(false);
-  const displayText = defaultValue != '' ? defaultValue : label;
-  const [text, setText] = useState('');
+  const displayText = defaultValue != "" ? defaultValue : label;
+  const [text, setText] = useState("");
 
   // console.log('selected ====> @@@@ ', selected);
 
@@ -52,18 +53,41 @@ function CustomMultiselect({
 
   const allOptions = useMemo(() => {
     if (options.length == 0) {
-      return [{[labelKey]: text, [valueKey]: text}];
+      return text == "" ? [] : [{ [labelKey]: text, [valueKey]: text }];
     } else {
       return options;
     }
   }, [options, text]);
+
+  const renderDropdownList = (item: any, selected?: boolean) => {
+    return (
+      <>
+        <List.Item
+          title={item[labelKey]}
+          style={(selected && text != "") ? {backgroundColor:colorList.Green} : null}
+          // description="Item description"
+          right={(props) => (
+            <List.Icon {...props} color={colorList.socondary} icon="plus" />
+          )}
+        />
+        <Divider />
+      </>
+    );
+  };
+
+const handleClear = ()=>{
+  setText("")
+  if (handleSearch) {
+    handleSearch("");
+  }
+}
 
   return (
     <View style={styles.wrapper}>
       <Text variant="titleMedium" style={styles.labelHead}>
         {label}
       </Text>
-      <Divider style={{marginVertical: 5}} />
+      <Divider style={{ marginVertical: 5 }} />
       {selected?.length > 0 && (
         <View style={styles.chipContainer}>
           {selected.map((item: any, index: number) => (
@@ -75,25 +99,37 @@ function CustomMultiselect({
       )}
 
       <Dropdown
-        containerStyle={{backgroundColor: 'white'}}
-        activeColor={'white'}
-        style={[styles.dropdown, isFocus && {borderColor: '#1680C0'}]}
+        containerStyle={styles.containerStyle}
+        activeColor={"white"}
+        style={[styles.dropdown, isFocus && { borderColor: "#1680C0" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         data={allOptions || []}
         search={true}
-        onChangeText={onSearch}
-        maxHeight={200}
+        // onChangeText={onSearch}
+        maxHeight={300}
         labelField={labelKey}
         valueField={valueKey}
-        placeholder={!isFocus ? displayText : loading ? 'searching....' : '...'}
+        placeholder={!isFocus ? displayText : loading ? "searching...." : "..."}
         searchPlaceholder="Search..."
         value={displayText || text}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={onChange}
+        renderItem={renderDropdownList}
+        renderInputSearch={() => (
+          <TextInput
+            style={{ height: 45,marginBottom:5}}
+            label="Search"
+            mode="outlined"
+            value={text}
+            onChangeText={onSearch}
+            left={<TextInput.Icon style={{marginTop:10}} size={25} icon={"magnify"}/>}
+            right={<TextInput.Icon style={{marginTop:13}} onPress={handleClear} icon="close" />}
+          />
+        )}
       />
     </View>
   );
@@ -110,31 +146,38 @@ const styles = StyleSheet.create({
   },
   chipContainer: {
     marginVertical: 10,
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
     gap: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 5,
   },
+  containerStyle: {
+    backgroundColor: colorList.white,
+    marginTop:6,
+    borderRadius:8,
+    padding:5
+  },
   dropdown: {
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 8,
     // paddingVertical: 1,
-    width: '100%',
+    width: "100%",
     flex: 1,
+    height:45
   },
   icon: {
     marginRight: 5,
   },
   label: {
-    position: 'absolute',
+    position: "absolute",
     left: 22,
     top: 8,
     zIndex: 999,
