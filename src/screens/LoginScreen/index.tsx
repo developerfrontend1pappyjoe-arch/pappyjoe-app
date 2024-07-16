@@ -127,10 +127,10 @@ useEffect(() => {
 useEffect(() => {
   console.log("params---------------------------->",params);
   if(params?.data?.email && params?.data?.password){
-     const {email,password} = params.data
+     const {email} = params.data
      setLoginData({
+      ...loginData,
       username:email,
-      password
      })
   }
 }, [params]);

@@ -45,6 +45,12 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
+  desc3: {
+    ...globalStyles.text14,
+    color: colorList.socondary,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
   headerSection: {
     flex: 2,
   },

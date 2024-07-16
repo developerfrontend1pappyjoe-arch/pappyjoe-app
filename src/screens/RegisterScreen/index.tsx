@@ -306,7 +306,7 @@ requestSmsPermission()
                   </View>
                 </View>
 
-                <View style={styles.inputMainWrapper}>
+                {/* <View style={styles.inputMainWrapper}>
                   <View
                     style={[
                       styles.inputWrapper,
@@ -335,7 +335,7 @@ requestSmsPermission()
                   {errors?.password && (
                     <Errormessage message={errors.password} />
                   )}
-                </View>
+                </View> */}
               </View>
 
               <CustomButton

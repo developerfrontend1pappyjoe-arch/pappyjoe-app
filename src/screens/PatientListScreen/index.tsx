@@ -131,7 +131,6 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
     const getPatientListApi = async () => {
       try {
         setLoading(true);
-
         const {data} = await getPatientListService(
           searchParams,
           `start=${page === 1 ? 0 : page * 10 - 11}&limit=10`,
@@ -146,12 +145,10 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
               searchParams !== '' ? data?.data : [...patiantList, ...data.data];
             setPatientList(newData);
           }
-
-          setLoading(false);
           setRefreshing(false);
-
           // console.log('searchParams + page', searchParams, page);
         }
+        setLoading(false);
       } catch (err) {
         setLoading(false);
         // console.log('Errr in getPatientListApi', err);
@@ -160,6 +157,7 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
 
     useEffect(() => {
       getPatientListApi();
+      console.log(isLoading);
     }, [page]);
 
     // console.log('patiantList ==> ', patiantList);
@@ -181,9 +179,9 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
                   paddingVertical: 5,
                   height: Dimensions.get('screen').height * 0.7,
                 }}>
-                {isLoading && page === 1 ? (
+                {(isLoading && page === 1)? (
                   <CustomContentLoader listSize={20} />
-                ) : patiantList?.length ? (
+                ) : patiantList?.length > 0 ? (
                   <FlatList
                     data={patiantList}
                     keyExtractor={(item, index) => index.toString()}
