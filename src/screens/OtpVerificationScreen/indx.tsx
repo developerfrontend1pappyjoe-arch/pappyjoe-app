@@ -10,14 +10,13 @@ import { NavigationList } from "../../routes/NavigationList";
 import { styles } from "./otpVerification.styles";
 import { CustomHeaderDesc } from "../../components/CustomHeaderDesc";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { API_URL } from "../../utils/constants";
 import { useToast } from "react-native-toast-notifications";
 import { ToasterTypes } from "../../styles/global.styles";
 import { CustomLoaderRound } from "../../components/CustomLoaderRound";
 import { axiosInstance as axios } from "../../config/axios.config.custom";
-
 const OTPVerificationHeaderImage = require("../../assets/OTPVverificationScreen/OTPVerificationImage.png");
 export const OTPVerificationScreen = ({
   navigation,
@@ -34,7 +33,6 @@ export const OTPVerificationScreen = ({
         "Content-Type": "multipart/form-data",
       },
     });
-
     return res;
   };
 
@@ -54,6 +52,7 @@ export const OTPVerificationScreen = ({
       toast.show(err.response.data.message, {
         type: ToasterTypes.error,
       });
+      setOtp("")
     },
   });
 
@@ -71,9 +70,9 @@ export const OTPVerificationScreen = ({
     mutate(formData);
   };
 
-  const handleChangeOtp = (code: string) => {
-    setOtp(code);
-  };
+  const handleChangeOtp = useCallback((code: string) => {
+      setOtp(code);
+    },[otp,data]);
 
   const extractOtpFromMessage = (message: string) => {
     const otpRegex = /\d+/;
@@ -96,9 +95,9 @@ export const OTPVerificationScreen = ({
           desc={`Enter the 7 digit code we've sent to your mobile +${data?.country} ${data?.phoneNumber} `}
         />
 
-        <TouchableOpacity style={styles.resendBtnContainer}>
+        {/* <TouchableOpacity style={styles.resendBtnContainer}>
           <Text style={styles.resendBtn}>Resend</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.otpInputContainer}>
           <OTPInputView
