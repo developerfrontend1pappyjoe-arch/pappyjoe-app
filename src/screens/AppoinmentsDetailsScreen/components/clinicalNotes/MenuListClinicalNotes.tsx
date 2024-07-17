@@ -250,6 +250,9 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
                                   style={{
                                     flexDirection: 'row',
                                     marginVertical: 6,
+                                    borderBottomWidth:.5,
+                                    borderColor:colorList.Grey4,
+                                    paddingBottom:3
                                   }}>
                                   <View
                                     style={{
@@ -275,7 +278,8 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
                                     style={{
                                       flex: 1.9,
                                       justifyContent: 'start',
-                                      flexDirection:"row"
+                                      flexDirection:"row",
+                                      flexWrap:"wrap"
                                     }}>
                                     {v2?.map((v2List, index5) => (
                                       <View

@@ -19,9 +19,6 @@ export const OTPSuccesScreen = ({
   // const resentEmail = () => {
   //   return console.log('Resend');
   // };
-useEffect(()=>{
-  console.log("data-------------------------->",data);
-},[data])
   return (
     <View style={styles.container}>
       <View style={styles.headerIamgeContainer}>

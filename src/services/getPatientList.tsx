@@ -17,6 +17,5 @@ export const getPatientService = async (params: getPatientsListTypes) => {
   // console.log('Url ===> ', Url);
 
   const res = await axios.get(Url);
-
   return res;
 };
