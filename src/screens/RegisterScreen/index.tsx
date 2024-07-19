@@ -9,7 +9,6 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
-  PermissionsAndroid,
 } from "react-native";
 
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -44,30 +43,7 @@ import { Button } from "react-native-paper";
 
 export const RegisterScreen = ({ navigation }: any) => {
   const toast = useToast();
-  const requestSmsPermission = async () => {
-    if (Platform.OS === "android") {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_SMS,
-          {
-            title: "SMS Permission",
-            message:
-              "Pappyjoe needs access to your SMS messages to auto-detect OTP.",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK",
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("SMS permission granted");
-        } else {
-          console.log("SMS permission denied");
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  };
+  
   const getCountryListApi = () => {
     getCountriesList()
       .then((res) => {
@@ -81,7 +57,6 @@ export const RegisterScreen = ({ navigation }: any) => {
   };
   useEffect(() => {
     getCountryListApi();
-    requestSmsPermission();
   }, []);
 
   const [isSecureText, setIsSecureText] = useState(true);
@@ -181,9 +156,6 @@ export const RegisterScreen = ({ navigation }: any) => {
     }
   };
 
-  useEffect(() => {
-    requestSmsPermission();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -74,14 +74,14 @@ export const OTPVerificationScreen = ({
       setOtp(code);
     },[otp,data]);
 
-  const extractOtpFromMessage = (message: string) => {
-    const otpRegex = /\d+/;
-    const match = message.match(otpRegex);
-    if (match) {
-      return match[0];
-    }
-    return "";
-  };
+  // const extractOtpFromMessage = (message: string) => {
+  //   const otpRegex = /\d+/;
+  //   const match = message.match(otpRegex);
+  //   if (match) {
+  //     return match[0];
+  //   }
+  //   return "";
+  // };
 
 
   return (
