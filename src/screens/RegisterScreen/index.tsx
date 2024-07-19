@@ -1,4 +1,4 @@
-import React,{useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,19 +10,19 @@ import {
   SafeAreaView,
   Platform,
   PermissionsAndroid,
-} from 'react-native';
+} from "react-native";
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import {Dropdown, SelectCountry} from 'react-native-element-dropdown';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { Dropdown, SelectCountry } from "react-native-element-dropdown";
 
-import {styles} from './register.styles';
+import { styles } from "./register.styles";
 import {
   ToasterTypes,
   colorList,
   globalStyles,
-} from '../../styles/global.styles';
-import {NavigationList} from '../../routes/NavigationList';
-import {CustomButton} from '../../components/CustomButton';
+} from "../../styles/global.styles";
+import { NavigationList } from "../../routes/NavigationList";
+import { CustomButton } from "../../components/CustomButton";
 import {
   CallIcon,
   EyeOpenIcon,
@@ -31,35 +31,37 @@ import {
   PasswordIcon,
   UkFlag,
   UserIcon,
-} from '../../assets';
-import {Errormessage} from '../../components/CustomErrorHandler';
-import {isValidEmail, isValidPhoneNumber} from '../../utils/commonUtils';
-import {useMutation} from '@tanstack/react-query';
-import {saveRegisterDetails} from './services/Register.services';
-import {useToast} from 'react-native-toast-notifications';
-import {CustomLoader} from '../../components/CustomLoader';
-import {getCountriesList} from '../../services/getCountriesList';
+} from "../../assets";
+import { Errormessage } from "../../components/CustomErrorHandler";
+import { isValidEmail, isValidPhoneNumber } from "../../utils/commonUtils";
+import { useMutation } from "@tanstack/react-query";
+import { saveRegisterDetails } from "./services/Register.services";
+import { useToast } from "react-native-toast-notifications";
+import { CustomLoader } from "../../components/CustomLoader";
+import { getCountriesList } from "../../services/getCountriesList";
+import { Button } from "react-native-paper";
 // import { Button } from 'react-native-paper';
 
-export const RegisterScreen = ({navigation}: any) => {
+export const RegisterScreen = ({ navigation }: any) => {
   const toast = useToast();
   const requestSmsPermission = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       try {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.READ_SMS,
           {
-            title: 'SMS Permission',
-            message: 'Pappyjoe needs access to your SMS messages to auto-detect OTP.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
+            title: "SMS Permission",
+            message:
+              "Pappyjoe needs access to your SMS messages to auto-detect OTP.",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
           }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('SMS permission granted');
+          console.log("SMS permission granted");
         } else {
-          console.log('SMS permission denied');
+          console.log("SMS permission denied");
         }
       } catch (err) {
         console.warn(err);
@@ -68,42 +70,42 @@ export const RegisterScreen = ({navigation}: any) => {
   };
   const getCountryListApi = () => {
     getCountriesList()
-      .then(res => {
+      .then((res) => {
         // console.log('Res Country List', res?.data);
         setCountriesList(res?.data?.country);
       })
-      .catch(err => {
+      .catch((err) => {
         // console.log('Errrrr', err);
         setCountriesList([]);
       });
   };
   useEffect(() => {
     getCountryListApi();
-    requestSmsPermission()
+    requestSmsPermission();
   }, []);
 
   const [isSecureText, setIsSecureText] = useState(true);
   const [countriesList, setCountriesList] = useState([]);
   const [registerData, setRegisterData] = useState({
-    name: '',
-    email: '',
-    country: '91',
-    phoneNumber: '',
-    password: '',
+    name: "",
+    email: "",
+    country: "91",
+    phoneNumber: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    country: '',
-    phoneNumber: '',
-    password: '',
+    name: "",
+    email: "",
+    country: "",
+    phoneNumber: "",
+    password: "",
   });
 
-  const {mutate, isLoading, error} = useMutation({
+  const { mutate, isLoading, error } = useMutation({
     mutationFn: saveRegisterDetails,
     onSuccess: (res: any) => {
-      toast.show('Successfull...!!!', {
+      toast.show("Successfull...!!!", {
         type: ToasterTypes.success,
       });
 
@@ -124,56 +126,64 @@ export const RegisterScreen = ({navigation}: any) => {
   const handleRegister = () => {
     let isValid = true;
 
-    if (registerData?.name?.trim() === '') {
-      setErrors(prev => ({...prev, name: 'Name is required'}));
+    if (registerData?.name?.trim() === "") {
+      // console.log("in name");
+      setErrors((prev) => ({ ...prev, name: "Name is required" }));
       isValid = false;
     }
 
-    if (registerData?.email?.trim() === '') {
-      setErrors(prev => ({...prev, email: 'Email is required'}));
+    if (registerData?.email?.trim() === "") {
+      // console.log("in email");
+      setErrors((prev) => ({ ...prev, email: "Email is required" }));
       isValid = false;
     } else if (!isValidEmail(registerData?.email)) {
-      setErrors(prev => ({...prev, email: 'Invalid email format'}));
+      // console.log("in email is valid");
+      setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
       isValid = false;
     }
 
     if (!registerData?.country) {
-      setErrors(prev => ({...prev, country: '* required'}));
+      // console.log("in country");
+      setErrors((prev) => ({ ...prev, country: "* required" }));
       isValid = false;
     }
 
-    if (registerData?.phoneNumber.trim() === '') {
-      setErrors(prev => ({...prev, phoneNumber: 'Phone Number is required'}));
-      isValid = false;
-    } else if (!isValidPhoneNumber(registerData?.phoneNumber)) {
-      setErrors(prev => ({
+    if (registerData?.phoneNumber.trim() === "") {
+      // console.log("in phone number");
+      setErrors((prev) => ({
         ...prev,
-        phoneNumber: 'Invalid phone number format',
+        phoneNumber: "Phone Number is required",
+      }));
+      isValid = false;
+    } else if (!isValidPhoneNumber(registerData?.phoneNumber)){
+      // console.log("in phone number is valid");
+      setErrors((prev) => ({
+        ...prev,
+        phoneNumber: "Invalid phone number format",
       }));
       isValid = false;
     }
 
-    if (registerData?.password?.trim() === '') {
-      setErrors(prev => ({...prev, password: 'Password is required'}));
-      isValid = false;
-    }
+    // if (registerData?.password?.trim() === "") {
+    //   console.log("in password");
+    //   setErrors((prev) => ({ ...prev, password: "Password is required" }));
+    //   isValid = false;
+    // }
+
     if (isValid) {
       const formData = new FormData();
-      formData.append('name', registerData?.name);
-      formData.append('email', registerData?.email);
-      formData.append('country_code', registerData?.country);
-      formData.append('mobile', registerData?.phoneNumber);
-
+      formData.append("name", registerData?.name);
+      formData.append("email", registerData?.email);
+      formData.append("country_code", registerData?.country);
+      formData.append("mobile", registerData?.phoneNumber);
       // console.log('Payloads', formData);
-      // console.log('Payloads registerData', registerData);
-
       mutate(formData);
     }
   };
 
-useEffect(()=>{
-requestSmsPermission()
-},[])
+  useEffect(() => {
+    requestSmsPermission();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -181,10 +191,11 @@ requestSmsPermission()
         <CustomLoader />
       ) : (
         <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <ScrollView style={{flex: 1}}>
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+        >
+          <ScrollView style={{ flex: 1 }}>
             <View style={styles.imageContainer}>
               <Image source={LogoImage} style={styles.bgImage} />
               <Text style={styles.headerImageHead}>Get Started</Text>
@@ -198,8 +209,9 @@ requestSmsPermission()
                   <View
                     style={[
                       styles.inputWrapper,
-                      {marginBottom: !errors?.name ? 12 : 0},
-                    ]}>
+                      { marginBottom: !errors?.name ? 12 : 0 },
+                    ]}
+                  >
                     <View style={styles.inputIconWrapper}>
                       <Image source={UserIcon} style={styles.inputIcon} />
                     </View>
@@ -208,9 +220,9 @@ requestSmsPermission()
                       placeholder="Your Name"
                       placeholderTextColor={colorList.Grey1}
                       value={registerData?.name}
-                      onChangeText={text => {
-                        setRegisterData(prev => ({...prev, name: text}));
-                        setErrors({...errors, name: ''});
+                      onChangeText={(text) => {
+                        setRegisterData((prev) => ({ ...prev, name: text }));
+                        setErrors({ ...errors, name: "" });
                       }}
                     />
                   </View>
@@ -221,8 +233,9 @@ requestSmsPermission()
                   <View
                     style={[
                       styles.inputWrapper,
-                      {marginBottom: !errors?.email ? 12 : 0},
-                    ]}>
+                      { marginBottom: !errors?.email ? 12 : 0 },
+                    ]}
+                  >
                     <View style={styles.inputIconWrapper}>
                       <Image source={MailGreyIcon} style={styles.inputIcon} />
                     </View>
@@ -231,9 +244,9 @@ requestSmsPermission()
                       placeholder="Email Address"
                       placeholderTextColor={colorList.Grey1}
                       value={registerData?.email}
-                      onChangeText={text => {
-                        setRegisterData(prev => ({...prev, email: text}));
-                        setErrors({...errors, email: ''});
+                      onChangeText={(text) => {
+                        setRegisterData((prev) => ({ ...prev, email: text }));
+                        setErrors({ ...errors, email: "" });
                       }}
                       keyboardType="email-address"
                     />
@@ -242,31 +255,37 @@ requestSmsPermission()
                 </View>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                     flex: 1,
-                  }}>
+                  }}
+                >
                   <View
                     style={[
                       styles.inputMainWrapper,
-                      {flex: 3, marginRight: 10},
-                    ]}>
+                      { flex: 3, marginRight: 10 },
+                    ]}
+                  >
                     <View
                       style={[
                         styles.inputWrapper,
-                        {marginBottom: !errors?.phoneNumber ? 12 : 0},
-                      ]}>
+                        { marginBottom: !errors?.phoneNumber ? 12 : 0 },
+                      ]}
+                    >
                       <View style={styles.inputIconWrapper}>
                         <Image source={CallIcon} style={styles.inputIcon} />
                       </View>
                       <TextInput
-                        style={[styles.inputs, {paddingRight: 15, width: 50}]}
+                        style={[styles.inputs, { paddingRight: 15, width: 50 }]}
                         placeholder="Code"
                         placeholderTextColor={colorList.Grey1}
                         value={registerData?.country}
-                        onChangeText={text => {
-                          setRegisterData(prev => ({...prev, country: text}));
-                          setErrors({...errors, country: ''});
+                        onChangeText={(text) => {
+                          setRegisterData((prev) => ({
+                            ...prev,
+                            country: text,
+                          }));
+                          setErrors({ ...errors, country: "" });
                         }}
                         keyboardType="phone-pad"
                       />
@@ -276,26 +295,27 @@ requestSmsPermission()
                     )}
                   </View>
 
-                  <View style={[styles.inputMainWrapper, {flex: 9}]}>
+                  <View style={[styles.inputMainWrapper, { flex: 9 }]}>
                     <View
                       style={[
                         styles.inputWrapper,
-                        {marginBottom: !errors?.phoneNumber ? 12 : 0},
-                      ]}>
+                        { marginBottom: !errors?.phoneNumber ? 12 : 0 },
+                      ]}
+                    >
                       <View style={styles.inputIconWrapper}>
                         <Image source={CallIcon} style={styles.inputIcon} />
                       </View>
                       <TextInput
-                        style={[styles.inputs, {width: '60%'}]}
+                        style={[styles.inputs, { width: "60%" }]}
                         placeholder="Phone Number"
                         placeholderTextColor={colorList.Grey1}
                         value={registerData?.phoneNumber}
-                        onChangeText={text => {
-                          setRegisterData(prev => ({
+                        onChangeText={(text) => {
+                          setRegisterData((prev) => ({
                             ...prev,
                             phoneNumber: text,
                           }));
-                          setErrors({...errors, phoneNumber: ''});
+                          setErrors({ ...errors, phoneNumber: "" });
                         }}
                         keyboardType="phone-pad"
                       />
@@ -344,10 +364,13 @@ requestSmsPermission()
                 bgStyles={styles.registerBtnBgStyle}
               />
 
+              {/* <Button onPress={handleRegister}>Register</Button> */}
+
               <TouchableOpacity
                 activeOpacity={0.4}
                 onPress={() => navigation.navigate(NavigationList.login)}
-                style={styles.registerBtnContainer}>
+                style={styles.registerBtnContainer}
+              >
                 <Text style={styles.registerBtnLabel1}>
                   You have already account?
                 </Text>
