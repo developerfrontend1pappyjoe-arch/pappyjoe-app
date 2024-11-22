@@ -1,105 +1,117 @@
 import {
   Image,
-  KeyboardAvoidingView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {CustomButton} from '../../components/CustomButton';
-import {NavigationList} from '../../routes/NavigationList';
-import {styles} from './otpVerification.styles';
-import {CustomHeaderDesc} from '../../components/CustomHeaderDesc';
+} from "react-native";
 
-import OTPInputView from '@twotalltotems/react-native-otp-input';
-import {useState} from 'react';
-import {useMutation} from '@tanstack/react-query';
-
-import {API_URL} from '../../utils/constants';
-import {useToast} from 'react-native-toast-notifications';
-import {ToasterTypes} from '../../styles/global.styles';
-import {CustomLoader} from '../../components/CustomLoader';
-import {CustomLoaderRound} from '../../components/CustomLoaderRound';
-import {axiosInstance as axios} from '../../config/axios.config.custom';
-
-const OTPVerificationHeaderImage = require('../../assets/OTPVverificationScreen/OTPVerificationImage.png');
-
+import { CustomButton } from "../../components/CustomButton";
+import { NavigationList } from "../../routes/NavigationList";
+import { styles } from "./otpVerification.styles";
+import { CustomHeaderDesc } from "../../components/CustomHeaderDesc";
+import OTPInputView from "@twotalltotems/react-native-otp-input";
+import React, { useCallback, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { API_URL } from "../../utils/constants";
+import { useToast } from "react-native-toast-notifications";
+import { ToasterTypes } from "../../styles/global.styles";
+import { CustomLoaderRound } from "../../components/CustomLoaderRound";
+import { axiosInstance as axios } from "../../config/axios.config.custom";
+const OTPVerificationHeaderImage = require("../../assets/OTPVverificationScreen/OTPVerificationImage.png");
 export const OTPVerificationScreen = ({
   navigation,
   route: {
-    params: {data},
+    params: { data },
   },
   ...rest
 }: any) => {
-  // console.log('data =====> IN OTP verify Screen ===> ', data);
-
   const toast = useToast();
 
   const checkOTPVerification = async (payload: any) => {
     const res = await axios.post(API_URL.verifyOtp, payload, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
-
     return res;
   };
 
-  const {mutate, isLoading, error} = useMutation({
+  const { mutate, isLoading, error } = useMutation({
     mutationFn: checkOTPVerification,
     onSuccess: (res: any) => {
-      // console.log('Ressss', res.data);
-      toast.show('Successfull...!!!', {
+      console.log("Ressss", res.data);
+      toast.show("Successfull...!!!", {
         type: ToasterTypes.success,
       });
       setTimeout(() => {
-        navigation.navigate(NavigationList.otpSuccess, {data});
+        navigation.navigate(NavigationList.otpSuccess, { data });
       }, 1500);
     },
     onError: (err: any) => {
-      // console.log('Errrrr', err.response.data.message);
+      console.log("Errrrr", err.response.data.message);
       toast.show(err.response.data.message, {
         type: ToasterTypes.error,
       });
+      setOtp("")
     },
   });
 
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
 
-  const handleVerify = () => {
+  const handleVerify = (code: string) => {
     const formData = new FormData();
-    formData.append('otp', otp);
-    formData.append('mobileno', `${data?.country}${data?.phoneNumber}`);
+    if (typeof code == "string") {
+      formData.append("otp", code);
+    } else {
+      formData.append("otp", otp);
+    }
+    formData.append("mobileno", `${data?.phoneNumber}`);
+    console.log(formData);
     mutate(formData);
   };
 
+  const handleChangeOtp = useCallback((code: string) => {
+      setOtp(code);
+    },[otp,data]);
+
+  const extractOtpFromMessage = (message: string) => {
+    const otpRegex = /\d+/;
+    const match = message.match(otpRegex);
+    if (match) {
+      return match[0];
+    }
+    return "";
+  };
+
+
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <>
       <View style={styles.imageContainer}>
         <Image source={OTPVerificationHeaderImage} style={styles.bgImage} />
       </View>
       <View style={styles.formContainer}>
         <CustomHeaderDesc
           headerText="Security Verification"
-          desc={`Enter the 6 digit code we've sent to your mobile ${data?.country} ${data?.phoneNumber} `}
+          desc={`Enter the 7 digit code we've sent to your mobile +${data?.country} ${data?.phoneNumber} `}
         />
 
-        <TouchableOpacity style={styles.resendBtnContainer}>
+        {/* <TouchableOpacity style={styles.resendBtnContainer}>
           <Text style={styles.resendBtn}>Resend</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.otpInputContainer}>
           <OTPInputView
-            style={{width: '100%', height: 200}}
+            style={{ width: "100%", height: 200 }}
             pinCount={7}
             code={otp}
-            onCodeChanged={code => setOtp(code)}
-            autoFocusOnLoad
+            onCodeChanged={handleChangeOtp}
+            autoFocusOnLoad={false}
             codeInputFieldStyle={styles.otpInput}
             codeInputHighlightStyle={styles.otpInputHighlighted}
-            onCodeFilled={code => {
-              // console.log(`Code is ${code}, you are good to go!`);
-            }}
+            onCodeFilled={handleVerify}
+            editable
+            keyboardAppearance="default"
+            keyboardType="number-pad"
           />
         </View>
 
@@ -116,11 +128,12 @@ export const OTPVerificationScreen = ({
         <TouchableOpacity
           activeOpacity={0.4}
           onPress={() => navigation.navigate(NavigationList.login)}
-          style={styles.LoginBtnContainer}>
+          style={styles.LoginBtnContainer}
+        >
           <Text style={styles.loginLabel1}>Have an account?</Text>
           <Text style={styles.loginLabel2}>Login</Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </>
   );
 };

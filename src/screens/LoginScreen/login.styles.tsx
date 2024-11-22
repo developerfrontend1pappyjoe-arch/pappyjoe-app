@@ -25,10 +25,10 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   headerImageDesc: {
-    fontSize: 14,
+    fontSize: 12,
     lineHeight: 14,
     fontWeight: '400',
-    color: colorList.Grey1,
+    color: colorList.blue_300,
   },
 
   formContainer: {

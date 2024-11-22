@@ -54,6 +54,7 @@ export const AddProcedure = memo(
       return () => {
         setProcedureListFetched(false);
       };
+      
     }, []);
 
     useEffect(() => {
@@ -61,6 +62,7 @@ export const AddProcedure = memo(
         // console.log('Edit Dataaaaa', editData);
         const indexes = editData?.indexes;
         const obj = editData?.original[indexes];
+        setStartDate(new Date(obj.date_time))
         const indexProcedure = procedureList?.findIndex(
           fi => fi.procedure_name === obj?.procedure_name,
         );
@@ -273,7 +275,7 @@ export const AddProcedure = memo(
         };
       }
 
-      // console.log('Payloads Finals==== >', payload);
+      console.log('Payloads Finals==== >', payload);
 
       try {
         const res = await axios.post(API_URL.addTreatments, payload);

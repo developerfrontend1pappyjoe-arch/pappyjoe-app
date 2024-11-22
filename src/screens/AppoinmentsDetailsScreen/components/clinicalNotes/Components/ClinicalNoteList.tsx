@@ -28,6 +28,7 @@ export const ClinicalNoteList = ({
   return (
     <KeyboardAvoidingView style={{flex: 1}}>
       <ScrollView
+      contentContainerStyle={{gap:5,paddingBottom:75}}
         style={styles.container}
         keyboardShouldPersistTaps={'handled'}>
         <ComplaintLists

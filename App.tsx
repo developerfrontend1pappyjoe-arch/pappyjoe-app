@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import {NavigationContainers} from './src/routes/Navigations';
 import {QueryClientProvider, QueryClient} from '@tanstack/react-query';
 import {ToastProvider} from 'react-native-toast-notifications';
-import {Text, View} from 'react-native';
+import {Text, View,Appearance} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './src/redux/store';
 import {Provider} from 'react-redux';
@@ -11,7 +11,6 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
 import {colorList} from './src/styles/global.styles';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {Appearance} from 'react-native';
 
 export default function App() {
   useEffect(() => Appearance.setColorScheme('light'), []);

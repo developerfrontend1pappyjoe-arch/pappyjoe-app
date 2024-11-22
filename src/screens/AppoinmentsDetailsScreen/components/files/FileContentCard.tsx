@@ -1,6 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {View } from "react-native";
-import { Button, Card, Icon, Text,ActivityIndicator } from "react-native-paper";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { PermissionsAndroid, Platform, View } from "react-native";
+import {
+  Button,
+  Card,
+  Icon,
+  Text,
+  ActivityIndicator,
+  Menu,
+  Divider,
+} from "react-native-paper";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { colorList } from "styles/global.styles";
 import RNFS from "react-native-fs";
@@ -19,6 +27,7 @@ function FileContentCard({
   handleDelete,
 }) {
   const [openedShareListId, setOpenedShareListId] = useState(null);
+  const [openMenu, setOpenMenu] = useState(false);
   const handleOpenShareModal = () => setOpenedShareListId(keyId);
   const handleCloseShareModal = () => setOpenedShareListId(null);
   const [isDownloadCicked, setIsDownloadClicked] = useState(false);
@@ -26,7 +35,7 @@ function FileContentCard({
   const [downloadProgress, seDownloadProgress] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [fileOpenLoading, setFileOpenLoading] = useState(false);
-  const downloadFile = async (url, fileName) => {
+  const downloadFile = async (url, fileName): Promise<boolean> => {
     try {
       const sanitizedFileName = fileName.replace(/\s/g, "");
       const isDirectoryExist = await RNFS.exists(
@@ -59,24 +68,73 @@ function FileContentCard({
             );
             seDownloadProgress(0);
             setIsAlreadyDownloaded(true);
-            resolve(downloadDest);
+            setIsDownloadClicked(false);
+            resolve(true);
           })
           .catch((err) => {
             setIsDownloadClicked(false);
             console.log("Download error:", err);
-            reject(err);
+            reject(false);
           });
       });
     } catch (error) {
       console.error("Error downloading file:", error);
       setIsDownloadClicked(false);
-      return Promise.reject(error);
+      return Promise.reject(false);
     }
   };
-  const handleDownloadFiles = useCallback(() => {
+
+  const checkStoragePermission = async () => {
+    if (Platform.OS === "android") {
+      try {
+        const hasPermission = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+        );
+        return hasPermission;
+      } catch (error) {
+        Alert.alert("Error", "Permission check error");
+        return false;
+      }
+    }
+  };
+
+  const requestStoragePermission = async () => {
+    if (Platform.OS === "android") {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: "Storage Permission",
+            message:
+              "PappyJoe needs access to your storage to save and upload files.",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          }
+        );
+
+        return PermissionsAndroid.RESULTS.GRANTED;
+      } catch (error) {
+        Alert.alert("Error", "Permission request error");
+        return false;
+      }
+    }
+  };
+
+  const startDownload = async () => {
+    if (await checkStoragePermission()) {
+      await downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+    } else {
+      if (await requestStoragePermission()) {
+        await downloadFile(fileData?.file, fileData?.file?.split("/").pop());
+      }
+    }
+  };
+
+  const handleDownloadFiles = () => {
     setIsDownloadClicked(true);
-    downloadFile(fileData?.file, fileData?.file?.split("/").pop());
-  }, []);
+    startDownload();
+  };
 
   const handleDeleteFilesApi = async () => {
     try {
@@ -92,19 +150,10 @@ function FileContentCard({
         handleDelete();
       }
     } catch (error) {
+      setLoading(false);
       Alert.alert("Somthing went wrong,please try agin later");
     }
   };
-
-  const handleDeleteFiles = useCallback(() => {
-    Alert.alert("Warning", "Are you sure, you want to delete this File ?", [
-      { text: "Cancel", onPress: () => {} },
-      {
-        text: "Confirm",
-        onPress: () => handleDeleteFilesApi(fileData?.id),
-      },
-    ]);
-  }, []);
 
   const getFileName = (url: string) => {
     return url.split("/").pop();
@@ -116,6 +165,7 @@ function FileContentCard({
     const result = await RNFS.exists(
       `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`
     );
+    setIsDownloadClicked(false);
     setIsAlreadyDownloaded(result);
   };
 
@@ -166,17 +216,16 @@ function FileContentCard({
   };
 
   const checkFileType = useCallback(async () => {
-    const fileName = fileData.file.split("/").pop()
+    const fileName = fileData.file.split("/").pop();
     const fileExtention: ExtentionTypes = fileName?.split(".").pop();
     const type = extensions[fileExtention];
-    const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${fileName}`
     if (type == allFileTypes.doc) {
       setFileOpenLoading(true);
       viewFile(fileData.file);
     } else {
-      handleShowFileViewer({ type, url:fileData.file});
+      handleShowFileViewer({ type, url: fileData.file });
     }
-  }, []);
+  }, [fileData]);
 
   const checkExtention = (url: string) => {
     const name = url.split("/").pop();
@@ -184,9 +233,54 @@ function FileContentCard({
     return extensions[ex];
   };
 
+  const deleteFromLocal = async () => {
+    const fileName = fileData.file.split("/").pop();
+    const sanitizedFileName = fileName?.replace(/\s/g, "");
+    const downloadDest = `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`;
+    try {
+      await RNFS.unlink(downloadDest);
+      setIsAlreadyDownloaded(false);
+      setIsDownloadClicked(false);
+      Alert.alert("Success", "File deleted successfully");
+      setOpenMenu(false);
+    } catch (error) {
+      Alert.alert("Error", "Failed to delete file");
+      setOpenMenu(false);
+    }
+  };
+
+  const deleteFromCloud = () => {
+    Alert.alert(
+      "Delete file",
+      "Are you sure want to delete this file",
+      [
+        {
+          text: "CANCEL",
+          style: "cancel",
+        },
+        { text: "CONFIRM", onPress: () => handleDeleteFilesApi() },
+      ],
+      { cancelable: false }
+    );
+    setOpenMenu(false);
+  };
+
+  const deleteFile = useCallback(() => {
+    if (isAlreadyDownloaded) {
+      setOpenMenu(true);
+    } else {
+      deleteFromCloud();
+    }
+  }, [isAlreadyDownloaded]);
+
   useEffect(() => {
     checkFileDownloaded();
-  }, []);
+    return () => {
+      setLoading(false);
+      setIsAlreadyDownloaded(false);
+      setFileOpenLoading(false);
+    };
+  }, [fileData]);
   return (
     <>
       <Card
@@ -209,7 +303,7 @@ function FileContentCard({
           {checkExtention(fileData.file) == allFileTypes.doc && (
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               {fileOpenLoading ? (
-                <View style={{flexDirection:"row",gap:5}}>
+                <View style={{ flexDirection: "row", gap: 5 }}>
                   <Text>Opening file</Text>
                   <ActivityIndicator size={20} />
                 </View>
@@ -228,47 +322,78 @@ function FileContentCard({
         </Card.Content>
         <Card.Actions style={{ gap: 10 }}>
           {downloadProgress > 0 && (
-            <Text>Downloading {downloadProgress} % </Text>
+            <Text>
+              {" "}
+              <Icon color={colorList.blue} size={20} source={"download"} />{" "}
+              {downloadProgress} %{" "}
+            </Text>
           )}
-          {!isAlreadyDownloaded && !isDownloadCicked && (
+          {!isAlreadyDownloaded && !isDownloadCicked && !isLoading && (
             <Button
               compact
               mode="elevated"
               loading={isDownloadCicked}
-              disabled={isDownloadCicked}
+              disabled={isDownloadCicked || isLoading}
               contentStyle={{
                 backgroundColor: colorList.primary,
               }}
               labelStyle={{ color: colorList.white }}
               onPress={handleDownloadFiles}
             >
-              <Icons name="download" size={20} />
+              <Icons name="download" size={25} />
             </Button>
           )}
+
           {isAlreadyDownloaded && (
             <Icon
-              size={30}
-              color={colorList.primary}
+              size={25}
+              color={colorList.socondary}
               source="check-underline"
             />
           )}
-          <Button
+          {/* <Button
             compact
             mode="elevated"
             disabled={isLoading}
-            onPress={handleDeleteFiles}
+            onPress={deleteFile}
             contentStyle={{ backgroundColor: colorList.red }}
             labelStyle={{ color: colorList.white }}
             loading={isLoading}
           >
             <Icons name="delete" size={20} />
-          </Button>
-          <ShareModalContents
-            open={openedShareListId === keyId}
-            openMenu={handleOpenShareModal}
-            closeMenu={handleCloseShareModal}
-            data={fileData}
-          />
+          </Button> */}
+          <Menu
+            visible={openMenu}
+            onDismiss={() => setOpenMenu(false)}
+            anchor={
+              <Button
+                mode="elevated"
+                disabled={isLoading || isDownloadCicked}
+                loading={isLoading}
+                contentStyle={{ backgroundColor: colorList.red }}
+                labelStyle={{ color: colorList.white }}
+                onPress={deleteFile}
+              >
+                <Icons name="delete" size={20} />
+              </Button>
+            }
+          >
+            <Menu.Item
+              disabled={isLoading}
+              onPress={deleteFromCloud}
+              title="Delete from cloud"
+            />
+            <Divider />
+            <Menu.Item onPress={deleteFromLocal} title="Delete from local" />
+          </Menu>
+          {!isLoading && (
+            <ShareModalContents
+              open={openedShareListId === keyId}
+              openMenu={handleOpenShareModal}
+              closeMenu={handleCloseShareModal}
+              data={fileData}
+            />
+          )}
         </Card.Actions>
       </Card>
     </>

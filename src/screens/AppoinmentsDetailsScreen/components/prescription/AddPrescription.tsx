@@ -98,10 +98,8 @@ export const AddPrescriptionPopups = ({
         const durationTypes = PrescriptionDurationList?.find(
           fi => fi.text.toLowerCase() == datas?.duration_type.toLowerCase(),
         );
-
         const tempMed = {...datas?.medicinearray};
         tempMed.text = tempMed?.medicine;
-
         temp.medicine_id = tempMed;
         temp.strength = datas?.strength;
         temp.unit = units || '';
@@ -118,7 +116,7 @@ export const AddPrescriptionPopups = ({
         temp.internalnote = datas?.note || '';
         temp.review_date = datas?.nextreview || '';
         setStartDate(new Date(datas.date_time))
-        setReviewDate(new Date(datas?.nextreview))    
+        setReviewDate(new Date(datas?.nextreview))  
         setFormData(prev => ({...prev, ...temp}));
         setMedicineList(prev => {
           const newMedicineList = [...prev, tempMed];

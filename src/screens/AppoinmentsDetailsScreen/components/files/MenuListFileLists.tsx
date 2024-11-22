@@ -7,8 +7,15 @@ import React, {
 } from "react";
 import { API_URL } from "../../../../utils/constants";
 import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
-import { Dimensions, ScrollView, View, Alert, StyleSheet } from "react-native";
-import {Divider, Surface, Text } from "react-native-paper";
+import {
+  Dimensions,
+  ScrollView,
+  View,
+  Alert,
+  StyleSheet,
+  RefreshControl,
+} from "react-native";
+import { Divider, Surface, Text } from "react-native-paper";
 import { NoDataAvailable } from "../../../../components/NoDataAvailable";
 import RNFS from "react-native-fs";
 import { CustomModal } from "../../../../components/CustomModal";
@@ -68,24 +75,27 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
       setFileList(null);
     }
   };
-const handleDelete = ()=>{
-  getFileListApi(); 
-}
+  const handleDelete = () => {
+    getFileListApi();
+  };
 
   const allFiles = useMemo(() => {
     if (fileList && Object.entries(fileList)?.length) {
-      return  Object.entries(fileList) || [];
-      
+      return Object.entries(fileList) || [];
     }
     return [];
-  }, [fileList]);
+  }, [fileList, refetch]);
 
   const handleShowFileViewer = useCallback(
-   async (params: ShowFileViewerType) => {
-    setShowFileViewer(params);
+    async (params: ShowFileViewerType) => {
+      setShowFileViewer(params);
     },
     [showFileViewer]
   );
+
+  const onRefresh = useCallback(() => {
+    getFileListApi();
+  }, []);
 
   useEffect(() => {
     getFileListApi();
@@ -96,89 +106,84 @@ const handleDelete = ()=>{
 
   return (
     <View style={{ flex: 1, borderRadius: 10 }}>
-      {isLoading ? (
-        <CustomLoaderRound />
-      ) : (
-        <>
-          <ScrollView
-            style={{
-              maxHeight: Dimensions.get("screen").height * 0.55,
-            }}
-          >
-            {allFiles.map(([key, val], ids: number) => {
-              return (
-                <Surface
-                  key={ids}
-                  style={{
-                    // backgroundColor: colorList.white,
-                    borderRadius: 8,
-                    padding: 10,
-                    margin: 2,
-                    marginBottom: 10,
-                    gap: 15,
-                  }}
-                >
-                  <View style={{ marginVertical: 5 }}>
-                    <Text
-                      variant="titleMedium"
-                      style={{ color: colorList.dark }}
-                    >
-                      {moment(key).format("DD-MM-YYYY")}
-                    </Text>
-                    <Divider style={{ marginVertical: 10 }} />
-                  </View>
-                  {val?.map((item: any, index: number) => {
-                    return (
+      <>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          }
+          style={{
+            maxHeight: Dimensions.get("screen").height * 0.55,
+          }}
+        >
+          {allFiles.map(([key, val], ids: number) => {
+            return (
+              <Surface
+                key={ids}
+                style={{
+                  // backgroundColor: colorList.white,
+                  borderRadius: 8,
+                  padding: 10,
+                  margin: 2,
+                  marginBottom: 10,
+                  gap: 15,
+                }}
+              >
+                <View style={{ marginVertical: 5 }}>
+                  <Text variant="titleMedium" style={{ color: colorList.dark }}>
+                    {moment(key).format("DD-MM-YYYY")}
+                  </Text>
+                  <Divider style={{ marginVertical: 10 }} />
+                </View>
+                {val?.map((item: any, index: number) => {
+                  return (
+                    <View key={`fileCardId${index}`}>
                       <FileContentCard
-                      handleDelete={handleDelete}
-                        key={`${ids}${index}`}
+                        handleDelete={handleDelete}
                         keyId={`${ids}${index}`}
                         fileData={item}
                         handleShowFileViewer={handleShowFileViewer}
                       />
-                    );
-                  })}
-                </Surface>
-              );
-            })}
-            {allFiles.length == 0 && <NoDataAvailable />}
-            <CustomImageViewer
-              visible={showFileViewer?.type == allFileTypes.image}
-              close={() => setShowFileViewer({ type: null, url: "" })}
-              img={[{ uri: showFileViewer?.url }]}
-            />
-            <CustomModal
-              show={showFileViewer?.type == allFileTypes.video}
-              close={() => setShowFileViewer({ type: null, url: "" })}
-            >
-              {showFileViewer?.type == allFileTypes.video && (
-                <VideoPlayer
-                  visible={showFileViewer?.type == allFileTypes.video}
-                  hideModal={() => {
-                    setShowFileViewer({ type: null, url: "" });
-                  }}
-                  url={showFileViewer.url}
-                />
-              )}
-            </CustomModal> 
-          </ScrollView>
-
-          <View
-            style={{ height: 70, position: "absolute", bottom: 5, right: 5 }}
+                    </View>
+                  );
+                })}
+              </Surface>
+            );
+          })}
+          {allFiles.length == 0 && !isLoading && <NoDataAvailable />}
+          <CustomImageViewer
+            visible={showFileViewer?.type == allFileTypes.image}
+            close={() => setShowFileViewer({ type: null, url: "" })}
+            img={[{ uri: showFileViewer?.url }]}
+          />
+          <CustomModal
+            show={showFileViewer?.type == allFileTypes.video}
+            close={() => setShowFileViewer({ type: null, url: "" })}
           >
-            <View style={styles.MenuListDetailsChiefComplaintsAddBtnContainer}>
-              <CustomAddButton onClick={() => setIspoup(true)} />
-            </View>
-          </View>
-          <CustomModal show={isPopup} close={() => setIspoup(false)}>
-            <AddFilesPopup
-              close={() => setIspoup(false)}
-              patientDetails={patientDetails}
-              refetch={() => setRefetch(true)}
-            />
+            {showFileViewer?.type == allFileTypes.video && (
+              <VideoPlayer
+                visible={showFileViewer?.type == allFileTypes.video}
+                hideModal={() => {
+                  setShowFileViewer({ type: null, url: "" });
+                }}
+                url={showFileViewer.url}
+              />
+            )}
           </CustomModal>
-        </>
-      )}
+        </ScrollView>
+
+        <View style={{ height: 70, position: "absolute", bottom: 5, right: 5 }}>
+          <View style={styles.MenuListDetailsChiefComplaintsAddBtnContainer}>
+            <CustomAddButton onClick={() => setIspoup(true)} />
+          </View>
+        </View>
+        <CustomModal show={isPopup} close={() => setIspoup(false)}>
+          <AddFilesPopup
+            close={() => setIspoup(false)}
+            patientDetails={patientDetails}
+            refetch={() => setRefetch(true)}
+          />
+        </CustomModal>
+      </>
     </View>
   );
 };

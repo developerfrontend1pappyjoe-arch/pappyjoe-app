@@ -18,4 +18,5 @@ export const NavigationList = {
   patientDetails: 'PatientDetails',
   bookingAppoinment: 'BookingAppoinment',
   patientProfile: 'PatientProfile',
+  update:"updateScreen"
 };

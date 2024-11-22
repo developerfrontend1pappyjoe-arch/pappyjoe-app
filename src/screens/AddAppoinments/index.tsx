@@ -110,13 +110,12 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
     mobile: "",
   });
 
-  useEffect(() => {
-    getPatient();
-    getDocters();
-  }, []);
+  // useEffect(() => {
+  //   getPatient();
+  //   getDocters();
+  // }, []);
 
   const handleChange = (field, value) => {
-    console.log(field,"--------------------------->",value);
     if (field == "patient_id") {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -235,42 +234,43 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
     debounceMethod(text)
   }
 
-  const addDocEditMode = (list: any) => {
-    if (data?.mode === "edit") editModeDataFill(list);
+  const addDocEditMode = () => {
+    if (data?.mode === "edit") editModeDataFill();
   };
 
   const getDocters = async () => {
     try {
       const { data } = await getDoctersList();
       setDoctersList(data);
-      setTimeout(() => {
-        addDocEditMode(data);
-      }, 50);
+      // setTimeout(() => {
+      //   addDocEditMode(data);
+      // }, 50);
     } catch (err) {
       setDoctersList([]);
     }
   };
 
-  const editModeDataFill = (docList: any) => {
+  const editModeDataFill = () => {
     // console.log('data?.data == Edit Apponment ===> ', data?.data);
-
     const temp = { ...formData };
-    const docId = docList.filter(
+    const docId = doctersList.filter(
       (el) => el.Name === data?.data?.Doctor_Name
     )[0];
     temp.doctor_id = docId;
     const dates = moment(data?.data?.Appointment_Date, "DD-MM-YYYY");
     const times = moment(data?.data?.Appointment_Time, "HH:mm a");
-
-    const dateTime = dates
-      .add(times.hours(), "hours")
-      .add(times.minute(), "minutes");
-
+    const dateTime = dates.add(times.hours(), "hours").add(times.minute(), "minutes");
     temp.date = dates.toDate();
     temp.time = dateTime;
-    temp.notes = data?.data?.Appointment_Notes;
+    temp.notes = data?.data?.Appointment_Notes == "0" ? "" : data?.data?.Appointment_Notes;
+    temp.mobile = data?.data?.Patient_mobile ? data?.data.Patient_mobile : "" 
+    console.log(data);
     setFormData(temp);
   };
+
+useEffect(()=>{
+  addDocEditMode()
+},[doctersList])
 
   const addPatientApi = async () => {
     setLoader(true);
@@ -354,6 +354,14 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
     setSearchText("");
   };
 
+useEffect(()=>{
+getPatient()
+getDocters()
+return ()=>{
+   setDoctersList([])
+   setPatientList(null)
+}
+},[])
   const renderDropdownItem = (item: any, index: number) => {
     return (
       <React.Fragment key={index}>
@@ -398,7 +406,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
                   iconStyle={styles.iconStyle}
                   containerStyle={styles.dropdownContainerStyle}
                   itemTextStyle={styles.dropdownItemTextStyle}
-                  data={searchResult}
+                  data={searchResult || []}
                   maxHeight={300}
                   labelField="Name"
                   valueField="Name"
@@ -448,6 +456,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
             <View>
               {/* <Text style={styles.label}>Doctors</Text> */}
               <Dropdown
+                onFocus={()=>{getDocters()}}
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
@@ -455,7 +464,7 @@ export const AddNewAppoinments = ({ navigation, route }: any) => {
                 iconStyle={styles.iconStyle}
                 containerStyle={styles.dropdownContainerStyle}
                 itemTextStyle={styles.dropdownItemTextStyle}
-                data={doctersList}
+                data={doctersList || []}
                 maxHeight={300}
                 labelField="Name"
                 valueField="Name"
