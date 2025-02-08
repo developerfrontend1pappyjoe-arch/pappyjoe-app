@@ -7,9 +7,9 @@ import {NavigationList} from '../../routes/NavigationList';
 const HeaderImage = require('../../assets/ForgotPasswordSuccessScreen/ForgotPasswordSuccessImage.png');
 
 export const ForgotPasswordSuccesScreen = ({navigation}: any) => {
-  const resentEmail = () => {
-    return console.log('Resend');
-  };
+  // const resentEmail = () => {
+  //   return console.log('Resend');
+  // };
 
   return (
     <View style={styles.container}>

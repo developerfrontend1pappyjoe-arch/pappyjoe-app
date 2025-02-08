@@ -4,6 +4,7 @@ import { Surface, Text } from 'react-native-paper';
 import { CallFillIcon, ProfileAvatar, WhatsAppIcon } from '../../../assets';
 import { styles } from '../patientlist.styles';
 import { PatientDataProps } from 'types/PatientDetailsTypes';
+import { checkCountryCode } from 'utils/commonUtils';
 
 
 interface PatientListProps {
@@ -14,11 +15,11 @@ interface PatientListProps {
 export const PatientList = memo(({ data, navigate }: PatientListProps) => {
 
   const openDialer = () =>
-    Linking.openURL(`tel:${data?.country_code}${data?.mobile}`);
+    Linking.openURL(`tel:+${checkCountryCode(data?.country_code)}${data?.mobile}`);
 
   const openWhatsApp = () => {
     Linking.openURL(
-      `whatsapp://send?text=Hai&phone=${data?.country_code}${data?.mobile}`,
+      `whatsapp://send?text=Hai&phone=${checkCountryCode(data?.country_code)}${data?.mobile}`,
     );
   };
 

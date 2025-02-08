@@ -39,7 +39,7 @@ export const AddEditVitalsForm = ({
   refetch,
   editData,
 }: AddEditVitalsFormProps) => {
-  console.log('patientDetails', patientDetails?.Patient_Id);
+  // console.log('patientDetails', patientDetails?.Patient_Id);
   const axios = axiosInstance;
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const AddEditVitalsForm = ({
 
   useEffect(() => {
     if (editData) {
-      console.log('Edited Dataaaa ===> ', editData);
+      // console.log('Edited Dataaaa ===> ', editData);
       Object.entries(editData).map(([key, val]) => {
         if (key === 'bp_type') {
           const indexBp = BpTypesOption.findIndex(fi => fi.name === val);
@@ -56,7 +56,7 @@ export const AddEditVitalsForm = ({
         } else if (key === 'covtest') {
           const indexCt = CovidTestOptions.findIndex(fi => fi.name === val);
 
-          console.log('indexCt ===> ', indexCt);
+          // console.log('indexCt ===> ', indexCt);
 
           formData[`${key}`] = CovidTestOptions[indexCt];
         } else if (
@@ -175,7 +175,7 @@ export const AddEditVitalsForm = ({
         }
       })
       .catch(err => {
-        console.log('Errrrrrr', err.response.data);
+        // console.log('Errrrrrr', err.response.data);
         setProcedureList([]);
       });
   };
@@ -216,7 +216,7 @@ export const AddEditVitalsForm = ({
       }
     });
 
-    console.log('Payloads --------> ', formDetails);
+    // console.log('Payloads --------> ', formDetails);
 
     try {
       if (editData) {
@@ -227,7 +227,7 @@ export const AddEditVitalsForm = ({
         });
         if (res && res.status === 200) {
           setLoader(false);
-          console.log('Resss', res.data);
+          // console.log('Resss', res.data);
           setTimeout(() => {
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {
@@ -253,7 +253,7 @@ export const AddEditVitalsForm = ({
         });
         if (res && res.status === 200) {
           setLoader(false);
-          console.log('Resss', res.data);
+          // console.log('Resss', res.data);
           setTimeout(() => {
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {

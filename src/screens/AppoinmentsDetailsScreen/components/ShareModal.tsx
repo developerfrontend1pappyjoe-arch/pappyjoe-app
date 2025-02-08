@@ -19,7 +19,7 @@ export const ShareModal = memo(
     mailTitle,
     mailContent = '',
   }: ShareModalTypes) => {
-    console.log('mailTitle ====>', mailTitle);
+    // console.log('mailTitle ====>', mailTitle);
 
     const handlePrint = () => {
       if (data?.print_url) {

@@ -30,10 +30,10 @@ import {
 import {ToasterTypes, colorList} from '../../styles/global.styles';
 import {addLoginDetails} from '../../redux/actions';
 import {CustomLoaderRound} from '@components/CustomLoaderRound';
-import {getStoreData, storeData} from '../../utils/commonUtil';
+import {clearStoreData, getStoreData, storeData} from '../../utils/commonUtil';
 import {Button} from 'react-native-paper';
 
-const LoginScreen = ({navigation}: any) => {
+const LoginScreen = ({navigation,route:{params}}: any) => {
   const toast = useToast();
   const dispatch = useDispatch();
   const saveLoginDataToStore = (data: any) => dispatch(addLoginDetails(data));
@@ -50,7 +50,7 @@ const LoginScreen = ({navigation}: any) => {
       }, 250);
     },
     onError: (err: any) => {
-      console.log('Errrrr', err.response.data.message);
+      // console.log('Errrrr', err.response.data.message);
       toast.show(err.response.data.message, {
         type: ToasterTypes.error,
       });
@@ -66,20 +66,13 @@ const LoginScreen = ({navigation}: any) => {
   });
   const [errors, setErrors] = useState({username: '', password: ''});
 
-  useEffect(() => {
-    getRememberMeData();
-  }, []);
 
   const getRememberMeData = async () => {
-    const loginData = await getStoreData('loginData');
-    console.log('loginData', loginData);
-
-    if (loginData) {
+    const result = await getStoreData('loginData');
+    // console.log('loginData', loginData);
+    if (result) {
       setIsRememberMe(true);
-      setLoginData({
-        username: loginData?.username,
-        password: loginData?.password,
-      });
+      setLoginData(result);
     }
   };
 
@@ -88,7 +81,7 @@ const LoginScreen = ({navigation}: any) => {
       username: loginData?.username,
       password: loginData?.password,
     });
-    console.log('Result for storing ....', result);
+    // console.log('Result for storing ....', result);
   };
 
   const validateForm = () => {
@@ -115,6 +108,32 @@ const LoginScreen = ({navigation}: any) => {
       mutate(loginData);
     }
   };
+
+const handleRememberPassword = async ()=>{
+    if(isRememberMe){
+      const result = await getStoreData('loginData');
+       if(result){clearStoreData("loginData")}
+       setIsRememberMe(false)
+    }else{
+       setIsRememberMe(true)
+    }
+}
+
+useEffect(() => {
+  getRememberMeData();
+  console.log(params);
+}, []);
+
+useEffect(() => {
+  console.log("params---------------------------->",params);
+  if(params?.data?.email && params?.data?.password){
+     const {email} = params.data
+     setLoginData({
+      ...loginData,
+      username:email,
+     })
+  }
+}, [params]);
 
   return (
     <SafeAreaView
@@ -249,7 +268,7 @@ const LoginScreen = ({navigation}: any) => {
               </View>
               <View style={styles.rememberForgotWrapper}>
                 <TouchableOpacity
-                  onPress={() => setIsRememberMe(prev => !prev)}
+                  onPress={handleRememberPassword}
                   style={{flexDirection: 'row'}}>
                   {isRememberMe ? (
                     <View style={styles.rememberMeCheckBoxFill}>

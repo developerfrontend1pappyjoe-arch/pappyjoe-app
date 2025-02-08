@@ -6,7 +6,7 @@ export const getPatientListService = async (params: any, limit: string) => {
     params !== ''
       ? `${API_URL.patientList}?${limit}&searchterm=${params}`
       : `${API_URL.patientList}?${limit}`;
-  console.log('Urlll ====>>>', Url);
+  // console.log('Urlll ====>>>', Url);
 
   const res = await axios.get(Url);
   return res;

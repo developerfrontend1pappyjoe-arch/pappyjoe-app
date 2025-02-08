@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react';
+import React,{useState, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  PermissionsAndroid,
 } from 'react-native';
 
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -38,23 +39,47 @@ import {saveRegisterDetails} from './services/Register.services';
 import {useToast} from 'react-native-toast-notifications';
 import {CustomLoader} from '../../components/CustomLoader';
 import {getCountriesList} from '../../services/getCountriesList';
+// import { Button } from 'react-native-paper';
 
 export const RegisterScreen = ({navigation}: any) => {
   const toast = useToast();
-
+  const requestSmsPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_SMS,
+          {
+            title: 'SMS Permission',
+            message: 'Pappyjoe needs access to your SMS messages to auto-detect OTP.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('SMS permission granted');
+        } else {
+          console.log('SMS permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
   const getCountryListApi = () => {
     getCountriesList()
       .then(res => {
-        console.log('Res Country List', res?.data);
+        // console.log('Res Country List', res?.data);
         setCountriesList(res?.data?.country);
       })
       .catch(err => {
-        console.log('Errrrr', err);
+        // console.log('Errrrr', err);
         setCountriesList([]);
       });
   };
   useEffect(() => {
     getCountryListApi();
+    requestSmsPermission()
   }, []);
 
   const [isSecureText, setIsSecureText] = useState(true);
@@ -89,7 +114,7 @@ export const RegisterScreen = ({navigation}: any) => {
       }, 1500);
     },
     onError: (err: any) => {
-      console.log('Errrrr', err.response.data.message);
+      // console.log('Errrrr', err.response.data.message);
       toast.show(err.response.data.message, {
         type: ToasterTypes.error,
       });
@@ -139,12 +164,16 @@ export const RegisterScreen = ({navigation}: any) => {
       formData.append('country_code', registerData?.country);
       formData.append('mobile', registerData?.phoneNumber);
 
-      console.log('Payloads', formData);
-      console.log('Payloads registerData', registerData);
+      // console.log('Payloads', formData);
+      // console.log('Payloads registerData', registerData);
 
       mutate(formData);
     }
   };
+
+useEffect(()=>{
+requestSmsPermission()
+},[])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -277,7 +306,7 @@ export const RegisterScreen = ({navigation}: any) => {
                   </View>
                 </View>
 
-                <View style={styles.inputMainWrapper}>
+                {/* <View style={styles.inputMainWrapper}>
                   <View
                     style={[
                       styles.inputWrapper,
@@ -306,7 +335,7 @@ export const RegisterScreen = ({navigation}: any) => {
                   {errors?.password && (
                     <Errormessage message={errors.password} />
                   )}
-                </View>
+                </View> */}
               </View>
 
               <CustomButton
@@ -324,6 +353,13 @@ export const RegisterScreen = ({navigation}: any) => {
                 </Text>
                 <Text style={styles.registerBtnLabel2}>Sign In</Text>
               </TouchableOpacity>
+              {/* <Button onPress={()=>{
+                  navigation.navigate(NavigationList.otpVerification, {
+                    data: registerData,
+                  });
+              }}>
+                click
+              </Button> */}
             </View>
           </ScrollView>
         </KeyboardAvoidingView>

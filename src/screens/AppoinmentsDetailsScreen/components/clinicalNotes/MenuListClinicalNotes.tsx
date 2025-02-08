@@ -160,8 +160,9 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
     }
   };
 
-  const handleEditChiefComplaint = (id: string, data: any) => {
-    setChiefComplaintEditData({id, data});
+  const handleEditChiefComplaint = (id: string, data: any,date:any) => {
+    
+    setChiefComplaintEditData({id,data,date});
     setIspoup(true);
   };
 
@@ -249,6 +250,9 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
                                   style={{
                                     flexDirection: 'row',
                                     marginVertical: 6,
+                                    borderBottomWidth:.5,
+                                    borderColor:colorList.Grey4,
+                                    paddingBottom:3
                                   }}>
                                   <View
                                     style={{
@@ -273,7 +277,9 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
                                   <View
                                     style={{
                                       flex: 1.9,
-                                      justifyContent: 'center',
+                                      justifyContent: 'start',
+                                      flexDirection:"row",
+                                      flexWrap:"wrap"
                                     }}>
                                     {v2?.map((v2List, index5) => (
                                       <View
@@ -285,7 +291,7 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
                                           {v2List?.clinic_note}
                                         </Text>
                                         {index5 !== v2?.length - 1 && (
-                                          <Text>,</Text>
+                                          <Text>, </Text>
                                         )}
                                       </View>
                                     ))}
@@ -301,7 +307,7 @@ export const MenuListDetailsChiefComplaints = ({patientDetails}: any) => {
                               }}>
                               <Button
                                 mode="elevated"
-                                onPress={() => handleEditChiefComplaint(k1, v1)}
+                                onPress={() => handleEditChiefComplaint(k1, v1,k)}
                                 style={{
                                   backgroundColor: colorList.primary,
                                 }}

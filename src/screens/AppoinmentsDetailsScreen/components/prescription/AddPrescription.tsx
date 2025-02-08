@@ -92,16 +92,14 @@ export const AddPrescriptionPopups = ({
 
         const units = medicineUnit?.find(fi => fi.id == datas?.unit);
 
-        console.log('units ====> ', units);
+        // console.log('units ====> ', units);
 
         const usages = usageList?.find(fi => fi.text == datas?.usage);
         const durationTypes = PrescriptionDurationList?.find(
           fi => fi.text.toLowerCase() == datas?.duration_type.toLowerCase(),
         );
-
         const tempMed = {...datas?.medicinearray};
         tempMed.text = tempMed?.medicine;
-
         temp.medicine_id = tempMed;
         temp.strength = datas?.strength;
         temp.unit = units || '';
@@ -116,8 +114,9 @@ export const AddPrescriptionPopups = ({
         temp.notes = datas?.notes || '';
         temp.musage = usages || '';
         temp.internalnote = datas?.note || '';
-        temp.review_date = datas?.review_date || '';
-
+        temp.review_date = datas?.nextreview || '';
+        setStartDate(new Date(datas.date_time))
+        setReviewDate(new Date(datas?.nextreview))  
         setFormData(prev => ({...prev, ...temp}));
         setMedicineList(prev => {
           const newMedicineList = [...prev, tempMed];
@@ -355,7 +354,7 @@ export const AddPrescriptionPopups = ({
       payload.items = newItem;
     } else {
       formDataList?.forEach((el, index) => {
-        console.log('el ====> ', el);
+        // console.log('el ====> ', el);
 
         if (el.duration_type) el.duration_type = el.duration_type.text;
         if (el.food) el.food = el?.food?.name || '';
@@ -372,7 +371,7 @@ export const AddPrescriptionPopups = ({
         const res = await axios.post(API_URL.addPrescription, payload);
         if (res && res.status === 200) {
           setLoader(false);
-          console.log('Resss Update Prescription', res.data);
+          // console.log('Resss Update Prescription', res.data);
           setTimeout(() => {
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {
@@ -395,7 +394,7 @@ export const AddPrescriptionPopups = ({
 
         if (res && res.status === 200) {
           setLoader(false);
-          console.log('Resss', res.data);
+          // console.log('Resss', res.data);
           setTimeout(() => {
             Alert.alert('Success', res?.data?.message || 'Added Successfully', [
               {
@@ -433,7 +432,7 @@ export const AddPrescriptionPopups = ({
     const newErrorMessages = {...errorMessages};
 
     requiredFields.forEach(field => {
-      console.log('formData[field]', field, formData.medicine_id);
+      // console.log('formData[field]', field, formData.medicine_id);
 
       if (formData[field] === '' || !formData[field]) {
         newErrorMessages[field] = '* required';
@@ -529,7 +528,7 @@ export const AddPrescriptionPopups = ({
                   mode="outlined"
                   value={moment(reviewDate).format('DD-MM-YYYY')}
                   onPressIn={() => setReviewDateModal(true)}
-                  label="Review Date"
+                  label="Next review"
                 />
               </View>
               <DatePicker

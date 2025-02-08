@@ -14,9 +14,8 @@ export const getPatientService = async (params: getPatientsListTypes) => {
         ? `${API_URL.patientList}?searchterm=${params?.search}`
         : `${API_URL.patientList}`;
 
-  console.log('Url ===> ', Url);
+  // console.log('Url ===> ', Url);
 
   const res = await axios.get(Url);
-
   return res;
 };

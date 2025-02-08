@@ -23,7 +23,7 @@ const FormFieldWrapper = ({children}: any) => {
 
 export const AddProcedure = memo(
   ({close, patientDetails, refetch, editData}: any) => {
-    console.log('patientDetails', patientDetails?.id);
+    // console.log('patientDetails', patientDetails?.id);
     const axios = axiosInstance;
 
     const [isloading, setLoader] = useState(false);
@@ -54,13 +54,15 @@ export const AddProcedure = memo(
       return () => {
         setProcedureListFetched(false);
       };
+      
     }, []);
 
     useEffect(() => {
       if (procedureList && editData) {
-        console.log('Edit Dataaaaa', editData);
+        // console.log('Edit Dataaaaa', editData);
         const indexes = editData?.indexes;
         const obj = editData?.original[indexes];
+        setStartDate(new Date(obj.date_time))
         const indexProcedure = procedureList?.findIndex(
           fi => fi.procedure_name === obj?.procedure_name,
         );
@@ -128,10 +130,10 @@ export const AddProcedure = memo(
           if (res?.data?.status === 200) {
             let temp = [];
 
-            console.log(
-              'res?.data?.data PRocedure List ===> ',
-              res?.data?.data,
-            );
+            // console.log(
+            //   'res?.data?.data PRocedure List ===> ',
+            //   res?.data?.data,
+            // );
 
             if (_.isEqual(res?.data?.data, [[]])) {
               temp = procedureList;
@@ -141,13 +143,13 @@ export const AddProcedure = memo(
           } else Alert.alert('Warning', res?.data?.message);
         })
         .catch(err => {
-          console.log('Errrrrrr', err.response.data);
+          // console.log('Errrrrrr', err.response.data);
           setProcedureList([]);
         });
     };
 
     const handleInputChange = (field, value) => {
-      console.log('field, value ===>', field, value);
+      // console.log('field, value ===>', field, value);
       // if (field === 'discount') {
       //   if (formData.discount_type.value == 'INR') {
       //     if (Number(value) > Number(formData?.procedure_id?.procedure_cost))

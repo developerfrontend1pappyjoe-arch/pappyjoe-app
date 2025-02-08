@@ -54,4 +54,5 @@ export const colorList = {
   Black: '#000',
   Green: '#54b94726',
   red: '#cc0000',
+  warning:"#f57c00"
 };

@@ -9,59 +9,70 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import {useEffect, useState} from 'react';
-import DatePicker from 'react-native-date-picker';
-
-import {colorList} from '../../styles/global.styles';
-
-import {Dropdown} from 'react-native-element-dropdown';
-import {getDoctersList} from '../../services/getDoctersLIst';
-import moment from 'moment';
+} from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import DatePicker from "react-native-date-picker";
+import { colorList } from "../../styles/global.styles";
+import { Dropdown } from "react-native-element-dropdown";
+import { getDoctersList } from "../../services/getDoctersLIst";
+import moment from "moment";
 // import axios from 'axios';
-import {API_URL} from '../../utils/constants';
-import {CustomLoaderRound} from '../../components/CustomLoaderRound';
-import {CustomHeader} from '../../components/CustomHeader';
-import {ArrowLeftIcon} from '../../assets';
-import {NavigationList} from '../../routes/NavigationList';
-import {axiosInstance} from '../../config/axios.config.custom';
-import _ from 'lodash';
-import {getPatientService} from '../../services/getPatientList';
-import React from 'react';
-import {Divider} from 'react-native-paper';
-
-export const AddNewAppoinments = ({navigation, route}: any) => {
+import { API_URL } from "../../utils/constants";
+import { CustomLoaderRound } from "../../components/CustomLoaderRound";
+import { CustomHeader } from "../../components/CustomHeader";
+import { ArrowLeftIcon } from "../../assets";
+import { NavigationList } from "../../routes/NavigationList";
+import { axiosInstance } from "../../config/axios.config.custom";
+import _ from "lodash";
+import { getPatientService } from "../../services/getPatientList";
+import React from "react";
+import {
+  ActivityIndicator,
+  Divider,
+  Icon,
+  List,
+  TextInput as PaperInput,
+  Text as MetText
+} from "react-native-paper";
+type SearchResultType = {
+  status: number;
+  message: string;
+  data: any[];
+};
+export const AddNewAppoinments = ({ navigation, route }: any) => {
   const axios = axiosInstance;
-  const {data = ''} = route?.params || {};
+  const { data = "" } = route?.params || {};
   // console.log('appointmentDetails ==> ', data);
-
+  const patientLoading = [{ Name: "Searching....." }];
   const paymentOptions = [
-    {id: 1, Name: 'Yes'},
-    {id: 2, Name: 'No'},
+    { id: 1, Name: "Yes" },
+    { id: 2, Name: "No" },
   ];
 
   const repeatDaysOptions = [
-    {id: 1, Name: '0'},
-    {id: 2, Name: '1'},
-    {id: 3, Name: '2'},
-    {id: 4, Name: '3'},
-    {id: 5, Name: '4'},
-    {id: 6, Name: '5'},
-    {id: 7, Name: '6'},
-    {id: 8, Name: '7'},
+    { id: 1, Name: "0" },
+    { id: 2, Name: "1" },
+    { id: 3, Name: "2" },
+    { id: 4, Name: "3" },
+    { id: 5, Name: "4" },
+    { id: 6, Name: "5" },
+    { id: 7, Name: "6" },
+    { id: 8, Name: "7" },
   ];
   const slotsOptions = [
-    {id: 1, Name: '00:5:00'},
-    {id: 2, Name: '00:10:00'},
-    {id: 3, Name: '00:15:00'},
-    {id: 4, Name: '00:20:00'},
-    {id: 5, Name: '00:30:00'},
-    {id: 6, Name: '01:00:00'},
-    {id: 6, Name: '01:30:00'},
-    {id: 6, Name: '02:00:00'},
+    { id: 1, Name: "00:5:00" },
+    { id: 2, Name: "00:10:00" },
+    { id: 3, Name: "00:15:00" },
+    { id: 4, Name: "00:20:00" },
+    { id: 5, Name: "00:30:00" },
+    { id: 6, Name: "01:00:00" },
+    { id: 6, Name: "01:30:00" },
+    { id: 6, Name: "02:00:00" },
   ];
   const [isLoading, setLoader] = useState(false);
-  const [patientList, setPatientList] = useState([]);
+  const [patientList, setPatientList] = useState<SearchResultType | null>(null);
+  const [searchLoading, setSearchLoading] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
   // const [dropdownKey, setDropdownKey] = useState(0);
 
   // const [queueStatusList, setQueueStatusList] = useState([
@@ -71,84 +82,95 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
   // ]);
   const [doctersList, setDoctersList] = useState([]);
   const [dateTimeModal, setDateTimeModal] = useState(false);
-
+  const [searchField, setSearchField] = useState<string>("Name");
   const [formData, setFormData] = useState({
-    patient_id: '',
-    doctor_id: '',
+    patient_id: "",
+    doctor_id: "",
     date: new Date(),
     time: new Date(),
     payment: paymentOptions[1],
     repeat: repeatDaysOptions[0],
-    notes: '',
+    notes: "",
     slot: slotsOptions[3],
-    queuestatus: '',
-    phoneNUmber: '',
+    queuestatus: "",
+    phoneNUmber: "",
+    mobile: "",
   });
 
   const [errorMessages, setErrorMessages] = useState({
-    patient_id: '',
-    doctor_id: '',
-    date: '',
-    time: '',
-    payment: '',
-    repeat: '',
-    notes: '',
-    slot: '',
-    queuestatus: '',
+    patient_id: "",
+    doctor_id: "",
+    date: "",
+    time: "",
+    payment: "",
+    repeat: "",
+    notes: "",
+    slot: "",
+    queuestatus: "",
+    mobile: "",
   });
 
-  useEffect(() => {
-    getPatient();
-    getDocters();
-  }, []);
+  // useEffect(() => {
+  //   getPatient();
+  //   getDocters();
+  // }, []);
 
   const handleChange = (field, value) => {
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [field]: value,
-    }));
-    setErrorMessages(prevErrorMessages => ({
+    if (field == "patient_id") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        mobile: value.mobile,
+        [field]: value,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [field]: value,
+      }));
+    }
+
+    setErrorMessages((prevErrorMessages) => ({
       ...prevErrorMessages,
-      [field]: '',
+      [field]: "",
     }));
   };
 
   const validateAndSubmit = () => {
     const requiredFields =
-      data?.mode === 'edit'
+      data?.mode === "edit"
         ? [
-            'doctor_id',
-            'date',
-            'time',
+            "doctor_id",
+            "date",
+            "time",
             // 'payment',
             // 'repeat',
-            'slot',
+            "slot",
             // 'queuestatus',
           ]
         : [
-            'patient_id',
-            'doctor_id',
-            'date',
-            'time',
+            "patient_id",
+            "doctor_id",
+            "date",
+            "time",
             // 'payment',
-            'repeat',
-            'slot',
+            "repeat",
+            "slot",
           ];
 
     let isValid = true;
     const newErrorMessages = {};
 
-    requiredFields.forEach(field => {
+    requiredFields.forEach((field) => {
       if (!formData[field]) {
-        newErrorMessages[field] = 'Field is required';
+        newErrorMessages[field] = "Field is required";
         isValid = false;
       } else {
-        newErrorMessages[field] = '';
+        newErrorMessages[field] = "";
       }
     });
 
-    if (moment(formData.date).add(1, 'day').isBefore(moment())) {
-      newErrorMessages['date'] = 'Selected date must be in the future';
+    if (moment(formData.date).add(1, "day").isBefore(moment())) {
+      newErrorMessages["date"] = "Selected date must be in the future";
       isValid = false;
     }
 
@@ -164,20 +186,30 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
   //   setDropdownKey(prevKey => prevKey + 1);
   // }, [patientList]);
 
-  const getPatient = async (params = '') => {
+  const getPatient = async (params = "") => {
+    setSearchLoading(true);
     try {
-      const {data} = await getPatientService({search: params});
-      console.log('data ===> ', data.data);
-
-      if (_.isEqual(data?.data, [[]])) {
-        setPatientList([]);
-      } else {
-        setPatientList(Array.isArray(data?.data) ? data?.data : [data?.data]);
-      }
+      const { data } = await getPatientService({ search: params });
+      data && setSearchLoading(false);
+      setPatientList(data);
     } catch (err) {
-      setPatientList([]);
+      setSearchLoading(false);
+      setPatientList(null);
     }
   };
+
+  const searchResult = useMemo(() => {
+    if (patientList?.data) {
+      if (_.isEqual(patientList?.data, [[]])) {
+        return [];
+      } else {
+        //  return Array.isArray(patientList?.data) ? patientList?.data : [patientList?.data]
+        return patientList?.data;
+      }
+    } else {
+      return [];
+    }
+  }, [patientList?.data, searchLoading]);
 
   const debounce = (func, delay) => {
     let debounceTimer;
@@ -189,79 +221,88 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
     };
   };
 
-  const handleSearchChange = debounce(text => {
-    if (text !== '') {
+ const debounceMethod =  debounce((text) => {
+    if (text !== "") {
+      const textType = !isNaN(text) && text.trim() !== "" ? "mobile" : "Name";
+      setSearchField(textType);
       getPatient(text);
     }
   }, 100);
 
-  const addDocEditMode = (list: any) => {
-    if (data?.mode === 'edit') editModeDataFill(list);
+  const handleSearchChange = (text)=>{
+    setSearchText(text);
+    debounceMethod(text)
+  }
+
+  const addDocEditMode = () => {
+    if (data?.mode === "edit") editModeDataFill();
   };
 
   const getDocters = async () => {
     try {
-      const {data} = await getDoctersList();
+      const { data } = await getDoctersList();
       setDoctersList(data);
-      setTimeout(() => {
-        addDocEditMode(data);
-      }, 50);
+      // setTimeout(() => {
+      //   addDocEditMode(data);
+      // }, 50);
     } catch (err) {
       setDoctersList([]);
     }
   };
 
-  const editModeDataFill = (docList: any) => {
+  const editModeDataFill = () => {
     // console.log('data?.data == Edit Apponment ===> ', data?.data);
-
-    const temp = {...formData};
-    const docId = docList.filter(el => el.Name === data?.data?.Doctor_Name)[0];
+    const temp = { ...formData };
+    const docId = doctersList.filter(
+      (el) => el.Name === data?.data?.Doctor_Name
+    )[0];
     temp.doctor_id = docId;
-    const dates = moment(data?.data?.Appointment_Date, 'DD-MM-YYYY');
-    const times = moment(data?.data?.Appointment_Time, 'HH:mm a');
-
-    const dateTime = dates
-      .add(times.hours(), 'hours')
-      .add(times.minute(), 'minutes');
-
+    const dates = moment(data?.data?.Appointment_Date, "DD-MM-YYYY");
+    const times = moment(data?.data?.Appointment_Time, "HH:mm a");
+    const dateTime = dates.add(times.hours(), "hours").add(times.minute(), "minutes");
     temp.date = dates.toDate();
     temp.time = dateTime;
-    temp.notes = data?.data?.Appointment_Notes;
+    temp.notes = data?.data?.Appointment_Notes == "0" ? "" : data?.data?.Appointment_Notes;
+    temp.mobile = data?.data?.Patient_mobile ? data?.data.Patient_mobile : "" 
+    console.log(data);
     setFormData(temp);
   };
+
+useEffect(()=>{
+  addDocEditMode()
+},[doctersList])
 
   const addPatientApi = async () => {
     setLoader(true);
     const formDetails = new FormData();
 
-    if (data?.mode !== 'edit')
-      formDetails.append('patient_id', formData?.patient_id?.id);
-    formDetails.append('doctor_id', formData?.doctor_id?.doctorid);
-    formDetails.append('date', moment(formData?.date).format('YYYY-MM-DD'));
-    formDetails.append('time', moment(formData.date).format('HH:mm'));
-    formDetails.append('payment', formData?.payment?.Name);
-    formDetails.append('repeat', formData?.repeat?.Name);
-    if (formData?.notes?.trim() !== '')
-      formDetails.append('notes', formData?.notes?.trim());
-    formDetails.append('slot', formData?.slot?.Name);
-
-    if (data?.mode === 'edit') {
-      formDetails.append('app_id', data?.data?.Appointment_Id);
+    if (data?.mode !== "edit")
+      formDetails.append("patient_id", formData?.patient_id?.id);
+    formDetails.append("doctor_id", formData?.doctor_id?.doctorid);
+    formDetails.append("date", moment(formData?.date).format("YYYY-MM-DD"));
+    formDetails.append("time", moment(formData.date).format("HH:mm"));
+    formDetails.append("payment", formData?.payment?.Name);
+    formDetails.append("repeat", formData?.repeat?.Name);
+    if (formData?.notes?.trim() !== "")
+      formDetails.append("notes", formData?.notes?.trim());
+      formDetails.append("slot", formData?.slot?.Name);
+    if (data?.mode === "edit") {
+      formDetails.append("app_id", data?.data?.Appointment_Id);
     }
 
     try {
-      if (data?.mode === 'edit') {
+      if (data?.mode === "edit") {
         const res = await axios.put(API_URL.fixAppointment, formDetails, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
         if (res?.status === 200) {
           setLoader(false);
           setTimeout(() => {
-            Alert.alert('Success', res?.data?.message || 'Added Successfully', [
+            Alert.alert("Success", res?.data?.message || "Added Successfully", [
               {
-                text: 'OK',
+                text: "OK",
                 onPress: () =>
                   navigation.navigate(NavigationList.homeBottomNav, {
                     reload: true,
@@ -272,22 +313,22 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
         } else {
           setLoader(false);
           Alert.alert(
-            res.data?.message || 'Somthing went wrong,please try agin later',
+            res.data?.message || "Somthing went wrong,please try agin later"
           );
         }
       } else {
         const res = await axios.post(API_URL.addAppoinments, formDetails, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
 
         if (res?.status === 200) {
           setLoader(false);
           setTimeout(() => {
-            Alert.alert('Success', res?.data?.message || 'Added Successfully', [
+            Alert.alert("Success", res?.data?.message || "Added Successfully", [
               {
-                text: 'OK',
+                text: "OK",
                 onPress: () =>
                   navigation.navigate(NavigationList.homeBottomNav, {
                     reload: true,
@@ -298,33 +339,45 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
         } else {
           setLoader(false);
           Alert.alert(
-            res.data?.message || 'Somthing went wrong,please try agin later',
+            res.data?.message || "Somthing went wrong,please try agin later"
           );
         }
       }
     } catch (err) {
       setLoader(false);
-
-      console.error('Errr in post patient details', err.response.data);
-      Alert.alert('Error', err?.response?.data?.message);
+      // console.error('Errr in post patient details', err.response.data);
+      Alert.alert("Error", err?.response?.data?.message);
     }
   };
 
-  const renderDropdownItem = (item, index) => {
-    return (
-      <View style={styles.dropdownItem} key={index}>
-        <Text style={styles.dropdownItemText}>
-          {`${item?.Name} | ${item?.age} | ${item?.gender} | ${item?.mobile} | ${item?.address} `}
-        </Text>
-        <Divider style={{marginVertical: 15}} />
-      </View>
-    );
+  const clearSearchText = () => {
+    setSearchText("");
   };
 
+useEffect(()=>{
+getPatient()
+getDocters()
+return ()=>{
+   setDoctersList([])
+   setPatientList(null)
+}
+},[])
+  const renderDropdownItem = (item: any, index: number) => {
+    return (
+      <React.Fragment key={index}>
+        <List.Item
+          title={`${item?.Name} ${item?.age ? ("| " + item?.age) : ""} ${item?.gender ? (item?.gender != "0" ? `| ${item?.gender}` : "") : ""}`}
+          description={`Mob: ${item?.mobile}`}
+          right={(props) => <MetText variant="labelSmall" {...props}>({item?.Patient_Id})</MetText>}
+        />
+        <Divider />
+      </React.Fragment>
+    );
+  };
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colorList.white}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
       <CustomHeader
-        headerText={data?.mode ? 'Edit Appointment' : 'Add New Appointment'}
+        headerText={data?.mode ? "Edit Appointment" : "Add New Appointment"}
         leftIcon={ArrowLeftIcon}
         leftIconAction={() =>
           data?.mode
@@ -334,16 +387,18 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
       />
 
       <KeyboardAvoidingView
-        style={{flex: 1}}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
         {isLoading ? (
           <CustomLoaderRound />
         ) : (
-          <ScrollView style={[styles.container, {flex: 1}]}>
-            {data?.mode !== 'edit' && (
+          <ScrollView style={[styles.container, { flex: 1 }]}>
+            {data?.mode !== "edit" && (
               <View>
                 <Dropdown
+                  mode="default"
                   style={styles.dropdown}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
@@ -351,22 +406,48 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                   iconStyle={styles.iconStyle}
                   containerStyle={styles.dropdownContainerStyle}
                   itemTextStyle={styles.dropdownItemTextStyle}
-                  data={patientList}
+                  data={searchResult || []}
                   maxHeight={300}
                   labelField="Name"
                   valueField="Name"
-                  placeholder="Patients"
-                  searchPlaceholder="Search..."
+                  searchField={searchField}
+                  placeholder={"Patients"}
+                  searchPlaceholder={"Search..."}
                   search
-                  value={formData?.patient_id || ''}
-                  onChange={item => handleChange('patient_id', item)}
-                  onChangeText={handleSearchChange}
+                  value={formData?.patient_id || ""}
+                  onChange={(item) => handleChange("patient_id", item)}
+                  // onChangeText={handleSearchChange}
                   renderItem={renderDropdownItem}
+                  renderInputSearch={(onChange) => (
+                    <PaperInput
+                      value={searchText}
+                      mode="outlined"
+                      outlineStyle={{ borderColor: colorList.primary }}
+                      onChangeText={handleSearchChange}
+                      style={{ margin: 3, height: 50 }}
+                      right={
+                        <PaperInput.Affix
+                          text={
+                            searchLoading ? (
+                              <ActivityIndicator
+                                color={colorList.primary}
+                                size={22}
+                              />
+                            ) : (
+                            <TouchableOpacity onPress={clearSearchText}>
+                              <Icon size={20} source="close"/>
+                            </TouchableOpacity>
+                            )
+                          }
+                        />
+                      }
+                    />
+                  )}
                 />
 
-                {errorMessages['patient_id'] && (
+                {errorMessages["patient_id"] && (
                   <Text style={styles.errorMessage}>
-                    {errorMessages['patient_id']}
+                    {errorMessages["patient_id"]}
                   </Text>
                 )}
               </View>
@@ -374,8 +455,8 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
 
             <View>
               {/* <Text style={styles.label}>Doctors</Text> */}
-
               <Dropdown
+                onFocus={()=>{getDocters()}}
                 style={styles.dropdown}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
@@ -383,7 +464,7 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                 iconStyle={styles.iconStyle}
                 containerStyle={styles.dropdownContainerStyle}
                 itemTextStyle={styles.dropdownItemTextStyle}
-                data={doctersList}
+                data={doctersList || []}
                 maxHeight={300}
                 labelField="Name"
                 valueField="Name"
@@ -391,12 +472,11 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                 searchPlaceholder="Search..."
                 search
                 value={formData?.doctor_id}
-                onChange={item => handleChange('doctor_id', item)}
+                onChange={(item) => handleChange("doctor_id", item)}
               />
-
-              {errorMessages['doctor_id'] && (
+              {errorMessages["doctor_id"] && (
                 <Text style={styles.errorMessage}>
-                  {errorMessages['doctor_id']}
+                  {errorMessages["doctor_id"]}
                 </Text>
               )}
             </View>
@@ -405,44 +485,44 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
               <Text style={styles.label}>Phone Number</Text>
               <TextInput
                 placeholder="Phone Number"
-                value={formData?.notes}
-                onChangeText={text => handleChange('notes', text)}
+                value={formData?.mobile}
+                onChangeText={(text) => handleChange("mobile", text)}
                 multiline
-                style={[styles.input, {height: 100}]}
+                style={[styles.input, { height: 50 }]}
               />
-              {errorMessages['notes'] && (
+              {errorMessages["mobile"] && (
                 <Text style={styles.errorMessage}>
-                  {errorMessages['notes']}
+                  {errorMessages["mobile"]}
                 </Text>
               )}
             </View>
 
-            <View style={{flexDirection: 'row'}}>
-              <View style={{marginRight: 10, flex: 1}}>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ marginRight: 10, flex: 1 }}>
                 <Text style={styles.label}>Date</Text>
                 <TextInput
-                  value={moment(formData?.date).format('DD-MM-YYYY')}
+                  value={moment(formData?.date).format("DD-MM-YYYY")}
                   onPressIn={() => setDateTimeModal(true)}
                   placeholder="Date"
-                  style={[styles.input, {height: 50}]}
+                  style={[styles.input, { height: 50 }]}
                 />
-                {errorMessages['date'] && (
+                {errorMessages["date"] && (
                   <Text style={styles.errorMessage}>
-                    {errorMessages['date']}
+                    {errorMessages["date"]}
                   </Text>
                 )}
               </View>
-              <View style={{marginLeft: 10, flex: 1}}>
+              <View style={{ marginLeft: 10, flex: 1 }}>
                 <Text style={styles.label}>Time</Text>
                 <TextInput
-                  value={moment(formData?.time).format('hh:mm A')}
+                  value={moment(formData?.time).format("hh:mm A")}
                   onPressIn={() => setDateTimeModal(true)}
                   placeholder="Time"
-                  style={[styles.input, {height: 50}]}
+                  style={[styles.input, { height: 50 }]}
                 />
-                {errorMessages['time'] && (
+                {errorMessages["time"] && (
                   <Text style={styles.errorMessage}>
-                    {errorMessages['time']}
+                    {errorMessages["time"]}
                   </Text>
                 )}
               </View>
@@ -453,17 +533,18 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
               date={formData?.date}
               minimumDate={new Date()}
               // minuteInterval={5}
-              onConfirm={date => {
+              onConfirm={(date) => {
                 setDateTimeModal(false);
-                handleChange('date', date);
-                handleChange('time', date);
+                handleChange("date", date);
+                handleChange("time", date);
               }}
               onCancel={() => setDateTimeModal(false)}
             />
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ flex: 1 }}>
                 <Text style={styles.label}>Slots :</Text>
                 <Dropdown
+                  mode="modal"
                   style={styles.dropdown}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
@@ -477,11 +558,11 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                   valueField="Name"
                   placeholder="Slots"
                   value={formData?.slot}
-                  onChange={item => handleChange('slot', item)}
+                  onChange={(item) => handleChange("slot", item)}
                 />
-                {errorMessages['slot'] && (
+                {errorMessages["slot"] && (
                   <Text style={styles.errorMessage}>
-                    {errorMessages['slot']}
+                    {errorMessages["slot"]}
                   </Text>
                 )}
               </View>
@@ -510,8 +591,8 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                 )}
               </View> */}
 
-              {data?.mode !== 'edit' && (
-                <View style={{flex: 1, marginLeft: 10}}>
+              {data?.mode !== "edit" && (
+                <View style={{ flex: 1, marginLeft: 10 }}>
                   <Text style={styles.label}>Repeat :</Text>
                   <Dropdown
                     style={styles.dropdown}
@@ -527,11 +608,11 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                     valueField="Name"
                     placeholder="Repeat"
                     value={formData?.repeat}
-                    onChange={item => handleChange('repeat', item)}
+                    onChange={(item) => handleChange("repeat", item)}
                   />
-                  {errorMessages['repeat'] && (
+                  {errorMessages["repeat"] && (
                     <Text style={styles.errorMessage}>
-                      {errorMessages['repeat']}
+                      {errorMessages["repeat"]}
                     </Text>
                   )}
                 </View>
@@ -542,12 +623,12 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
             <TextInput
               placeholder="Notes"
               value={formData?.notes}
-              onChangeText={text => handleChange('notes', text)}
+              onChangeText={(text) => handleChange("notes", text)}
               multiline
-              style={[styles.input, {height: 100}]}
+              style={[styles.input, { height: 100 }]}
             />
-            {errorMessages['notes'] && (
-              <Text style={styles.errorMessage}>{errorMessages['notes']}</Text>
+            {errorMessages["notes"] && (
+              <Text style={styles.errorMessage}>{errorMessages["notes"]}</Text>
             )}
 
             {/* {data?.mode === 'edit' && (
@@ -586,8 +667,9 @@ export const AddNewAppoinments = ({navigation, route}: any) => {
                 padding: 10,
                 borderRadius: 8,
                 marginVertical: 15,
-              }}>
-              <Text style={{color: colorList.white, textAlign: 'center'}}>
+              }}
+            >
+              <Text style={{ color: colorList.white, textAlign: "center" }}>
                 Submit
               </Text>
             </TouchableOpacity>
@@ -618,18 +700,18 @@ const styles = StyleSheet.create({
     color: colorList.Black,
   },
   errorMessage: {
-    color: 'red',
+    color: "red",
     marginBottom: 5,
   },
   fieldContainer: {
     marginBottom: 0,
   },
   rowContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   dropdown: {
     height: 50,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
@@ -639,12 +721,12 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: "400",
     color: colorList.dark,
   },
   selectedTextStyle: {
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: "400",
     color: colorList.dark,
   },
   iconStyle: {
@@ -662,6 +744,9 @@ const styles = StyleSheet.create({
   },
   dropdownContainerStyle: {
     backgroundColor: colorList.white,
+    borderRadius: 5,
+    marginTop: 5,
+    paddingBottom: 5,
   },
   dropdownItemTextStyle: {
     color: colorList.dark,
