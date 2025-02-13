@@ -1,10 +1,28 @@
-import {ActivityIndicator} from 'react-native';
-import {colorList} from '../styles/global.styles';
+import React, { useRef } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { colorList } from "../styles/global.styles";
+import LottieView from "lottie-react-native";
+export const CustomLoaderRound = ({ center, color }: any) => {
+   const animation = useRef(null);
+  return (
+  <View style={styles.container}>
+    <LottieView
+      autoPlay
+      ref={animation}
+      style={styles.animation}
+      source={require("../assets/lottie_files/pre-loader.json")}
+    />
+  </View>
+);}
 
-export const CustomLoaderRound = ({center, color}: any) => (
-  <ActivityIndicator
-    size="large"
-    color={color ? color : colorList.primary}
-    style={center && {position: 'absolute', left: '45%', top: '45%'}}
-  />
-);
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  animation: {
+    width: 400,
+    height: 400,
+  },
+});
