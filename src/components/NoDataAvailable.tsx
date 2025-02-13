@@ -14,7 +14,7 @@ export const NoDataAvailable = () => {
              style={styles.animation}
              source={require('../assets/lottie_files/empty_data.json')}
            />
-           <Text style={styles.text}>No data</Text>
+           <Text style={styles.text}>No data !</Text>
     </View>
   );
 };
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   },
   text:{
      fontSize:20,
-     fontWeight:"bold"
+     fontWeight:"bold",
+     color:colorList.blue
   }
 });
