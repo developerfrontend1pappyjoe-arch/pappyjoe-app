@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   appoinmentContainer: {
-    marginBottom: 12,
+    marginBottom: 18,
     backgroundColor: colorList.white,
     borderRadius: 12,
     padding: 16,
