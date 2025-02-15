@@ -1,46 +1,87 @@
 import React, {useState, useCallback, useEffect, memo} from 'react';
 import {
-  Text,
   View,
   RefreshControl,
   BackHandler,
   SafeAreaView,
 } from 'react-native';
 import moment from 'moment';
-
 import {HomeHeader} from './components/Header';
 import {FilterSection} from './components/FilterSection';
-
-// import axios from 'axios';
-import {API_URL} from '../../utils/constants';
 import {FlatList} from 'react-native';
 import {CounterContainer} from './components/CounterContainer';
 import {AppoinmentList} from './components/AppoinmentList';
 import {NavigationList} from '../../routes/NavigationList';
 import {useDispatch, useSelector} from 'react-redux';
 import {NoDataAvailable} from '../../components/NoDataAvailable';
-// import '../../config/axios.config';
-import {axiosInstance as axios} from '../../config/axios.config.custom';
 import {CustomLoaderRound} from '../../components/CustomLoaderRound';
 import {handleHomeAppoinmentFilter} from '../../redux/actions';
 import {useFocusEffect} from '@react-navigation/native';
-
+import { useMutation } from '@tanstack/react-query';
+import { getAppoinments } from './services/getAppoinmentsList';
 export const HomeScreen = memo(({navigation}: any) => {
   const dispatch = useDispatch();
   const [isFocused, setIsFocused] = useState('0');
   const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [isFilterOn, setIsFilterOn] = useState(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
   const [refetch, setRefetch] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [appoinmentList, setAppoinmentList] = useState(null);
 
   const homeAppoinmentFilter = useSelector<any>(
     state => state.homeAppoinmentFilter,
+  ) || {};
+
+  const handleFilterIsOn = () => {
+    let count = 0;
+    Object.values(homeAppoinmentFilter)?.forEach(el => {
+      if (el !== '') count += 1;
+    });
+    if (count > 2) {
+      setIsFilterOn(true);
+    } else setIsFilterOn(false);
+  };
+
+  const {mutate,data:appoinmentList,isLoading} = useMutation(getAppoinments,{
+    onSuccess:(result)=>{
+       if(result.data){
+        handleFilterIsOn()
+       }
+    },
+    onError:(e)=>{
+        console.log(e);
+    }
+  })
+
+ const fetchAppointments = ()=>{
+  const params = {...homeAppoinmentFilter,limit:300};
+  mutate(params);
+ }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAppointments()
+      return () => {
+        console.log('Screen unfocused');
+      };
+    }, []),
   );
 
+  const handleSetFilterParamsToday = () => {
+    const temp = {...homeAppoinmentFilter} as any;
+    temp.from_date = moment().format('DD-MM-YYYY');
+    temp.to_date = moment().format('DD-MM-YYYY');
+    dispatch(handleHomeAppoinmentFilter(temp));
+  };
+
+  const handleSetFilterParamsUpcomming = () => {
+    const temp = {...homeAppoinmentFilter} as any;
+    temp.from_date = moment().add(1, 'day').format('DD-MM-YYYY');
+    temp.to_date = '';
+    dispatch(handleHomeAppoinmentFilter(temp));
+  };
+
   useEffect(() => {
-    getAppoinments();
+    fetchAppointments();
     return () => {
       setRefetch(false);
     };
@@ -63,77 +104,6 @@ export const HomeScreen = memo(({navigation}: any) => {
       backHandler.remove();
     };
   }, [navigation]);
-
-  useFocusEffect(
-    useCallback(() => {
-      getAppoinments();
-      return () => {
-        console.log('Screen unfocused');
-      };
-    }, []),
-  );
-
-  const handleSetFilterParamsToday = () => {
-    const temp = {...homeAppoinmentFilter};
-    temp.from_date = moment().format('DD-MM-YYYY');
-    temp.to_date = moment().format('DD-MM-YYYY');
-    dispatch(handleHomeAppoinmentFilter(temp));
-  };
-
-  const handleSetFilterParamsUpcomming = () => {
-    const temp = {...homeAppoinmentFilter};
-    temp.from_date = moment().add(1, 'day').format('DD-MM-YYYY');
-    temp.to_date = '';
-    dispatch(handleHomeAppoinmentFilter(temp));
-  };
-
-  const convertParamsToQueryString = (params: any) => {
-    const filteredParams = Object.entries(params)
-      ?.filter(([key, value]) => value !== '')
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {});
-
-    const queryString = new URLSearchParams(filteredParams).toString();
-    return queryString;
-  };
-
-  const getAppoinments = async () => {
-    try {
-      setLoading(true);
-      const params = {...homeAppoinmentFilter};
-      params.limit = 300;
-      // params.start = page === 1 ? 0 : page * 10 - 11;
-
-      const Url = `${API_URL.appointments}?${convertParamsToQueryString(
-        params,
-      )}`;
-
-      // console.log('URL -----> ', Url);
-
-      const {data} = await axios.get(Url);
-      if (data) {
-        handleFilterIsOn();
-        setAppoinmentList(data);
-        setRefetch(false);
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error('Errors ====> getAppoinments', error);
-    }
-  };
-
-  const handleFilterIsOn = () => {
-    let count = 0;
-    Object.values(homeAppoinmentFilter)?.forEach(el => {
-      if (el !== '') count += 1;
-    });
-    if (count > 2) {
-      setIsFilterOn(true);
-    } else setIsFilterOn(false);
-  };
 
   return (
     <SafeAreaView style={{flex: 1}}>

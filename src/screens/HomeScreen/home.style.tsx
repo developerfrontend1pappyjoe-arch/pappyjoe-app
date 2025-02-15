@@ -76,14 +76,15 @@ export const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   appoinmentContainer: {
-    marginBottom: 18,
+    marginVertical: 5,
     backgroundColor: colorList.white,
     borderRadius: 12,
-    padding: 16,
-    marginTop: 35,
+    paddingTop: 16,
+    paddingLeft:10,
   },
   appoinmentNameContainer: {
     flex: 7,
+    paddingLeft:7,
   },
   appoinmentNameSocial: {
     flexDirection: 'row',
@@ -94,6 +95,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // borderWidth:.5,
+    // borderColor:colorList.Grey3,
+    // padding:2,
+    // borderRadius:6
   },
   appoinmentNameLabel: {
     fontSize: 11,
@@ -148,7 +153,7 @@ export const styles = StyleSheet.create({
     marginTop: 12,
   },
   appoinmentToLabelTextContainer: {
-    marginLeft: 10,
+    marginLeft: 8,
   },
   appoinmentToLabel: {
     fontSize: 11,
@@ -161,6 +166,5 @@ export const styles = StyleSheet.create({
     lineHeight: 14,
     fontWeight: '600',
     color: colorList.dark,
-    marginTop: 5,
   },
 });
