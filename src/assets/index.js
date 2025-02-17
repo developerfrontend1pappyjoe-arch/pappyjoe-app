@@ -23,7 +23,7 @@ import SampleImage from '../assets/Common/Images/SampleImage.png';
 import ProfileAvatar from '../assets/Common/Images/ProfileAvatar.png';
 
 import CallFillIcon from '../assets/Common/Icons/callFillIcon.png';
-import WhatsAppIcon from '../assets/Common/Icons/whatsAppFillIcon.png';
+import WhatsAppIcon from '../assets/Common/Icons/WhatsAppCallIcon.png';
 import DownArrowIcon from '../assets/Common/Icons/downArrowIcon.png';
 import FilterIcon from '../assets/Common/Icons/filterIcon.png';
 import GoogleMeetIcon from '../assets/Common/Icons/googleMeetIcon.png';

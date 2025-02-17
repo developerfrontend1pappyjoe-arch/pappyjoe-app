@@ -7,17 +7,11 @@ import {
   Alert,
   Dimensions,
   Platform,
-  StyleSheet,
 } from "react-native";
 
 import { styles } from "../home.style";
 import {
-  CalanderIcon,
-  CallFillIcon,
   ProfileAvatar,
-  TimerIcon,
-  WhatsAppIcon,
-  ZoomMeetingIcon,
 } from "../../../assets";
 import { colorList } from "../../../styles/global.styles";
 import { useState } from "react";
@@ -36,9 +30,9 @@ import {
 } from "react-native-paper";
 import { axiosInstance as axios } from "../../../config/axios.config.custom";
 import { checkCountryCode } from "utils/commonUtils";
-import Icons from "react-native-vector-icons/MaterialIcons";
 import { useMutation } from "@tanstack/react-query";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import  MetrialIcon from "react-native-vector-icons/MaterialIcons";
 export const AppoinmentList = ({ data, navigate, refetch }: any) => {
   const [isCancelNote, setIsCancelNote] = useState(false);
   const [cancelNote, setCancelNote] = useState("");
@@ -187,14 +181,20 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
               // padding: 2,
               // width:18,
               // height:18,
-              borderRadius: 18,
-              top: 2,
-              right: 2,
+              top: 4,
+              right: 4,
               justifyContent: "center",
               alignItems: "center",
+              // borderRadius: 18,
+              borderRadius: 7,
+              borderWidth:1,
+              borderColor:colorList.red,
+              backgroundColor:colorList.red,
+              paddingHorizontal:5,
             }}
           >
-            <Icons name="cancel" color={colorList.red} size={24} />
+            <Text style={{color:colorList.white,fontSize:14}}>cancel</Text>
+            {/* <Icons name="delete" color={colorList.red} size={24} /> */}
           </TouchableOpacity>
 
           <View style={{ flex: 10, paddingHorizontal: 10,paddingTop:15 }}>
@@ -216,10 +216,8 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
               >
                
                 <TouchableOpacity onPress={openWhatsApp}>
-                  <Image
-                    source={WhatsAppIcon}
-                    style={{ width: 25, height: 25, resizeMode: "contain" }}
-                  />
+
+                  <Icon name="whatsapp" color={colorList.socondary} size={25} />
                 </TouchableOpacity>
 
                 {Platform.OS !== "ios" && (
@@ -228,7 +226,7 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
                       source={ZoomMeetingIcon}
                       style={{ width: 25, height: 25, resizeMode: "contain" }}
                     /> */}
-                    <Icon color={colorList.white} size={18} name="videocam"/>
+                    <Icon color={colorList.white} size={18} name="video"/>
                   </TouchableOpacity>
                 )}
                  <TouchableOpacity onPress={openDialer}>
@@ -246,14 +244,14 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
               onPress={navigate}
             >
               <View style={styles.appoinmentCalanderContainer}>
-                <Image source={CalanderIcon} />
+                <Icon name="calendar-month-outline" size={18} />
                 <Text style={styles.appoinmentDate}>
                   {data?.Appointment_Date}
                 </Text>
               </View>
 
               <View style={styles.appoinmentTimeContainer}>
-                <Image source={TimerIcon} />
+                <Icon name="clock-time-five-outline" size={18} />
                 <Text style={styles.appoinmentTime}>
                   {data?.Appointment_Time}
                 </Text>
@@ -274,7 +272,7 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
                 onPress={navigate}
                 style={[styles.appoinmentToContainer]}
               >
-                <Image
+                {/* <Image
                   source={ProfileAvatar}
                   style={{
                     width: 28,
@@ -282,7 +280,8 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
                     resizeMode: "contain",
                     borderRadius: 100,
                   }}
-                />
+                /> */}
+                <MetrialIcon name="person" size={25}/>
                 <View style={styles.appoinmentToLabelTextContainer}>
                   <Text style={styles.appoinmentToLabel}>Appointment for</Text>
                   <Text style={styles.appoinmentToText}>
