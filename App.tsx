@@ -1,28 +1,30 @@
-import React, {useEffect} from 'react';
+import React, { FC, PropsWithChildren, useEffect } from "react";
 
-import {NavigationContainers} from './src/routes/Navigations';
-import {QueryClientProvider, QueryClient} from '@tanstack/react-query';
-import {ToastProvider} from 'react-native-toast-notifications';
-import {Text, View,Appearance} from 'react-native';
-import {PersistGate} from 'redux-persist/integration/react';
-import {persistor, store} from './src/redux/store';
-import {Provider} from 'react-redux';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
-import {colorList} from './src/styles/global.styles';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { NavigationContainers } from "./src/routes/Navigations";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ToastProvider } from "react-native-toast-notifications";
+import { Text, View, Appearance } from "react-native";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./src/redux/store";
+import { Provider } from "react-redux";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+  PaperProvider,
+  MD3LightTheme as DefaultTheme,
+} from "react-native-paper";
+import { colorList } from "./src/styles/global.styles";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
-  useEffect(() => Appearance.setColorScheme('light'), []);
   const queryClient = new QueryClient();
-
+  useEffect(() => Appearance.setColorScheme("light"), []);
   const theme = {
     ...DefaultTheme,
     myOwnProperty: true,
     roundness: 4,
     colors: {
       ...DefaultTheme.colors,
-      background: 'white',
+      background: "white",
       onSurface: colorList.dark,
       outlineVariant: colorList.Grey4,
     },
@@ -30,39 +32,41 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <PaperProvider theme={theme}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ToastProvider
-            placement="top"
-            duration={2500}
-            animationType="slide-in"
-            animationDuration={500}
-            swipeEnabled={true}
-            offsetTop={15}
-            renderType={{
-              custom_type: toast => {
-                return (
-                  <View
-                    style={{
-                      padding: 15,
-                      backgroundColor: 'red',
-                      borderRadius: 12,
-                    }}>
-                    <Text style={{color: 'green'}}>{toast.message}</Text>
-                  </View>
-                );
-              },
-            }}>
-            <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <PaperProvider theme={theme}>
+          <PersistGate loading={null} persistor={persistor}>
+            <ToastProvider
+              placement="top"
+              duration={2500}
+              animationType="slide-in"
+              animationDuration={500}
+              swipeEnabled={true}
+              offsetTop={15}
+              renderType={{
+                custom_type: (toast) => {
+                  return (
+                    <View
+                      style={{
+                        padding: 15,
+                        backgroundColor: "red",
+                        borderRadius: 12,
+                      }}
+                    >
+                      <Text style={{ color: "green" }}>{toast.message}</Text>
+                    </View>
+                  );
+                },
+              }}
+            >
               <SafeAreaProvider>
                 <GestureHandlerRootView>
                   <NavigationContainers />
                 </GestureHandlerRootView>
               </SafeAreaProvider>
-            </QueryClientProvider>
-          </ToastProvider>
-        </PersistGate>
-      </PaperProvider>
+            </ToastProvider>
+          </PersistGate>
+        </PaperProvider>
+      </QueryClientProvider>
     </Provider>
   );
 }

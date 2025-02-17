@@ -90,6 +90,7 @@
     "@types/react-native": "^0.72.3",
     "@types/react-native-calendar-picker": "^7.0.6",
     "@types/react-native-doc-viewer": "^2.7.5",
+    "@types/react-native-table-component": "^1.2.8",
     "@types/react-native-vector-icons": "^6.4.18",
     "@types/react-native-video": "^5.0.19",
     "@types/react-test-renderer": "^18.0.0",

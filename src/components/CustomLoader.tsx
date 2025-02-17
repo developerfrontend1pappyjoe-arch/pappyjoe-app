@@ -1,3 +1,4 @@
+import React from 'react'
 import LottieView from 'lottie-react-native';
 import {useRef} from 'react';
 import {StyleSheet, View} from 'react-native';
@@ -11,7 +12,7 @@ export const CustomLoader = () => {
         autoPlay
         ref={animation}
         style={styles.animation}
-        source={require('../assets/pre-loader.json')}
+        source={require('../assets/lottie_files/pre-loader.json')}
       />
     </View>
   );

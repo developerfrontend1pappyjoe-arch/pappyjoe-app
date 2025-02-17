@@ -23,7 +23,7 @@ import SampleImage from '../assets/Common/Images/SampleImage.png';
 import ProfileAvatar from '../assets/Common/Images/ProfileAvatar.png';
 
 import CallFillIcon from '../assets/Common/Icons/callFillIcon.png';
-import WhatsAppIcon from '../assets/Common/Icons/whatsAppFillIcon.png';
+import WhatsAppIcon from '../assets/Common/Icons/WhatsAppCallIcon.png';
 import DownArrowIcon from '../assets/Common/Icons/downArrowIcon.png';
 import FilterIcon from '../assets/Common/Icons/filterIcon.png';
 import GoogleMeetIcon from '../assets/Common/Icons/googleMeetIcon.png';
@@ -50,7 +50,7 @@ import LogOutIcon from '../assets/Common/Icons/LogOutIcon.png';
 import CloseIcon from '../assets/Common/Icons/CloseIcon.png';
 import CheckboxFillIcon from '../assets/Common/Icons/checkboxFill.png';
 import CloseLargeImage from '../assets/Common/Icons/closeBtnLarge.png';
-import NoDataImage from '../assets/Common/Images/NoDataImage.jpeg';
+import NoDataImage from '../assets/Common/Images/NoDataImage.png';
 
 export {
   NoDataImage,
