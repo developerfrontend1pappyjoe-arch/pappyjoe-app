@@ -193,7 +193,7 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
               paddingHorizontal:5,
             }}
           >
-            <Text style={{color:colorList.white,fontSize:14}}>cancel</Text>
+            <Text style={{color:colorList.white,fontSize:14}}>Cancel</Text>
             {/* <Icons name="delete" color={colorList.red} size={24} /> */}
           </TouchableOpacity>
 
