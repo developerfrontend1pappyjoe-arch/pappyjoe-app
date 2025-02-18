@@ -33,12 +33,7 @@ import { AddComplaintsDropdown } from "./Components/AddComplaintsDropdowns";
 import CustomMultiselect from "components/CustomMultiselect";
 import { clinicalNotesMaster } from "screens/AppoinmentsDetailsScreen/services/getClinicalNotesMaster";
 import Icons from "react-native-vector-icons/MaterialIcons";
-import {
-  Table,
-  Row,
-  Rows,
-
-} from "react-native-table-component";
+import { Table, Row, Rows } from "react-native-table-component";
 const ClinicalNoteList = [
   "complaint",
   "history",
@@ -273,65 +268,17 @@ export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
                               }}
                             >
                               {Object.entries(v1).map(([k2, v2], index4) => {
-                                return (<Rows
+                                return (
+                                  <Rows
                                     textStyle={{ margin: 7 }}
-                                    data={[[[noteTite[k2]], [...(getNotes(v2) || [])]]]}
-                                  />);
-                               {
-                                /*
-                                <View
-                                   key={index4}
-                                   style={{
-                                   flexDirection: 'row',
-                                   marginVertical: 6,
-                                   borderBottomWidth:.5,
-                                   borderColor:colorList.Grey4,
-                                   paddingBottom:3
-                                 }}>
-                                  <View
-                                    style={{
-                                      flex: 1,
-                                      justifyContent: 'center',
-                                    }}>
-                                    <Text
-                                      variant="titleSmall"
-                                      style={styles.label}>
-                                      {k2 === 'complaint'
-                                        ? 'Chief Complaints'
-                                        : k2 === 'diagnose'
-                                          ? 'Diagnosis'
-                                          : k2 === 'note'
-                                            ? 'notes'
-                                            : k2}
-                                    </Text>
-                                  </View> 
-                                   <View>
-                                    <Text> : </Text>
-                                  </View>
-                                   <View
-                                    style={{
-                                      flex: 1.9,
-                                      justifyContent: 'start',
-                                      flexDirection:"row",
-                                      flexWrap:"wrap"
-                                    }}>
-                                    {v2?.map((v2List, index5) => (
-                                      <View
-                                        style={styles.labelValueWrapper}
-                                        key={index5}>
-                                        <Text
-                                          variant="labelMedium"
-                                          style={styles.values}>
-                                          {v2List?.clinic_note}
-                                        </Text>
-                                        {index5 !== v2?.length - 1 && (
-                                          <Text>, </Text>
-                                        )}
-                                      </View>
-                                    ))}
-                                  </View>
-                                   </View> */
-                                }
+                                    data={[
+                                      [
+                                        [noteTite[k2]],
+                                        [...(getNotes(v2) || [])],
+                                      ],
+                                    ]}
+                                  />
+                                );
                               })}
                               <Row
                                 data={[
@@ -413,58 +360,6 @@ export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
                                 ]}
                               />
                             </Table>
-                            {/* <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                marginVertical: 10,
-                              }}>
-                              <Button
-                                mode="elevated"
-                                onPress={() => handleEditChiefComplaint(k1, v1,k)}
-                                style={{
-                                  backgroundColor: colorList.primary,
-                                }}
-                                labelStyle={{
-                                  color: colorList.white,
-                                }}>
-                                <Icons
-                                  name="edit"
-                                  size={20}
-                                  color={colorList.white}
-                                />
-                              </Button>
-                              <Button
-                                mode="elevated"
-                                onPress={() => handleDeleteChiefComplaint(k1)}
-                                style={{
-                                  backgroundColor: colorList.red,
-                                }}
-                                labelStyle={{
-                                  color: colorList.white,
-                                }}>
-                                <Icons
-                                  name="delete"
-                                  size={20}
-                                  color={colorList.white}
-                                />
-                              </Button>
-                              <Button
-                                mode="elevated"
-                                onPress={() => handlePrint(k1)}
-                                style={{
-                                  backgroundColor: colorList.red,
-                                }}
-                                labelStyle={{
-                                  color: colorList.white,
-                                }}>
-                                <Icons
-                                  name="print"
-                                  size={20}
-                                  color={colorList.white}
-                                />
-                              </Button>
-                            </View> */}
                           </Surface>
                         );
                       })}
