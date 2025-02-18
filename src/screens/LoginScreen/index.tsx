@@ -59,7 +59,7 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
   });
 
   const [isSecureText, setIsSecureText] = useState(true);
-  const [isFocuz, setIsFocuz] = useState(0);
+  // const [isFocuz, setIsFocuz] = useState(0);
   const [isRememberMe, setIsRememberMe] = useState(false);
   const [loginData, setLoginData] = useState({
     username: '',
@@ -266,8 +266,8 @@ useEffect(() => {
                       setLoginData(prev => ({...prev, password: text}));
                       setErrors({...errors, password: ''});
                     }}
-                    onFocus={() => setIsFocuz(2)}
-                    onBlur={() => setIsFocuz(0)}
+                    // onFocus={() => setIsFocuz(2)}
+                    // onBlur={() => setIsFocuz(0)}
                     secureTextEntry={isSecureText}
                   />
                   {/* <View
