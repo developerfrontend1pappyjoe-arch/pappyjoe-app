@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
-  Image,
+  KeyboardTypeOptions,
 } from "react-native";
 
 import { Button, Divider, Menu, Text, TextInput } from "react-native-paper";
@@ -21,7 +21,19 @@ import { ArrowLeftIcon } from "../../assets";
 import { CustomLoaderRound } from "../../components/CustomLoaderRound";
 import { axiosInstance } from "../../config/axios.config.custom";
 import { CameraViews } from "../AppoinmentsDetailsScreen/components/files/CameraViews";
-
+type ErrorMessageObjectType = {
+  name: string;
+  // owner: '',
+  email: string;
+  country_code: string;
+  mobile: string;
+  gender: string;
+  age: string;
+  dob: string;
+  fileno: string;
+  // patientId: '',
+  address: string;
+};
 export const AddPatients = ({ navigation }: any) => {
   const axios = axiosInstance;
   const genderOptions = [
@@ -43,7 +55,9 @@ export const AddPatients = ({ navigation }: any) => {
     address: "",
   });
 
-  const [errorMessages, setErrorMessages] = useState({
+  const [errorMessages, setErrorMessages] = useState<
+    ErrorMessageObjectType | ""
+  >({
     name: "",
     // owner: '',
     email: "",
@@ -60,7 +74,21 @@ export const AddPatients = ({ navigation }: any) => {
   const [dateTimeModal, setDateTimeModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  const handleChange = (field, value) => {
+  const validateEmail = (email: string): string | null => {
+    if (!email) {
+      return "Email is required.";
+    }
+    if (/\s/.test(email)) {
+      return "Email cannot contain spaces.";
+    }
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return "Invalid email format. Please enter a valid email (e.g., example@domain.com).";
+    }
+    return null; // Valid email, no error message
+  };
+
+  const handleChange = (field: string, value: any) => {
     if (field == "country_code") {
       if (value.includes("+")) {
         const correctedValue = value.replace(/\+/g, "");
@@ -68,7 +96,10 @@ export const AddPatients = ({ navigation }: any) => {
       } else {
         setFormData({ ...formData, [field]: value });
       }
-      setErrorMessages({ ...errorMessages, [field]: "" });
+      setErrorMessages({
+        ...(errorMessages as ErrorMessageObjectType),
+        [field]: "",
+      });
       return;
     }
     if (field === "dob") {
@@ -80,26 +111,37 @@ export const AddPatients = ({ navigation }: any) => {
     } else {
       setFormData({ ...formData, [field]: value });
     }
-    setErrorMessages({ ...errorMessages, [field]: "" });
+    setErrorMessages({
+      ...(errorMessages as ErrorMessageObjectType),
+      [field]: "",
+    });
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const handleInputValidation = (field: string) => {
+    if (field == "email") {
+      const value = formData[field];
+      const errorMsg = validateEmail(value);
+      if (errorMsg) {
+        setErrorMessages({
+          ...(errorMessages as ErrorMessageObjectType),
+          [field]: errorMsg,
+        });
+      }
+    }
   };
 
   const validateAndSubmit = () => {
     const requiredFields = ["name", "country_code", "mobile"];
 
     let isValid = true;
-    const newErrorMessages = {};
+    const newErrorMessages: any = {};
 
-    requiredFields.forEach((field) => {
-      if (!formData[field]) {
-        newErrorMessages[field] = `* required`;
+    requiredFields.forEach((field: string) => {
+      if (!formData[field as keyof typeof formData]) {
+        newErrorMessages[field as keyof typeof newErrorMessages] = `* required`;
         isValid = false;
       } else {
-        newErrorMessages[field] = "";
+        newErrorMessages[field as keyof typeof newErrorMessages] = "";
       }
     });
     setErrorMessages(newErrorMessages);
@@ -113,17 +155,17 @@ export const AddPatients = ({ navigation }: any) => {
     setLoading(true);
     const formDetails = new FormData();
 
-    Object.entries(formData).map(([key, val]) => {
+    Object.entries(formData).map(([key, val]: any[]) => {
       if (key == "gender") {
-        const gender = val ? val.name : val
-          formDetails.append(`${key}`, `${gender}`);
+        const gender = val ? val?.name : val;
+        formDetails.append(`${key}`, `${gender}`);
       } else formDetails.append(`${key}`, `${val}`);
     });
     // console.log(formDetails);
     try {
       const res = await axios.post(API_URL.addPatient, formDetails, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -137,7 +179,7 @@ export const AddPatients = ({ navigation }: any) => {
         setLoading(false);
         Alert.alert("Error", res?.data?.message || "Somthing went wrong");
       }
-    } catch (err) {
+    } catch (err: any) {
       setLoading(false);
       console.error("Errr in post patient details", err.response.data);
       Alert.alert("Error", err?.response?.data?.message);
@@ -146,8 +188,8 @@ export const AddPatients = ({ navigation }: any) => {
 
   const renderField = (
     label: string,
-    field,
-    keyboardType = "default",
+    field: keyof typeof formData,
+    keyboardType: KeyboardTypeOptions = "default"
   ) => (
     <View style={styles.fieldContainer}>
       <TextInput
@@ -155,8 +197,9 @@ export const AddPatients = ({ navigation }: any) => {
         label={label}
         style={styles.input}
         onChangeText={(text) => handleChange(field, text)}
+        onBlur={() => handleInputValidation(field)}
         value={formData[field]}
-        keyboardType={keyboardType}
+        keyboardType={keyboardType as KeyboardTypeOptions}
       />
       {errorMessages !== "" && errorMessages[field] && (
         <Text style={styles.errorMessage}>{errorMessages[field]}</Text>
@@ -179,7 +222,7 @@ export const AddPatients = ({ navigation }: any) => {
 
             <View style={styles.rowContainer}>
               <View style={{ flex: 4, marginRight: 10 }}>
-                {renderField("Code", "country_code", "phone-pad")}
+                {renderField("Code", "country_code", "number-pad")}
               </View>
               <View style={{ flex: 8 }}>
                 {renderField("Mobile", "mobile", "phone-pad")}
@@ -210,14 +253,14 @@ export const AddPatients = ({ navigation }: any) => {
                   value={formData?.gender}
                   onChange={(item) => handleChange("gender", item)}
                 />
-                {errorMessages["gender"] && (
+                {errorMessages["gender" as keyof typeof errorMessages] && (
                   <Text style={styles.errorMessage}>
-                    {errorMessages["gender"]}
+                    {errorMessages["gender" as keyof typeof errorMessages]}
                   </Text>
                 )}
               </View>
               <View style={{ flex: 1 }}>
-                {renderField("Age", "age", "phone-pad")}
+                {renderField("Age", "age", "number-pad")}
               </View>
             </View>
 
@@ -237,9 +280,9 @@ export const AddPatients = ({ navigation }: any) => {
                   placeholder="DD-MM-YYYY"
                   style={[styles.input]}
                 />
-                {errorMessages["dob"] && (
+                {errorMessages["dob" as keyof typeof errorMessages] && (
                   <Text style={styles.errorMessage}>
-                    {errorMessages["dob"]}
+                    {errorMessages["dob" as keyof typeof errorMessages]}
                   </Text>
                 )}
               </View>
@@ -248,7 +291,7 @@ export const AddPatients = ({ navigation }: any) => {
               modal
               mode="date"
               open={dateTimeModal}
-              date={formData?.dob == "" ? new Date() : formData?.dob}
+              date={formData?.dob == "" ? new Date() : new Date(formData?.dob)}
               maximumDate={new Date()}
               onConfirm={(date) => {
                 setDateTimeModal(false);
