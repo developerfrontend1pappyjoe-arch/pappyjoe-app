@@ -11,7 +11,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
 
-import {CustomHeader} from '../../components/CustomHeader';
+// import {CustomHeader} from '../../components/CustomHeader';
 import {colorList} from '../../styles/global.styles';
 
 import {styles} from './patientlist.styles';
@@ -158,7 +158,7 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: colorList.white}}>
         <>
-          <CustomHeader headerText={'Patient List'} />
+          {/* <CustomHeader headerText={'Patient List'} /> */}
           <View style={styles.container}>
             <View style={{paddingTop: 10}}>
               <SearchInput

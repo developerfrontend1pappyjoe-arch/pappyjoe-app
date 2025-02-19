@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   Alert,
   Modal,
   Dimensions,
-} from 'react-native';
+} from "react-native";
 
 import {
   AddIcon,
@@ -19,23 +19,25 @@ import {
   PatientListFillIcon,
   PatientListIcon,
   ProfileIcon,
-} from '../assets';
-import {colorList} from '../styles/global.styles';
-import {NavigationList} from '../routes/NavigationList';
-import {CustomModal} from './CustomModal';
-import {Button} from 'react-native-paper';
-
-const AddAllModal = ({closeModal, navigate}: any) => {
+} from "../assets";
+import { colorList } from "../styles/global.styles";
+import { NavigationList } from "../routes/NavigationList";
+import { CustomModal } from "./CustomModal";
+import MetrialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import IonIcon from "react-native-vector-icons/Ionicons";
+const btnIconSize = 23;
+const AddAllModal = ({ closeModal, navigate }: any) => {
   return (
     <View style={{}}>
       <View
         style={{
           padding: 10,
           borderRadius: 10,
-          width: Dimensions.get('screen').width * 0.8,
-          height: Dimensions.get('screen').height * 0.15,
-          position: 'relative',
-        }}>
+          width: Dimensions.get("screen").width * 0.8,
+          height: Dimensions.get("screen").height * 0.15,
+          position: "relative",
+        }}
+      >
         {/* <View style={{position: 'relative'}}>
           <Button>
             <Image source={CloseLargeImage} style />
@@ -48,12 +50,13 @@ const AddAllModal = ({closeModal, navigate}: any) => {
           }}
           style={{
             borderRadius: 8,
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: "center",
+            alignItems: "center",
             backgroundColor: colorList.primary,
             marginBottom: 15,
-          }}>
-          <Text style={{fontSize: 18, padding: 10, color: colorList.white}}>
+          }}
+        >
+          <Text style={{ fontSize: 18, padding: 10, color: colorList.white }}>
             New Appointment
           </Text>
         </TouchableOpacity>
@@ -65,11 +68,12 @@ const AddAllModal = ({closeModal, navigate}: any) => {
           }}
           style={{
             borderRadius: 8,
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: "center",
+            alignItems: "center",
             backgroundColor: colorList.socondary,
-          }}>
-          <Text style={{fontSize: 18, padding: 10, color: colorList.white}}>
+          }}
+        >
+          <Text style={{ fontSize: 18, padding: 10, color: colorList.white }}>
             New Patient
           </Text>
         </TouchableOpacity>
@@ -78,7 +82,7 @@ const AddAllModal = ({closeModal, navigate}: any) => {
   );
 };
 
-export const CustomTabBar = ({navigation}: any) => {
+export const CustomTabBar = ({ navigation }: any) => {
   const [index, setIndex] = useState(1);
   const handleClickRoute = (route: any, index: number) => {
     setIndex(index);
@@ -98,26 +102,35 @@ export const CustomTabBar = ({navigation}: any) => {
   return (
     <View
       style={{
-        flexDirection: 'row',
-        backgroundColor: '#fff',
+        flexDirection: "row",
+        backgroundColor: "#fff",
         borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        justifyContent: 'space-evenly',
+        borderTopColor: "#ccc",
+        justifyContent: "space-evenly",
         paddingVertical: 8,
-      }}>
+      }}
+    >
       <TouchableOpacity
         accessibilityRole="button"
         style={[styles.wrapper]}
-        onPress={() => handleClickRoute(NavigationList.home, 1)}>
-        <Image
+        onPress={() => handleClickRoute(NavigationList.home, 1)}
+      >
+        {/* <Image
           source={index === 1 ? HomeFillIcon : HomeIcon}
           style={[styles.iconStyle]}
+        /> */}
+        <MetrialIcon
+          style={{margin:0,padding:0}}
+          name={index === 1 ? "home-variant" : "home-variant-outline"}
+          size={btnIconSize+1}
+          color={index === 1 ? colorList.primary : colorList.Grey1}
         />
         <Text
           style={[
             styles.labelStyle,
-            index === 1 && {color: colorList.primary},
-          ]}>
+            index === 1 && { color: colorList.primary },
+          ]}
+        >
           Home
         </Text>
       </TouchableOpacity>
@@ -125,16 +138,24 @@ export const CustomTabBar = ({navigation}: any) => {
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.patientList, 2)}>
-        <Image
+        onPress={() => handleClickRoute(NavigationList.patientList, 2)}
+      >
+        {/* <Image
           source={index === 2 ? PatientListFillIcon : PatientListIcon}
           style={styles.iconStyle}
+        /> */}
+        <MetrialIcon
+        style={{margin:0,padding:0}}
+          name={index === 2 ? "clipboard-text" : "clipboard-text-outline"}
+          color={index === 2 ? colorList.primary : colorList.Grey1}
+          size={btnIconSize}
         />
         <Text
           style={[
             styles.labelStyle,
-            index === 2 && {color: colorList.primary},
-          ]}>
+            index === 2 && { color: colorList.primary },
+          ]}
+        >
           Patient List
         </Text>
       </TouchableOpacity>
@@ -143,7 +164,8 @@ export const CustomTabBar = ({navigation}: any) => {
         <TouchableOpacity
           accessibilityRole="button"
           style={styles.customAddButtonWrapper}
-          onPress={openModal}>
+          onPress={openModal}
+        >
           <Image source={AddIcon} style={styles.customAddButton} />
         </TouchableOpacity>
       </View>
@@ -151,27 +173,43 @@ export const CustomTabBar = ({navigation}: any) => {
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.commingSoon, 3)}>
-        <Image source={CommingSoonIcon} style={styles.iconStyle} />
+        onPress={() => handleClickRoute(NavigationList.billing, 3)}
+      >
+        {/* <Image source={CommingSoonIcon} style={styles.iconStyle} /> */}
+        <IonIcon
+        style={{margin:0,padding:0}}
+          name={index === 3 ? "receipt" : "receipt-outline"}
+          color={index === 3 ? colorList.primary : colorList.Grey1}
+          size={btnIconSize-1}
+        />
         <Text
           style={[
             styles.labelStyle,
-            index === 3 && {color: colorList.primary},
-          ]}>
-          Coming Soon
+            index === 3 && { color: colorList.primary },
+          ]}
+        >
+          Billing
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.profile, 4)}>
-        <Image source={ProfileIcon} style={styles.iconStyle} />
+        onPress={() => handleClickRoute(NavigationList.profile, 4)}
+      >
+        {/* <Image source={ProfileIcon} style={styles.iconStyle} /> */}
+        <IonIcon
+        style={{margin:0,padding:0}}
+          name={index === 4 ? "person-circle-sharp" : "person-circle-outline"}
+          color={index === 4 ? colorList.primary : colorList.Grey1}
+          size={btnIconSize+3}
+        />
         <Text
           style={[
             styles.labelStyle,
-            index === 4 && {color: colorList.primary},
-          ]}>
+            index === 4 && { color: colorList.primary },
+          ]}
+        >
           Profile
         </Text>
       </TouchableOpacity>
@@ -185,24 +223,25 @@ export const CustomTabBar = ({navigation}: any) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
     flex: 1,
+    display:"flex",
   },
   customAddButtonWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colorList.socondary,
     borderRadius: 10,
     width: 50,
     height: 50,
-    position: 'relative',
+    position: "relative",
     top: -30,
   },
   customAddButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconStyle: {
     width: 20,
@@ -210,9 +249,10 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: "500",
     lineHeight: 9,
-    marginTop: 5,
+    marginTop: 4,
     color: colorList.Grey1,
+    paddingTop:3
   },
 });

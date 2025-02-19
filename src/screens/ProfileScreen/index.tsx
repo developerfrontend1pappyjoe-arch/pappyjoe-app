@@ -1,3 +1,4 @@
+import React from "react"
 import {
   View,
   Text,
@@ -8,7 +9,7 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import {CustomHeader} from '../../components/CustomHeader';
+// import {CustomHeader} from '../../components/CustomHeader';
 import {
   ArrowLeftIcon,
   ArrowRightLgIcon,
@@ -156,7 +157,7 @@ export const ProfileScreen = ({navigation}: any) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <CustomHeader headerText="My Profile" />
+      {/* <CustomHeader headerText="My Profile" /> */}
       <View style={styles.container}>
         <ClinicList />
         <ProfileFeatersList navigation={logoutNavigation} />

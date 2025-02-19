@@ -1,12 +1,13 @@
 import React from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import Invoice from "./Invoice";
 import Receipt from "./Receipt";
+import { CustomHeader } from "components/CustomHeader";
 
 function Billing() {
   return (
     <View>
-      Billing
+    <Text>  Billing</Text>
       <View>
         <Invoice />
       </View>

@@ -27,13 +27,15 @@ import UpdateScreen from "components/UpdateScreen";
 import SpInAppUpdates, { AndroidInAppUpdateExtras } from "sp-react-native-in-app-updates";
 import { Alert, Platform } from "react-native";
 import { NativeModules } from "react-native";
+import Billing from "screens/Billing";
+import { colorList } from "styles/global.styles";
 const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const BottomHomeNavigation = () => {
   return (
-    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
+    <Tab.Navigator initialRouteName={NavigationList.home} tabBar={(props) => <CustomTabBar {...props} />}>
       <Tab.Screen
         name={NavigationList.home}
         component={HomeScreen}
@@ -45,21 +47,36 @@ const BottomHomeNavigation = () => {
         name={NavigationList.patientList}
         component={PatientListScreen}
         options={{
-          headerShown: false,
+          title:"Patient List",
+          headerShown: true,
+          headerTintColor:colorList.white,
+          headerStyle:{
+            backgroundColor:colorList.primary,
+          }
         }}
       />
       <Tab.Screen
-        name={NavigationList.commingSoon}
-        component={CommingSoonScreen}
+        name={NavigationList.billing}
+        component={Billing}
         options={{
-          headerShown: false,
+          title:"Billing",
+          headerShown: true,
+          headerTintColor:colorList.white,
+          headerStyle:{
+            backgroundColor:colorList.primary
+          }
         }}
       />
       <Tab.Screen
         name={NavigationList.profile}
         component={ProfileScreen}
         options={{
-          headerShown: false,
+          title:"My Profile",
+          headerShown: true,
+          headerTintColor:colorList.white,
+          headerStyle:{
+            backgroundColor:colorList.primary
+          }
         }}
       />
     </Tab.Navigator>
