@@ -12,20 +12,16 @@ import Icons from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
 
 import {CustomHeader} from '../../components/CustomHeader';
-import {SearchIcon} from '../../assets';
 import {colorList} from '../../styles/global.styles';
 
 import {styles} from './patientlist.styles';
 import {getPatientListService} from './service/patientList.service';
-import {CustomLoaderRound} from '../../components/CustomLoaderRound';
 import {NavigationList} from '../../routes/NavigationList';
 import {PatientList} from './components/PatientList';
-import {Button, Text, TextInput} from 'react-native-paper';
+import { TextInput} from 'react-native-paper';
 import {NavigationProps} from 'types/CommonTypes';
 import {CustomContentLoader} from 'components/CustomContentLoader';
 import {NoDataAvailable} from 'components/NoDataAvailable';
-import {PatientDataProps} from 'types/PatientDetailsTypes';
-import {CustomLoader} from 'components/CustomLoader';
 
 const SearchInput = ({searchParams, setSearchParams, clearSearch}: any) => {
   return (
@@ -133,9 +129,8 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
         setLoading(true);
         const {data} = await getPatientListService(
           searchParams,
-          `start=${page === 1 ? 0 : page * 10 - 11}&limit=10`,
+          `start=${page === 1 ? 0 : ((page * 10) - 11)}&limit=10`,
         );
-        // console.log('data===> 121212', data);
 
         if (data?.status == 200) {
           if (_.isEqual([[]], data.data)) {
@@ -146,18 +141,16 @@ export const PatientListScreen: React.FC<NavigationProps> = memo(
             setPatientList(newData);
           }
           setRefreshing(false);
-          // console.log('searchParams + page', searchParams, page);
         }
         setLoading(false);
       } catch (err) {
         setLoading(false);
-        // console.log('Errr in getPatientListApi', err);
       }
     };
 
     useEffect(() => {
       getPatientListApi();
-      console.log(isLoading);
+      // console.log(isLoading);
     }, [page]);
 
     // console.log('patiantList ==> ', patiantList);
