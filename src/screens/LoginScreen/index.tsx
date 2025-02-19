@@ -1,3 +1,4 @@
+import React from "react"
 import {useEffect, useState} from 'react';
 import {
   View,
@@ -58,7 +59,7 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
   });
 
   const [isSecureText, setIsSecureText] = useState(true);
-  const [isFocuz, setIsFocuz] = useState(0);
+  // const [isFocuz, setIsFocuz] = useState(0);
   const [isRememberMe, setIsRememberMe] = useState(false);
   const [loginData, setLoginData] = useState({
     username: '',
@@ -66,6 +67,19 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
   });
   const [errors, setErrors] = useState({username: '', password: ''});
 
+  const validateEmail = (email: string): string | null => {
+    if (!email) {
+      return "Email is required.";
+    }
+    if (/\s/.test(email)) {
+      return "Email cannot contain spaces.";
+    }
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return "Invalid email format. Please enter a valid email (e.g., example@domain.com).";
+    }
+    return null; // Valid email, no error message
+  };
 
   const getRememberMeData = async () => {
     const result = await getStoreData('loginData');
@@ -87,9 +101,9 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
   const validateForm = () => {
     let formIsValid = true;
     const newErrors = {username: '', password: ''};
-
-    if (!isValidEmail(loginData.username)) {
-      newErrors.username = 'Email is required';
+    const emailError = validateEmail(loginData.username)
+    if (!isValidEmail(loginData.username) || Boolean(emailError)) {
+      newErrors.username = emailError || 'Email is required';
       formIsValid = false;
     }
 
@@ -97,7 +111,6 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
       newErrors.password = 'Password is required';
       formIsValid = false;
     }
-
     setErrors(newErrors);
     return formIsValid;
   };
@@ -108,6 +121,16 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
       mutate(loginData);
     }
   };
+
+  const handleOnBlur = (key : keyof typeof errors)=>{
+    const errorText = validateEmail(loginData.username)
+    if(errorText){
+      setErrors(prev=>({
+        ...prev,
+        [key]:errorText
+      }))
+    }
+  }
 
 const handleRememberPassword = async ()=>{
     if(isRememberMe){
@@ -121,11 +144,11 @@ const handleRememberPassword = async ()=>{
 
 useEffect(() => {
   getRememberMeData();
-  console.log(params);
+  // console.log(params);
 }, []);
 
 useEffect(() => {
-  console.log("params---------------------------->",params);
+  // console.log("params---------------------------->",params);
   if(params?.data?.email && params?.data?.password){
      const {email} = params.data
      setLoginData({
@@ -186,13 +209,14 @@ useEffect(() => {
                     style={styles.inputs}
                     placeholder="Email Address"
                     placeholderTextColor={colorList.Grey1}
+                    keyboardType="email-address"
                     value={loginData.username}
                     onChangeText={text => {
                       setLoginData(prev => ({...prev, username: text}));
                       setErrors({...errors, username: ''});
                     }}
-                    onFocus={() => setIsFocuz(1)}
-                    onBlur={() => setIsFocuz(0)}
+                    // onFocus={() => {handleOnBlur()}}
+                    onBlur={() => {handleOnBlur("username")}}
                   />
                 </View>
                 <Errormessage message={errors.username} />
@@ -242,8 +266,8 @@ useEffect(() => {
                       setLoginData(prev => ({...prev, password: text}));
                       setErrors({...errors, password: ''});
                     }}
-                    onFocus={() => setIsFocuz(2)}
-                    onBlur={() => setIsFocuz(0)}
+                    // onFocus={() => setIsFocuz(2)}
+                    // onBlur={() => setIsFocuz(0)}
                     secureTextEntry={isSecureText}
                   />
                   {/* <View

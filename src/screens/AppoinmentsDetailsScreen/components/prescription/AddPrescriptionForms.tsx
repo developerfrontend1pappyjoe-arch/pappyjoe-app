@@ -1,4 +1,4 @@
-import moment from 'moment';
+import React from "react"
 import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
