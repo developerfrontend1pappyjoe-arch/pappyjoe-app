@@ -3,13 +3,13 @@ import {colorList} from '../../styles/global.styles';
 
 export const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingHorizontal: 5,
+    paddingTop: 15,
   },
   patientDetailsContainer: {
     backgroundColor: colorList.white,
     borderRadius: 12,
-    padding: 16,
+    padding: 10,
   },
   profileSection: {
     flexDirection: 'row',

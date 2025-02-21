@@ -54,5 +54,23 @@ export const colorList = {
   Black: '#000',
   Green: '#54b94726',
   red: '#cc0000',
-  warning:"#f57c00"
+  warning:"#f57c00",
+  palette:{
+      primary:{
+         light:"#1680C0",
+         main:"#02AEED"
+      },
+      success:{
+        light: '#54b94726',
+        main: '#54B947',
+      },
+      warning:{
+        light: "#FFECB3", 
+        main: "#FF8A08",
+      },
+      error:{
+        light:"#F6DED8",
+        main:"#B82132"
+      }
+  }
 };

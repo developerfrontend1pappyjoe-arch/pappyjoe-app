@@ -14,6 +14,7 @@ import {
 } from "react-native-paper";
 import { colorList } from "./src/styles/global.styles";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ModalProvider from "providers/ModalProviders";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -58,11 +59,13 @@ export default function App() {
                 },
               }}
             >
+              <ModalProvider>
               <SafeAreaProvider>
                 <GestureHandlerRootView>
                   <NavigationContainers />
                 </GestureHandlerRootView>
               </SafeAreaProvider>
+              </ModalProvider>
             </ToastProvider>
           </PersistGate>
         </PaperProvider>

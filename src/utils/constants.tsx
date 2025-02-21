@@ -29,6 +29,8 @@ const API_URL = {
   getClinicalNotesMaster: `${BASE_URL}/clinicnotemaster`,
   getPrescriptionTemplatelist: `${BASE_URL}/templatelist`,
   patientProfileUpload: `${BASE_URL}/profilephoto`,
+  getInvoice: `${BASE_URL}/invoicelist`,
+  invoiceOperation:`${BASE_URL}/invoice`
 };
 
 export {BASE_URL, API_URL};

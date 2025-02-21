@@ -15,7 +15,8 @@ import { getPatientService } from "services/getPatientList";
 import { CustomContentLoader } from "./CustomContentLoader";
 import { PatientDataProps } from "types/PatientDetailsTypes";
 import { checkCountryCode } from "utils/commonUtils";
-
+import IonIcon from "react-native-vector-icons/Ionicons"
+import { colorList } from "styles/global.styles";
 interface PatientDetailsTileProps {
   patientId: string;
 }
@@ -25,7 +26,7 @@ interface ImageObject {
 }
 
 export const PatientDetailsTiles = memo(
-  ({ patientId }: PatientDetailsTileProps) => {
+  ({navigation, patientId }: PatientDetailsTileProps) => {
     // console.log("😇 ===> ", patientId);
 
     const [imageViews, setImageViews] = useState(false);
@@ -44,6 +45,8 @@ export const PatientDetailsTiles = memo(
       try {
         setLoading(true);
         const { data } = await getPatientService({ id });
+        console.log(data);
+        
         setLoading(false);
         if (data?.status === 200) {
           setPatientDetails(data?.data[0]);
@@ -72,6 +75,9 @@ export const PatientDetailsTiles = memo(
       return (
         <View style={styles.patientDetailsContainer}>
           <View>
+            <TouchableOpacity  style={{position:"absolute",right:0,top:0,backgroundColor:colorList.socondary,padding:4,borderRadius:5}}>
+              <IonIcon name="receipt" color={colorList.white} size={17} />
+            </TouchableOpacity>
             <View style={styles.profileSection}>
               <TouchableOpacity
                 style={{ marginRight: 8 }}

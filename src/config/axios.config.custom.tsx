@@ -2,7 +2,7 @@
 import axios from 'axios';
 import {store} from '../redux/store'; // assuming you have a Redux store set up
 
-export const axiosInstance = axios.create();
+ const axiosInstance = axios.create();
 
 axiosInstance.interceptors.request.use(
   config => {
@@ -16,3 +16,5 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+export {axiosInstance}

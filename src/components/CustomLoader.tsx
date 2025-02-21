@@ -20,7 +20,7 @@ export const CustomLoader = () => {
 
 const styles = StyleSheet.create({
   cosntainer: {
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
   animation: {
     width: 200,
     height: 200,
-    backgroundColor: '#eee',
+    // backgroundColor: '#eee',
   },
 });

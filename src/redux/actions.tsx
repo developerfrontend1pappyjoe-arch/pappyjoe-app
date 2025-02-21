@@ -5,6 +5,7 @@ import {
   HOME_APPOINMENTS_FILTER,
   IS_LOGIN,
   REMOVE_LOGIN_DETAILS,
+  PATIENT_ID
 } from './types';
 
 export const handleHomeAppoinmentFilter = (data: any) => {
@@ -35,3 +36,10 @@ export const removeLoginDetails = () => {
     payload: null,
   };
 };
+
+export const setPatientId = (id:string | null)=>{
+   return {
+      type:PATIENT_ID,
+      payload:id
+   }
+}

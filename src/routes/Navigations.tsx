@@ -12,7 +12,7 @@ import { OTPVerificationScreen } from "../screens/OtpVerificationScreen/indx";
 import { OTPSuccesScreen } from "../screens/OTPSuccessScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { PatientListScreen } from "../screens/PatientListScreen";
-import { CommingSoonScreen } from "../screens/CommingSoonScreen";
+// import { CommingSoonScreen } from "../screens/CommingSoonScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { CustomTabBar } from "../components/CustomBottomNavBar";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +25,7 @@ import { AddNewAppoinments } from "../screens/AddAppoinments";
 import { ProfileProfile } from "../screens/PatientProfileEdit";
 import UpdateScreen from "components/UpdateScreen";
 import SpInAppUpdates, { AndroidInAppUpdateExtras } from "sp-react-native-in-app-updates";
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import { NativeModules } from "react-native";
 import Billing from "screens/Billing";
 import { colorList } from "styles/global.styles";
@@ -59,7 +59,7 @@ const BottomHomeNavigation = () => {
         name={NavigationList.billing}
         component={Billing}
         options={{
-          title:"Billing",
+          title:"Billing Area",
           headerShown: true,
           headerTintColor:colorList.white,
           headerStyle:{
