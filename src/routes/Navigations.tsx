@@ -29,6 +29,7 @@ import { Platform } from "react-native";
 import { NativeModules } from "react-native";
 import Billing from "screens/Billing";
 import { colorList } from "styles/global.styles";
+import BillingPatientList from "screens/Billing/component/BillingPatientList";
 const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -56,8 +57,8 @@ const BottomHomeNavigation = () => {
         }}
       />
       <Tab.Screen
-        name={NavigationList.billing}
-        component={Billing}
+        name={NavigationList.billingList}
+        component={BillingPatientList}
         options={{
           title:"Billing Area",
           headerShown: true,
@@ -214,6 +215,11 @@ export const NavigationContainers = () => {
         <Stack.Screen
           name={NavigationList.patientProfile}
           component={ProfileProfile}
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name={NavigationList.billing}
+          component={Billing}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen

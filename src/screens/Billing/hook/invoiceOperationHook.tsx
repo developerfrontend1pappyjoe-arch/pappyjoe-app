@@ -9,13 +9,14 @@ import { useWindowDimensions } from "react-native";
 import { useContext } from "react";
 import { InvoiceContext } from "../Invoice";
 import { useMutation } from "@tanstack/react-query";
-export const useDeleteInvoice = ()=>{
+export const useDeleteInvoice = ({onSuccess,onError}:{onSuccess?:Function,onError?:Function})=>{
     const dimention = useWindowDimensions()
     const toast = useToast()
     const {setRefreshing} = useContext(InvoiceContext)
        return useMutation(invoiceOperation,{
         onSuccess:(result)=>{
                if(result.status){
+               (onSuccess && onSuccess())
                 setRefreshing(true)
                 toast.show(result.message,{
                     type: "success", 
@@ -23,6 +24,7 @@ export const useDeleteInvoice = ()=>{
                     style:{width:dimention.width-10},
                 })
                }else{
+                (onError && onError())
                 toast.show(result.message,{
                     type: "warning", 
                     placement: "top",
@@ -31,7 +33,8 @@ export const useDeleteInvoice = ()=>{
                }
         },
         onError:(e:any)=>{
-            toast.show(e.response.data.message,{
+            (onError && onError())
+            toast.show(e?.message,{
                 type: "warning", 
                 placement: "top",
                 style:{width:dimention.width-10},

@@ -1,55 +1,113 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, TouchableOpacity, useWindowDimensions, View } from "react-native";
-import { Button, Card, Menu, Modal, Portal, SegmentedButtons, Text } from "react-native-paper";
 import {
-  InvoiceItemType,
-  InvoiceObjectType,
-  ResultArrayType,
-} from "../Invoice/types";
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { Button, Card, Menu, Text } from "react-native-paper";
+import { InvoiceObjectType, ResultArrayType } from "../Invoice/types";
 import { colorList } from "styles/global.styles";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 import { FlatList } from "react-native-gesture-handler";
 import DetailsComponent from "./DetailsComponent";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { InvoiceContext } from "../Invoice";
+// import MetrialIcon from "react-native-vector-icons/MaterialIcons";
 import { useDeleteInvoice } from "../hook/invoiceOperationHook";
-import CircularProgress from "components/CircularProgress";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
 const btnSize = 22;
 function InvoiceCard({ data }: { data: ResultArrayType }) {
-    const dimention = useWindowDimensions()
-    const {CustomModal} = useModal()
+  const dimention = useWindowDimensions();
+  const { CustomModal } = useModal();
   const [openShareMenu, setOpenShareMenu] = useState<string | null>("");
-  const [deleteId,setDeleteId] = useState<string|null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const onOpenMenu = (invoiceNo: string) => {
     setOpenShareMenu(invoiceNo);
   };
   const onCloseMenu = () => {
     setOpenShareMenu(null);
   };
-  const handleCloseModal = ()=>{
-    setDeleteId(null)
-  }
-const {mutate,isLoading} = useDeleteInvoice()
-  const handleDeleteInVoice = (invoiceNo:string)=>{
-    setDeleteId(invoiceNo)
-    //  const formData = new FormData()
-    //  formData.append("inv_number",invoiceNo)
-    //  mutate({params:formData,method:"delete"})
-  }
+  const handleCloseModal = () => {
+    setDeleteId(null);
+  };
+  const { mutate, isLoading } = useDeleteInvoice({
+    onSuccess: handleCloseModal,
+  });
+  const handleDeleteInVoice = (invoiceNo: string) => {
+    setDeleteId(invoiceNo);
+  };
+
+  const deleteInvoice = () => {
+    const formData = new FormData();
+    formData.append("inv_number", deleteId);
+    console.log(formData);
+    mutate({ params: formData, method: "delete" });
+  };
 
   return (
     <View style={[style.container]}>
-
-     <CustomModal title="Delete Invoice" open={Boolean(deleteId)} handleCloseModal={handleCloseModal}>
-      <View>
-         <Text> Are you sure to delete this invoice </Text>
-      </View>
-   </CustomModal>
+      <CustomModal
+        title={
+          <View 
+          style={{
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "row",
+            gap: 3,
+          }}
+          >
+            <Text>{`Delete Invoice (No : ${deleteId})`}</Text>
+          </View>
+        }
+        open={Boolean(deleteId)}
+        handleCloseModal={handleCloseModal}
+      >
+        <>
+          <View
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 5,
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "row",
+              gap: 3,
+            }}
+          >
+            <Text> Are you sure you want to delete this invoice ?</Text>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexDirection: "row",
+              gap: 8,
+              paddingHorizontal: 8,
+            }}
+          >
+            <Button
+              disabled={isLoading}
+              compact
+              textColor={colorList.red}
+              onPress={handleCloseModal}
+            >
+              No
+            </Button>
+            <Button
+              disabled={isLoading}
+              loading={isLoading}
+              compact
+              textColor={colorList.socondary}
+              onPress={deleteInvoice}
+            >
+              Yes
+            </Button>
+          </View>
+        </>
+      </CustomModal>
       <View style={style.dateContainer}>
-          <FontAwesomeIcon name="calendar" size={16} color={colorList.white} />
+        <FontAwesomeIcon name="calendar" size={16} color={colorList.white} />
         <Text style={style.dateTextColor}>
           {moment(data.date).format("DD-MM-YYYY")}
         </Text>
@@ -141,25 +199,49 @@ const {mutate,isLoading} = useDeleteInvoice()
                 paddingVertical: 8,
               }}
             >
-              <View style={[style.buttonContainer]}>
-                <TouchableOpacity>
-                  <Icon
-                    name="pencil"
-                    size={btnSize}
-                    color={colorList.socondary}
-                  />
-                </TouchableOpacity>
-               {isLoading ? <CustomLoaderRound /> : <TouchableOpacity onPress={()=>{handleDeleteInVoice(invoice.inviceNo)}}>
-                  <Icon name="delete" size={btnSize} color={colorList.red} />
-                </TouchableOpacity>}
-                <TouchableOpacity>
-                  <Icon
-                    name="printer"
-                    size={btnSize}
-                    color={colorList.primary}
-                  />
-                </TouchableOpacity>
-              </View>
+              {invoice.status != "paid" ? (
+                <View style={[style.buttonContainer]}>
+                  <TouchableOpacity>
+                    <Icon
+                      name="pencil"
+                      size={btnSize}
+                      color={colorList.socondary}
+                    />
+                  </TouchableOpacity>
+                  {isLoading ? (
+                    <CustomLoaderRound />
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleDeleteInVoice(invoice.inviceNo);
+                      }}
+                    >
+                      <Icon
+                        name="delete"
+                        size={btnSize}
+                        color={colorList.red}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  <TouchableOpacity>
+                    <Icon
+                      name="printer"
+                      size={btnSize}
+                      color={colorList.primary}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View>
+                  <TouchableOpacity>
+                    <Icon
+                      name="printer"
+                      size={btnSize}
+                      color={colorList.primary}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
 
               <View style={style.buttonContainer}>
                 <Menu
@@ -285,8 +367,8 @@ const style = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     borderRadius: 5,
-    flexDirection:"row",
-    gap:4
+    flexDirection: "row",
+    gap: 4,
   },
   dateTextColor: {
     color: colorList.white,
@@ -338,6 +420,5 @@ const style = StyleSheet.create({
   },
 });
 function useDelete() {
-    throw new Error("Function not implemented.");
+  throw new Error("Function not implemented.");
 }
-

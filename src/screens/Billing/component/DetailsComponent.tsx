@@ -18,11 +18,13 @@ const DetailsComponent = ({ data }: { data: InvoiceItemType }) => {
     <View style={style.container}>
       {/* <Text>{data.Item_name}</Text> */}
       <Table
-        borderStyle={{
-          // borderWidth: 0.5,
-          // borderColor: colorList.Grey1,
-          // borderRadius: 10,
-        }}
+        borderStyle={
+          {
+            // borderWidth: 0.5,
+            // borderColor: colorList.Grey1,
+            // borderRadius: 10,
+          }
+        }
       >
         <Row
           data={["Product & Services", `: ${data.Item_name}`]}
@@ -34,14 +36,19 @@ const DetailsComponent = ({ data }: { data: InvoiceItemType }) => {
             ["Qty", `: ${data.quantity}`],
             ["Cost", `: ${data.cost}`],
             ["Discount", `: ${data.discount} ${data?.discount_type || ""}`],
-            ["Tax", `: ${data.tax}`],
-            [<Text style={style.textBold}>Total</Text>, <Text style={style.textBold}>: {data.itemtotal}</Text>],
+            // [
+            //   "Tax",
+            //   `: ${data.cost != data.itemtotal ? data.tax : "0"}`,
+            // ],
+            [
+              <Text style={style.textBold}>Total</Text>,
+              <Text style={style.textBold}>: {data.itemtotal}</Text>,
+            ],
           ]}
           style={{ height: 20 }}
           textStyle={{ textAlign: "left", paddingLeft: 3 }}
         />
       </Table>
- 
     </View>
   );
 };
@@ -51,13 +58,13 @@ const style = StyleSheet.create({
   container: {
     paddingVertical: 8,
     margin: 2,
-      borderWidth:.5,
-      borderRadius:5,
-      marginVertical:5,
-      borderColor:colorList.Grey2
+    borderWidth: 0.5,
+    borderRadius: 5,
+    marginVertical: 5,
+    borderColor: colorList.Grey2,
   },
-  textBold:{
-    fontWeight:"bold",
-    marginLeft:2,
-  }
+  textBold: {
+    fontWeight: "bold",
+    marginLeft: 2,
+  },
 });

@@ -15,8 +15,13 @@ import { getPatientService } from "services/getPatientList";
 import { CustomContentLoader } from "./CustomContentLoader";
 import { PatientDataProps } from "types/PatientDetailsTypes";
 import { checkCountryCode } from "utils/commonUtils";
-import IonIcon from "react-native-vector-icons/Ionicons"
+import IonIcon from "react-native-vector-icons/Ionicons";
 import { colorList } from "styles/global.styles";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationList } from "routes/NavigationList";
+import { useDispatch } from "react-redux";
+import { setPatientId } from "redux/actions";
+
 interface PatientDetailsTileProps {
   patientId: string;
 }
@@ -26,14 +31,20 @@ interface ImageObject {
 }
 
 export const PatientDetailsTiles = memo(
-  ({navigation, patientId }: PatientDetailsTileProps) => {
+  ({ patientId }: PatientDetailsTileProps) => {
     // console.log("😇 ===> ", patientId);
-
+    const navigation = useNavigation();
     const [imageViews, setImageViews] = useState(false);
     const [imageViewData, setImageViewData] = useState<ImageObject[]>([]);
     const [patientDetails, setPatientDetails] =
       useState<PatientDataProps | null>(null);
     const [isLoading, setLoading] = useState<boolean>(false);
+    const route = useRoute();
+    const dispatch = useDispatch()
+    const handleNavigate = () => {
+      dispatch(setPatientId(patientId))
+      navigation.navigate(NavigationList.billing);
+    };
 
     useEffect(() => {
       if (patientId) {
@@ -46,7 +57,7 @@ export const PatientDetailsTiles = memo(
         setLoading(true);
         const { data } = await getPatientService({ id });
         console.log(data);
-        
+
         setLoading(false);
         if (data?.status === 200) {
           setPatientDetails(data?.data[0]);
@@ -60,10 +71,11 @@ export const PatientDetailsTiles = memo(
       }
     };
 
-    const openDialer = () =>{
+    const openDialer = () => {
       Linking.openURL(
         `tel:+${checkCountryCode(patientDetails?.country_code)}${patientDetails?.mobile}`
-      );}
+      );
+    };
 
     const openWhatsApp = () =>
       Linking.openURL(
@@ -75,15 +87,27 @@ export const PatientDetailsTiles = memo(
       return (
         <View style={styles.patientDetailsContainer}>
           <View>
-            <TouchableOpacity  style={{position:"absolute",right:0,top:0,backgroundColor:colorList.socondary,padding:4,borderRadius:5}}>
-              <IonIcon name="receipt" color={colorList.white} size={17} />
-            </TouchableOpacity>
+            {route.name != NavigationList.billing && (
+              <TouchableOpacity
+                onPress={handleNavigate}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  backgroundColor: colorList.socondary,
+                  padding: 4,
+                  borderRadius: 5,
+                }}
+              >
+                <IonIcon name="receipt" color={colorList.white} size={17} />
+              </TouchableOpacity>
+            )}
             <View style={styles.profileSection}>
               <TouchableOpacity
                 style={{ marginRight: 8 }}
                 onPress={() => {
                   // console.log("clicked----------------------------------------");
-                  
+
                   patientDetails?.Photo !== ""
                     ? (setImageViewData([{ uri: patientDetails?.Photo }]),
                       setImageViews(true))

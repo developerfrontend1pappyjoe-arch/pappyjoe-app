@@ -65,11 +65,15 @@ const InvoiceContent: FC = () => {
     setRefreshing(true);
   };
   useEffect(() => {
-    console.log("inside useEffect-------->",refreshing)
     if(refreshing){
       mutate(patientId as string);
     }
-  }, [refreshing]);
+    return ()=>{
+      if(!refreshing){
+        setRefreshing(true)
+      }
+    }
+  }, [refreshing,patientId]);
   return (
     <View style={{ paddingBottom: 5 }}>
       <View style={{ paddingHorizontal: 8, paddingTop: 8 }}>

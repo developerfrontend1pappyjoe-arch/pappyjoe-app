@@ -289,7 +289,7 @@ useEffect(()=>{
     if (data?.mode === "edit") {
       formDetails.append("app_id", data?.data?.Appointment_Id);
     }
-
+   console.log(formDetails)
     try {
       if (data?.mode === "edit") {
         const res = await axios.put(API_URL.fixAppointment, formDetails, {

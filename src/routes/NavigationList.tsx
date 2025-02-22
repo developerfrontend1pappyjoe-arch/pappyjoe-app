@@ -20,4 +20,5 @@ export const NavigationList = {
   patientProfile: 'PatientProfile',
   update:"updateScreen",
   billing:"billing",
+  billingList:"billinglist",
 };

@@ -1,9 +1,15 @@
 import React, { PropsWithChildren, createContext, FC } from "react";
 import { Card, Divider, Modal, Portal } from "react-native-paper";
 import { CustomModalType } from "./types";
-import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { colorList } from "styles/global.styles";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 export const MoadalContext = createContext<{
   CustomModal: React.FC<React.PropsWithChildren<CustomModalType>>;
 }>({
@@ -28,22 +34,44 @@ const ModalProvider: FC<PropsWithChildren> = ({ children }) => {
       }
     };
     return (
-      <Portal>
-        <Modal visible={open} onDismiss={handleDismiss}>
-          <View style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-            <Card style={[style.container, { width: dimention.width - 10 }]}>
-                <View style={style.titleContainer}>
-                    {typeof title == "string" ? <Text style={{fontWeight:"bold"}}>{title}</Text> : title}
+      <>
+        {Boolean(open) ? (
+          <Portal>
+            <Modal visible={Boolean(open)} onDismiss={handleDismiss}>
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Card
+                  style={[style.container, { width: dimention.width - 18 }]}
+                >
+                  <View style={style.titleContainer}>
+                    {typeof title == "string" ? (
+                      <Text style={{ fontWeight: "bold" }}>{title}</Text>
+                    ) : (
+                      title
+                    )}
                     <TouchableOpacity onPress={handleDismiss}>
-                        <Icon name="close-circle" color={colorList.red} size={20}/> 
+                      <Icon
+                        name="close-circle"
+                        color={colorList.red}
+                        size={20}
+                      />
                     </TouchableOpacity>
-                </View>
-                <Divider />
-              {children}
-            </Card>
-          </View>
-        </Modal>
-      </Portal>
+                  </View>
+                  <Divider />
+                  {children}
+                </Card>
+              </View>
+            </Modal>
+          </Portal>
+        ) : (
+          <></>
+        )}
+      </>
     );
   };
   return (
@@ -59,12 +87,12 @@ const style = StyleSheet.create({
   container: {
     backgroundColor: colorList.white,
   },
-  titleContainer:{
-     display:"flex",
-     justifyContent:"space-between",
-     alignItems:"center",
-     flexDirection:"row",
-     paddingHorizontal:7,
-     paddingVertical:5
-  }
+  titleContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+  },
 });

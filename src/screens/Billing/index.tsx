@@ -1,35 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View ,useWindowDimensions} from 'react-native';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 import Invoice from "./Invoice";
 import Receipt from "./Receipt";
-import { colorList } from 'styles/global.styles';
-import { PatientDetailsTiles } from 'components/PatientDetailsTiles';
-import { Divider } from 'react-native-paper';
-import { useDispatch } from 'react-redux';
-import { setPatientId } from 'redux/actions';
+import { colorList } from "styles/global.styles";
+import { PatientDetailsTiles } from "components/PatientDetailsTiles";
+import { Divider } from "react-native-paper";
+import {
+  // useDispatch,
+  useSelector,
+} from "react-redux";
 const renderScene = SceneMap({
   Invoice: Invoice,
   Receipt: Receipt,
 });
-const patientId = "4060513"
+// const patientId = "4060513"
 function Billing() {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
+  const patientId = useSelector((state: any) => state?.patientId) || "";
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Invoice", title: "Invoice" },
     { key: "Receipt", title: "Receipt" },
   ]);
-  useEffect(()=>{
-    dispatch(setPatientId(patientId))
-  },[])
+
+
   return (
     <View style={styles.container}>
-      <PatientDetailsTiles patientId={patientId} />
-      <Divider/>
-        <TabView
+      {patientId && <PatientDetailsTiles patientId={patientId} />}
+      <Divider />
+      <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}

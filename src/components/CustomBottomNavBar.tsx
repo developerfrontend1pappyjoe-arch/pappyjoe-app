@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  // useEffect,
+  useState,
+} from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
   StyleSheet,
-  Alert,
-  Modal,
+  // Alert,
+  // Modal,
   Dimensions,
 } from "react-native";
 
 import {
   AddIcon,
-  CloseLargeImage,
-  CommingSoonIcon,
-  HomeFillIcon,
-  HomeIcon,
-  PatientListFillIcon,
-  PatientListIcon,
-  ProfileIcon,
+  // CloseLargeImage,
+  // CommingSoonIcon,
+  // HomeFillIcon,
+  // HomeIcon,
+  // PatientListFillIcon,
+  // PatientListIcon,
+  // ProfileIcon,
 } from "../assets";
 import { colorList } from "../styles/global.styles";
 import { NavigationList } from "../routes/NavigationList";
@@ -86,18 +89,11 @@ export const CustomTabBar = ({ navigation }: any) => {
   const [index, setIndex] = useState(1);
   const handleClickRoute = (route: any, index: number) => {
     setIndex(index);
-    navigation.navigate(route);
+    navigation.navigate(route, { index: index });
   };
-
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const openModal = () => setIsModalVisible(true);
-
   const closeModal = () => setIsModalVisible(false);
-
-  useEffect(() => {
-    return () => {};
-  }, []);
 
   return (
     <View
@@ -120,9 +116,9 @@ export const CustomTabBar = ({ navigation }: any) => {
           style={[styles.iconStyle]}
         /> */}
         <MetrialIcon
-          style={{margin:0,padding:0}}
-          name={index === 1 ? "home-variant" : "home-variant-outline"}
-          size={btnIconSize+1}
+          style={{ margin: 0, padding: 0 }}
+          name={index == 1 ? "home-variant" : "home-variant-outline"}
+          size={btnIconSize + 1}
           color={index === 1 ? colorList.primary : colorList.Grey1}
         />
         <Text
@@ -145,7 +141,7 @@ export const CustomTabBar = ({ navigation }: any) => {
           style={styles.iconStyle}
         /> */}
         <MetrialIcon
-        style={{margin:0,padding:0}}
+          style={{ margin: 0, padding: 0 }}
           name={index === 2 ? "clipboard-text" : "clipboard-text-outline"}
           color={index === 2 ? colorList.primary : colorList.Grey1}
           size={btnIconSize}
@@ -173,14 +169,14 @@ export const CustomTabBar = ({ navigation }: any) => {
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.billing, 3)}
+        onPress={() => handleClickRoute(NavigationList.billingList, 3)}
       >
         {/* <Image source={CommingSoonIcon} style={styles.iconStyle} /> */}
         <IonIcon
-        style={{margin:0,padding:0}}
+          style={{ margin: 0, padding: 0 }}
           name={index === 3 ? "receipt" : "receipt-outline"}
           color={index === 3 ? colorList.primary : colorList.Grey1}
-          size={btnIconSize-1}
+          size={btnIconSize - 1}
         />
         <Text
           style={[
@@ -199,10 +195,10 @@ export const CustomTabBar = ({ navigation }: any) => {
       >
         {/* <Image source={ProfileIcon} style={styles.iconStyle} /> */}
         <IonIcon
-        style={{margin:0,padding:0}}
+          style={{ margin: 0, padding: 0 }}
           name={index === 4 ? "person-circle-sharp" : "person-circle-outline"}
           color={index === 4 ? colorList.primary : colorList.Grey1}
-          size={btnIconSize+3}
+          size={btnIconSize + 3}
         />
         <Text
           style={[
@@ -227,7 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
     flex: 1,
-    display:"flex",
+    display: "flex",
   },
   customAddButtonWrapper: {
     alignItems: "center",
@@ -253,6 +249,6 @@ const styles = StyleSheet.create({
     lineHeight: 9,
     marginTop: 4,
     color: colorList.Grey1,
-    paddingTop:3
+    paddingTop: 3,
   },
 });
