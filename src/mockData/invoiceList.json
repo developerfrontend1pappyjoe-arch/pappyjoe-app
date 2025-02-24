@@ -1,0 +1,204 @@
+{
+    "inVoiceList":{
+        "status": 200,
+        "message": "Successfully Executed",
+        "data": {
+            "1469": [
+                {
+                    "date_time": "2025-02-21",
+                    "Item_name": "USG ABDOMEN SCAN",
+                    "item_id": "398899",
+                    "cost": "2500",
+                    "quantity": "1",
+                    "discount": "0",
+                    "discount_type": "%",
+                    "tax": "0",
+                    "batch": "",
+                    "itemtotal": "2500",
+                    "invoicetotal": "2500",
+                    "invoicebalance": "1500",
+                    "status": "partial",
+                    "stockqty": "0"
+                }
+            ],
+            "1466": [
+                {
+                    "date_time": "2025-02-20",
+                    "Item_name": "vicks",
+                    "item_id": "549280",
+                    "cost": "15",
+                    "quantity": "1",
+                    "discount": "0",
+                    "discount_type": "%",
+                    "tax": "0.75",
+                    "batch": "vik432",
+                    "itemtotal": "15.75",
+                    "invoicetotal": "16",
+                    "invoicebalance": "16",
+                    "status": "Active",
+                    "stockqty": "0.75"
+                }
+            ],
+            "1467": [
+                {
+                    "date_time": "2025-02-20",
+                    "Item_name": "RADIOLOGY TEST1",
+                    "item_id": "397730",
+                    "cost": "5000",
+                    "quantity": "1",
+                    "discount": "0",
+                    "discount_type": "%",
+                    "tax": "81",
+                    "batch": "",
+                    "itemtotal": "5000",
+                    "invoicetotal": "5731",
+                    "invoicebalance": "5731",
+                    "status": "Active",
+                    "stockqty": "250"
+                },
+                {
+                    "date_time": "2025-02-20",
+                    "Item_name": "ilverstor",
+                    "item_id": "302050",
+                    "cost": "500",
+                    "quantity": "1",
+                    "discount": "10",
+                    "discount_type": "%",
+                    "tax": "81",
+                    "batch": "",
+                    "itemtotal": "531",
+                    "invoicetotal": "5731",
+                    "invoicebalance": "5731",
+                    "status": "Active",
+                    "stockqty": "81"
+                },
+                {
+                    "date_time": "2025-02-20",
+                    "Item_name": "test expense",
+                    "item_id": "273150",
+                    "cost": "200",
+                    "quantity": "1",
+                    "discount": "0",
+                    "discount_type": "%",
+                    "tax": "81",
+                    "batch": "",
+                    "itemtotal": "200",
+                    "invoicetotal": "5731",
+                    "invoicebalance": "5731",
+                    "status": "Active",
+                    "stockqty": "0"
+                }
+            ],
+            "1463": [
+                {
+                    "date_time": "2025-02-19",
+                    "Item_name": "RADIOLOGY TEST1",
+                    "item_id": "397730",
+                    "cost": "5000",
+                    "quantity": "1",
+                    "discount": "0",
+                    "discount_type": "%",
+                    "tax": "0",
+                    "batch": "",
+                    "itemtotal": "5000",
+                    "invoicetotal": "5000",
+                    "invoicebalance": "0",
+                    "status": "paid",
+                    "stockqty": "0"
+                }
+            ],
+            "print": {
+                "1469": {
+                    "url": "https://cloud.pappyjoe.com/clinic/mailprinter_invoice/1469/99232759/406051349zKm9uu"
+                },
+                "1466": {
+                    "url": "https://cloud.pappyjoe.com/clinic/mailprinter_invoice/1466/99232759/4060513cujKU4Ij"
+                },
+                "1467": {
+                    "url": "https://cloud.pappyjoe.com/clinic/mailprinter_invoice/1467/99232759/40605130hydv7qk"
+                },
+                "1463": {
+                    "url": "https://cloud.pappyjoe.com/clinic/mailprinter_invoice/1463/99232759/4060513q9ddL9d7"
+                }
+            }
+        }
+    },
+    "receiptList":{
+            "status": 200,
+            "message": "Successfully Executed",
+            "data": {
+                "816": [
+                    {
+                        "date_time": "2024-04-01",
+                        "receipt_no": "816",
+                        "amount": "5000",
+                        "inv_nos": "WALLET",
+                        "added_date": "2024-04-01 18:03:35",
+                        "ptype": "ehr",
+                        "category": "1"
+                    }
+                ],
+                "1039": [
+                    {
+                        "date_time": "2025-02-24",
+                        "receipt_no": "1039",
+                        "amount": "16",
+                        "inv_nos": "1466",
+                        "added_date": "2025-02-24 10:00:09",
+                        "ptype": "ehr",
+                        "category": "1"
+                    }
+                ],
+                "1038": [
+                    {
+                        "date_time": "2025-02-24",
+                        "receipt_no": "1038",
+                        "amount": "5731",
+                        "inv_nos": "1467",
+                        "added_date": "2025-02-24 09:59:18",
+                        "ptype": "ehr",
+                        "category": "1"
+                    }
+                ],
+                "1037": [
+                    {
+                        "date_time": "2025-02-21",
+                        "receipt_no": "1037",
+                        "amount": "1000",
+                        "inv_nos": "1469",
+                        "added_date": "2025-02-21 10:05:29",
+                        "ptype": "ehr",
+                        "category": "1"
+                    }
+                ],
+                "1036": [
+                    {
+                        "date_time": "2025-02-19",
+                        "receipt_no": "1036",
+                        "amount": "5000",
+                        "inv_nos": "1463",
+                        "added_date": "2025-02-19 09:30:36",
+                        "ptype": "ehr",
+                        "category": "1"
+                    }
+                ],
+                "print": {
+                    "816": {
+                        "url": "https://cloud.pappyjoe.com/clinic/print_payment_email/1886373/99232759/4060513"
+                    },
+                    "1039": {
+                        "url": "https://cloud.pappyjoe.com/clinic/print_payment_email/3601550/99232759/4060513"
+                    },
+                    "1038": {
+                        "url": "https://cloud.pappyjoe.com/clinic/print_payment_email/3601548/99232759/4060513"
+                    },
+                    "1037": {
+                        "url": "https://cloud.pappyjoe.com/clinic/print_payment_email/3592730/99232759/4060513"
+                    },
+                    "1036": {
+                        "url": "https://cloud.pappyjoe.com/clinic/print_payment_email/3585171/99232759/4060513"
+                    }
+                }
+            }
+        }
+}

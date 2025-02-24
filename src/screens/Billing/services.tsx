@@ -1,24 +1,47 @@
 import { API_URL } from "utils/constants";
-import { formatData } from "./formatData";
+import { formatInvoiceData,formatReceiptData } from "./formatData";
 import { axiosInstance } from "config/axios.config.custom";
-import { InvoiceOperationType } from "./Invoice/types";
+import { InvoiceListResponseType, InvoiceOperationType } from "./Invoice/types";
 import { AxiosRequestConfig } from "axios";
+import {billingData} from "../../mockData"
+import { ReceiptResultArrayType } from "./Receipt/types";
 const axios = axiosInstance;
-export const getInvoiceList = async (id: string) => {
+
+export const getInvoiceList = async (id: string):Promise<InvoiceListResponseType> => {
   console.log("getInvoiceList called");
 
   try {
     const result = await (
       await axios.get(`${API_URL.getInvoice}?patient_id=${id}`)
     ).data;
+    // const result = billingData.inVoiceList;
     if (result.status == 200) {
-      const formatedData = formatData(result.data);
+      const formatedData = formatInvoiceData(result.data);
       return formatedData;
     } else {
-      return [];
+      return {invoiceList:[],print:null};
     }
   } catch (error) {
-    return [];
+    return {invoiceList:[],print:null};
+  }
+};
+
+export const getReceiptList = async (id: string):Promise<{list:ReceiptResultArrayType[],print:any}> => {
+  console.log("getReceiptList called");
+
+  try {
+    const result = await (
+      await axios.get(`${API_URL.getReceipt}?patient_id=${id}`)
+    ).data;
+    // const result = billingData.receiptList;
+    if (result.status == 200) {
+      const formatedData = formatReceiptData(result.data);
+      return formatedData;
+    } else {
+      return {list:[],print:null};
+    }
+  } catch (error) {
+    return {list:[],print:null};
   }
 };
 
@@ -27,9 +50,6 @@ export const invoiceOperation = async (body: {
   method: "put" | "post" | "delete";
 }) => {
   try {
-    console.log("body.method-------->", body.method);
-    console.log("body.params-------->", body.params);
-
     if (body.method == "delete") {
       return (await axios.delete(API_URL.invoiceOperation,{
          data: body.params,

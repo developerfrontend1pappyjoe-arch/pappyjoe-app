@@ -1,8 +1,9 @@
 import { InvoiceItemType, ResultArrayType } from "./Invoice/types";
+import { ReceiptObjectType, ReceiptResultArrayType } from "./Receipt/types";
 
 
   
-  export const formatData = (data: any) => {
+  export const formatInvoiceData = (data: any):{invoiceList:ResultArrayType[],print:any} => {
     let result: ResultArrayType[] = [];
     const arraIndex:any = {};
     let date = "";
@@ -31,5 +32,31 @@ import { InvoiceItemType, ResultArrayType } from "./Invoice/types";
       }
       }
     }
-    return result.reverse()
+    return {invoiceList:result.reverse(),print:data?.print || null}
+  };
+  
+  export const formatReceiptData = (data: any):{print:any,list:ReceiptResultArrayType[]} => {
+    let result: ReceiptResultArrayType[] = [];
+    const arraIndex:any = {};
+    let date = "";
+    for (let key in data) {
+      if (key != "print") {
+        date = data[key][0]?.date_time as string;
+        if (date) {
+          if (arraIndex[date as keyof typeof arraIndex]>=0) {
+            result[arraIndex[date]] = {
+              ...result[arraIndex[date]],
+              list: [...result[arraIndex[date]].list, { receiptNo: key,data:data[key]}],
+            }
+          }else{
+             arraIndex[date] = result.length
+             result.push({
+                date,
+                list:[{receiptNo:key,data:data[key]?.reverse()}]
+             })
+          }
+      }
+      }
+    }
+    return {list:result.reverse(),print:data?.print || null}
   };

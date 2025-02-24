@@ -30,6 +30,7 @@ const API_URL = {
   getPrescriptionTemplatelist: `${BASE_URL}/templatelist`,
   patientProfileUpload: `${BASE_URL}/profilephoto`,
   getInvoice: `${BASE_URL}/invoicelist`,
+  getReceipt: `${BASE_URL}/receiptlist`,
   invoiceOperation:`${BASE_URL}/invoice`
 };
 

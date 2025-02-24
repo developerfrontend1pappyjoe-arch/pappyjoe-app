@@ -21,22 +21,6 @@ import { getInvoiceList } from "../services";
 import InvoiceCard from "../component/InvoiceCard";
 import { CustomLoader } from "components/CustomLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
-const invoiceItem = {
-  date_time: "2024-05-12",
-  Item_name: "ITEM REF",
-  item_id: "276531",
-  cost: "700",
-  quantity: "1",
-  discount: "0",
-  discount_type: "%",
-  tax: "5.13",
-  batch: "",
-  itemtotal: "700",
-  invoicetotal: "807.63",
-  invoicebalance: "807.63",
-  status: "Active",
-  stockqty: "35",
-};
 export const InvoiceContext = createContext<InvoiceContextType>({
   refreshing: true,
   setRefreshing: () => {},
@@ -91,10 +75,10 @@ const InvoiceContent: FC = () => {
           <FlatList
             keyExtractor={(_, index) => index.toString()}
             showsVerticalScrollIndicator={false}
-            data={data || []}
+            data={data?.invoiceList || []}
             renderItem={({ item }: { item: ResultArrayType }) => (
               <View>
-                <InvoiceCard data={item} />
+                <InvoiceCard print={data?.print || null} data={item} />
               </View>
             )}
             refreshControl={
@@ -105,7 +89,7 @@ const InvoiceContent: FC = () => {
           />
         )}
         {
-          (!Boolean(data?.length) && !isLoading) && <View style={{justifyContent:"center",alignItems:"center",height: 400}}><NoDataAvailable /></View>
+          (!Boolean(data?.invoiceList?.length) && !isLoading) && <View style={{justifyContent:"center",alignItems:"center",height: 400}}><NoDataAvailable /></View>
         }
       </View>
     </View>

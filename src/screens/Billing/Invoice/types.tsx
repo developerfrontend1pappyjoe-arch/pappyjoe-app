@@ -30,6 +30,8 @@ export type ResultArrayType = {
   list: InvoiceObjectType[];
 };
 
+export type InvoiceListResponseType = {invoiceList:ResultArrayType[],print:any}
+
 export type InvoiceContextType = {
   refreshing: boolean;
   setRefreshing: Dispatch<SetStateAction<boolean>>;

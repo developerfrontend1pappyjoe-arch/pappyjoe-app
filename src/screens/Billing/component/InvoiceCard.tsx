@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import {
+  Alert,
+  Linking,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
@@ -18,7 +20,7 @@ import { useDeleteInvoice } from "../hook/invoiceOperationHook";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
 const btnSize = 22;
-function InvoiceCard({ data }: { data: ResultArrayType }) {
+function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
   const dimention = useWindowDimensions();
   const { CustomModal } = useModal();
   const [openShareMenu, setOpenShareMenu] = useState<string | null>("");
@@ -45,6 +47,18 @@ function InvoiceCard({ data }: { data: ResultArrayType }) {
     console.log(formData);
     mutate({ params: formData, method: "delete" });
   };
+
+    const handlePrint = (id:string) => {
+      if (print[id]?.url) {
+        Linking.openURL(print[id]?.url).catch(err => {
+          Alert.alert('Error', err.response.data.message);
+          console.error('An error occurred', err);
+        });
+      } else{
+        Alert.alert('Warning', 'No Print Url Found please try again later');
+      }
+      console.log("print",print[id]);
+    };
 
   return (
     <View style={[style.container]}>
@@ -190,7 +204,7 @@ function InvoiceCard({ data }: { data: ResultArrayType }) {
 
             <FlatList
               data={invoice.data || []}
-              renderItem={({ item }) => <DetailsComponent data={item} />}
+              renderItem={({ item }) => <DetailsComponent type="invoice" data={item} />}
             />
             <View
               style={{
@@ -223,7 +237,7 @@ function InvoiceCard({ data }: { data: ResultArrayType }) {
                       />
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => handlePrint(invoice.inviceNo)}>
                     <Icon
                       name="printer"
                       size={btnSize}
