@@ -6,15 +6,18 @@ import {
   HOME_APPOINMENTS_FILTER,
   IS_LOGIN,
   REMOVE_LOGIN_DETAILS,
-  PATIENT_ID
+  PATIENT_ID,
+  PATIENT_DETAILS
 } from './types';
 import moment from 'moment';
+import { PatientDataProps } from 'types/PatientDetailsTypes';
 
 interface StoreTypes {
   loginData: Object | null;
   isLoggedIn: boolean;
   homeAppoinmentFilter: Object;
-  patientId:string | null
+  patientId:string | null,
+  patientDetails:PatientDataProps | null
 }
 
 const initialState: StoreTypes = {
@@ -27,7 +30,8 @@ const initialState: StoreTypes = {
     patient_name: '',
     doctor_id: '',
   },
-  patientId:null
+  patientId:null,
+  patientDetails:null
 };
 
 const commonReducer = (state = initialState, action: any) => {
@@ -60,6 +64,11 @@ const commonReducer = (state = initialState, action: any) => {
         return {
           ...state,
           patientId:action.payload
+        }
+      case PATIENT_DETAILS:
+        return {
+          ...state,
+          patientDetails:action.payload
         }
     default:
       return state;

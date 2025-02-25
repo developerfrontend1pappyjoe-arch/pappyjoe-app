@@ -5,7 +5,8 @@ import {
   HOME_APPOINMENTS_FILTER,
   IS_LOGIN,
   REMOVE_LOGIN_DETAILS,
-  PATIENT_ID
+  PATIENT_ID,
+  PATIENT_DETAILS
 } from './types';
 
 export const handleHomeAppoinmentFilter = (data: any) => {
@@ -41,5 +42,12 @@ export const setPatientId = (id:string | null)=>{
    return {
       type:PATIENT_ID,
       payload:id
+   }
+}
+
+export const assignPatientDetails = (data:any)=>{
+   return {
+      type:PATIENT_DETAILS,
+      payload:data
    }
 }

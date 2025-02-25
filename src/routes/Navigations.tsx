@@ -1,7 +1,13 @@
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect } from "react";
+import React, {
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  Suspense,
+  useEffect,
+} from "react";
 import { NavigationList } from "./NavigationList";
 import LoginScreen from "../screens/LoginScreen";
 import { RegisterScreen } from "../screens/RegisterScreen";
@@ -11,7 +17,6 @@ import { ForgotPasswordSuccesScreen } from "../screens/ForgotpasswordSuccessScre
 import { OTPVerificationScreen } from "../screens/OtpVerificationScreen/indx";
 import { OTPSuccesScreen } from "../screens/OTPSuccessScreen";
 import { HomeScreen } from "../screens/HomeScreen";
-import { PatientListScreen } from "../screens/PatientListScreen";
 // import { CommingSoonScreen } from "../screens/CommingSoonScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { CustomTabBar } from "../components/CustomBottomNavBar";
@@ -24,19 +29,25 @@ import { AddPatients } from "../screens/AddPatientScreen";
 import { AddNewAppoinments } from "../screens/AddAppoinments";
 import { ProfileProfile } from "../screens/PatientProfileEdit";
 import UpdateScreen from "components/UpdateScreen";
-import SpInAppUpdates, { AndroidInAppUpdateExtras } from "sp-react-native-in-app-updates";
-import { Platform } from "react-native";
+import SpInAppUpdates, {
+  AndroidInAppUpdateExtras,
+} from "sp-react-native-in-app-updates";
+import { Platform, Text, View, Dimensions } from "react-native";
 import { NativeModules } from "react-native";
 import Billing from "screens/Billing";
 import { colorList } from "styles/global.styles";
 import BillingPatientList from "screens/Billing/component/BillingPatientList";
+import PatientListScreen from "../screens/PatientListScreen";
 const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const BottomHomeNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName={NavigationList.home} tabBar={(props) => <CustomTabBar {...props} />}>
+    <Tab.Navigator
+      initialRouteName={NavigationList.home}
+      tabBar={(props) => <CustomTabBar {...props} />}
+    >
       <Tab.Screen
         name={NavigationList.home}
         component={HomeScreen}
@@ -48,36 +59,36 @@ const BottomHomeNavigation = () => {
         name={NavigationList.patientList}
         component={PatientListScreen}
         options={{
-          title:"Patient List",
+          title: "Patient List",
           headerShown: true,
-          headerTintColor:colorList.white,
-          headerStyle:{
-            backgroundColor:colorList.primary,
-          }
+          headerTintColor: colorList.white,
+          headerStyle: {
+            backgroundColor: colorList.primary,
+          },
         }}
       />
       <Tab.Screen
         name={NavigationList.billingList}
         component={BillingPatientList}
         options={{
-          title:"Billing Area",
+          title: "Billing Area",
           headerShown: true,
-          headerTintColor:colorList.white,
-          headerStyle:{
-            backgroundColor:colorList.primary
-          }
+          headerTintColor: colorList.white,
+          headerStyle: {
+            backgroundColor: colorList.primary,
+          },
         }}
       />
       <Tab.Screen
         name={NavigationList.profile}
         component={ProfileScreen}
         options={{
-          title:"My Profile",
+          title: "My Profile",
           headerShown: true,
-          headerTintColor:colorList.white,
-          headerStyle:{
-            backgroundColor:colorList.primary
-          }
+          headerTintColor: colorList.white,
+          headerStyle: {
+            backgroundColor: colorList.primary,
+          },
         }}
       />
     </Tab.Navigator>
@@ -93,7 +104,10 @@ const AuthCheck = ({ navigation }: any) => {
       inAppUpdates
         .checkNeedsUpdate({ curVersion: curVersion })
         .then((result) => {
-          if (((result.other as AndroidInAppUpdateExtras).versionCode != code) || (result.shouldUpdate)) {
+          if (
+            (result.other as AndroidInAppUpdateExtras).versionCode != code ||
+            result.shouldUpdate
+          ) {
             if (Platform.OS === "android") {
               navigation.navigate(NavigationList.update);
             }
@@ -220,7 +234,15 @@ export const NavigationContainers = () => {
         <Stack.Screen
           name={NavigationList.billing}
           component={Billing}
-          options={{ headerShown: false, animation: "slide_from_right" }}
+          options={{
+            title:"Billing",
+            headerShown: true,
+            headerTintColor: colorList.white,
+            headerStyle: {
+              backgroundColor: colorList.primary,
+            },
+            animation: "slide_from_right",
+          }}
         />
         <Stack.Screen
           name={NavigationList.update}

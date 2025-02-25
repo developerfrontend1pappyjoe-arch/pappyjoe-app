@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import React, { Suspense, useEffect, useState } from "react";
+import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 import Invoice from "./Invoice";
@@ -11,6 +11,13 @@ import {
   // useDispatch,
   useSelector,
 } from "react-redux";
+
+const InvoiceLazyComponent = ()=>{
+  <Suspense fallback={<Text>Loading.....</Text>}>
+    <Invoice />
+  </Suspense>
+}
+
 const renderScene = SceneMap({
   Invoice: Invoice,
   Receipt: Receipt,

@@ -56,8 +56,6 @@ export const PatientDetailsTiles = memo(
       try {
         setLoading(true);
         const { data } = await getPatientService({ id });
-        console.log(data);
-
         setLoading(false);
         if (data?.status === 200) {
           setPatientDetails(data?.data[0]);

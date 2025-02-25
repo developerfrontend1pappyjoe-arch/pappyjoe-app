@@ -83,135 +83,140 @@ const SearchInput = ({ searchParams, setSearchParams, clearSearch }: any) => {
   );
 };
 
-export const PatientListScreen: React.FC<NavigationProps> = memo(
-  ({ navigation }) => {
-    const [searchParams, setSearchParams] = useState<string>("");
-    const [isLoading, setLoading] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
-    const [patiantList, setPatientList] = useState([]);
-    const [page, setPage] = useState(1);
+const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
+  const [searchParams, setSearchParams] = useState<string>("");
+  const [isLoading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [patiantList, setPatientList] = useState([]);
+  const [page, setPage] = useState(1);
 
-    useFocusEffect(
-      useCallback(() => {
-        getPatientListApi();
-        return () => {
-          // console.log('Un Foxuzzed In Patient Listing ');
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getPatientListApi();
+  //     return () => {
+  //       // console.log('Un Foxuzzed In Patient Listing ');
 
-          setSearchParams("");
+  //       setSearchParams("");
+  //       setPatientList([]);
+  //       setPage(1);
+  //     };
+  //   }, [])
+  // );
+
+  // const onRefresh = useCallback(() => {
+  //   if (refreshing) setPage(1);
+  //   getPatientListApi();
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //   }, 2000);
+  // }, []);
+
+  const clearSearch = () => {
+    // setPatientList([]);
+    setSearchParams("");
+  };
+
+  const getPatientListApi = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getPatientListService({
+        params: searchParams,
+        limit: `start=${page === 1 ? 0 : page * 10 - 11}&limit=10`,
+      });
+
+      if (data?.status == 200) {
+        if (_.isEqual([[]], data.data)) {
           setPatientList([]);
-          setPage(1);
-        };
-      }, [])
-    );
-
-    useEffect(() => {
-      if (searchParams === "") {
-        setPatientList([]);
-        setPage(1);
-      }
-      getPatientListApi();
-    }, [searchParams]);
-
-    const onRefresh = useCallback(() => {
-      if (refreshing) setPage(1);
-      getPatientListApi();
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 2000);
-    }, []);
-
-    const clearSearch = () => {
-      // setPatientList([]);
-      setSearchParams("");
-    };
-
-    const getPatientListApi = async () => {
-      try {
-        setLoading(true);
-        const { data } = await getPatientListService({
-          params: searchParams,
-          limit: `start=${page === 1 ? 0 : page * 10 - 11}&limit=10`,
-        });
-
-        if (data?.status == 200) {
-          if (_.isEqual([[]], data.data)) {
-            setPatientList([]);
-          } else {
-            const newData =
-              searchParams !== "" ? data?.data : [...patiantList, ...data.data];
-            setPatientList(newData);
-          }
-          setRefreshing(false);
+        } else {
+          const newData =
+            searchParams !== "" ? data?.data : [...patiantList, ...data.data];
+          setPatientList(newData);
         }
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
+        setRefreshing(false);
       }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      // console.log('Un Foxuzzed In Patient Listing ');
+
+      setSearchParams("");
+      setPatientList([]);
+      setPage(1);
     };
+  }, []);
 
-    useEffect(() => {
-      getPatientListApi();
-      // console.log(isLoading);
-    }, [page]);
+  useEffect(() => {
+    if (searchParams === "") {
+      setPatientList([]);
+      setPage(1);
+    }
+    getPatientListApi();
+  }, [page,searchParams]);
 
-    // console.log('patiantList ==> ', patiantList);
-
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
-        <>
-          <View>
-            <View style={{paddingHorizontal:10,paddingTop:10,paddingBottom:0}}>
-              <SearchInput
-                setSearchParams={setSearchParams}
-                searchParams={searchParams}
-                clearSearch={clearSearch}
-              />
-            </View>
-            <View
-              style={{
-                paddingVertical: 5,
-                height: Dimensions.get('screen').height-272,
-              }}
-            >
-              {isLoading && page === 1 ? (
-                <CustomContentLoader listSize={20} />
-              ) : patiantList?.length > 0 ? (
-                <FlatList
-                  data={patiantList}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }: any) => (
-                    <PatientList
-                      data={item}
-                      navigate={() =>
-                        navigation.navigate(NavigationList.appoinmentDetails, {
-                          patientId: item.id,
-                          from: "patient-list",
-                        })
-                      }
-                    />
-                  )}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={onRefresh}
-                    />
-                  }
-                  onEndReached={() => {
-                    patiantList?.length > 7 && setPage(page + 1);
-                  }}
-                  ListFooterComponent={() =>
-                    isLoading ? <CustomContentLoader listSize={10} /> : null
-                  }
-                />
-              ) : (
-                !isLoading && <NoDataAvailable />
-              )}
-            </View>
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
+      <>
+        <View>
+          <View
+            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}
+          >
+            <SearchInput
+              setSearchParams={setSearchParams}
+              searchParams={searchParams}
+              clearSearch={clearSearch}
+            />
           </View>
-        </>
-      </SafeAreaView>
-    );
-  }
-);
+          <View
+            style={{
+              paddingVertical: 5,
+              height: Dimensions.get("screen").height - 272,
+            }}
+          >
+            {isLoading && page === 1 ? (
+              <CustomContentLoader listSize={20} />
+            ) : patiantList?.length > 0 ? (
+              <FlatList
+                data={patiantList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }: any) => (
+                  <PatientList
+                    data={item}
+                    navigate={() =>
+                      navigation.navigate(NavigationList.appoinmentDetails, {
+                        patientId: item.id,
+                        from: "patient-list",
+                      })
+                    }
+                  />
+                )}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={getPatientListApi}
+                  />
+                }
+                onEndReached={() => {
+                  patiantList?.length > 7 && setPage(page + 1);
+                }}
+                ListFooterComponent={() =>
+                  isLoading ? <CustomContentLoader listSize={10} /> : null
+                }
+              />
+            ) : (
+              !isLoading && <NoDataAvailable />
+            )}
+          </View>
+        </View>
+      </>
+    </SafeAreaView>
+  );
+});
 
 PatientListScreen.displayName = "PatientListScreen";
+
+export default PatientListScreen;

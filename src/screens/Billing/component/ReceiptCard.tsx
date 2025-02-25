@@ -18,6 +18,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // import MetrialIcon from "react-native-vector-icons/MaterialIcons";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
+import ShareComponent from "./ShareComponent";
 const btnSize = 22;
 function ReceiptCard({ data, print }: { data: any; print: any }) {
   const dimention = useWindowDimensions();
@@ -79,86 +80,7 @@ function ReceiptCard({ data, print }: { data: any; print: any }) {
                 </View>
 
               <View style={style.buttonContainer}>
-                <Menu
-                  visible={Boolean(openShareMenu == receipt.receiptNo)}
-                  onDismiss={onCloseMenu}
-                  anchor={
-                    <TouchableOpacity
-                      onPress={() => {
-                        onOpenMenu(receipt.receiptNo);
-                      }}
-                    >
-                      <Icon
-                        name="share-variant"
-                        size={btnSize}
-                        color={colorList.primary}
-                      />
-                    </TouchableOpacity>
-                  }
-                >
-                  <Menu.Item
-                    onPress={() => {}}
-                    title={
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <Icon
-                          name="email"
-                          size={btnSize}
-                          color={colorList.blue}
-                        />
-                        <Text>Email</Text>
-                      </View>
-                    }
-                    disabled
-                  />
-                  <Menu.Item
-                    onPress={() => {}}
-                    title={
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <Icon
-                          name="whatsapp"
-                          size={btnSize}
-                          color={colorList.socondary}
-                        />
-                        <Text>Whatsapp</Text>
-                      </View>
-                    }
-                    disabled
-                  />
-                  <Menu.Item
-                    onPress={() => {}}
-                    title={
-                      <View
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          name="telegram"
-                          size={btnSize}
-                          color={colorList.primary}
-                        />
-                        <Text>Telegram</Text>
-                      </View>
-                    }
-                  />
-                </Menu>
+               <ShareComponent/>
               </View>
             </View>
           </View>
