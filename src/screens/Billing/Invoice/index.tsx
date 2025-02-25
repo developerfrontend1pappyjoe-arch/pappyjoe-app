@@ -21,6 +21,7 @@ import { getInvoiceList } from "../services";
 import InvoiceCard from "../component/InvoiceCard";
 import { CustomLoader } from "components/CustomLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
+import { PatientDataProps } from "types/PatientDetailsTypes";
 export const InvoiceContext = createContext<InvoiceContextType>({
   refreshing: true,
   setRefreshing: () => {},
@@ -35,7 +36,7 @@ export const InvoiceProvider: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const InvoiceContent: FC = () => {
-  const patientId = useSelector<any>((state) => state.patientId) || null;
+  const patientDetails = useSelector<any>((state) => state.patientDetails) as PatientDataProps || null;
   const { refreshing, setRefreshing } = useContext(InvoiceContext);
   const { mutate, data, isLoading } = useMutation(getInvoiceList, {
     onSuccess: () => {
@@ -50,14 +51,16 @@ const InvoiceContent: FC = () => {
   };
   useEffect(() => {
     if(refreshing){
-      mutate(patientId as string);
+      if(Boolean(patientDetails?.id)){
+        mutate(patientDetails?.id as string);
+      }
     }
     return ()=>{
       if(!refreshing){
         setRefreshing(true)
       }
     }
-  }, [refreshing,patientId]);
+  }, [refreshing,patientDetails]);
   return (
     <View style={{ paddingBottom: 5 }}>
       <View style={{ paddingHorizontal: 8, paddingTop: 8 }}>

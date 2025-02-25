@@ -49,7 +49,7 @@ export const CustomHeader = ({
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: 70,
+    height: 60,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -1,5 +1,5 @@
-import {API_URL} from '../utils/constants';
-import {axiosInstance as axios} from '../config/axios.config.custom';
+import { API_URL } from "../utils/constants";
+import { axiosInstance as axios } from "../config/axios.config.custom";
 
 interface getPatientsListTypes {
   id?: string | number;
@@ -7,15 +7,27 @@ interface getPatientsListTypes {
 }
 
 export const getPatientService = async (params: getPatientsListTypes) => {
+  console.log("----getPatientService called----");
   const Url =
-    params?.id && params?.id !== ''
+    params?.id && params?.id !== ""
       ? `${API_URL.patientList}?pid=${params?.id}`
-      : params && params?.search !== ''
+      : params && params?.search !== ""
         ? `${API_URL.patientList}?searchterm=${params?.search}`
         : `${API_URL.patientList}`;
 
   // console.log('Url ===> ', Url);
 
   const res = await axios.get(Url);
+  return res;
+};
+
+export const getPatientDetailsService = async (
+  params: getPatientsListTypes
+) => {
+  let res = null;
+  if (params?.id) {
+    console.log("----getPatientDetailsService called----");
+    res = (await axios.get(`${API_URL.patientList}?pid=${params?.id}`))?.data?.data[0];
+  }
   return res;
 };

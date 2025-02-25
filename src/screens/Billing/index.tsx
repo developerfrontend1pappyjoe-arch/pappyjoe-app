@@ -8,24 +8,21 @@ import { colorList } from "styles/global.styles";
 import { PatientDetailsTiles } from "components/PatientDetailsTiles";
 import { Divider } from "react-native-paper";
 import {
+  useDispatch,
   // useDispatch,
   useSelector,
 } from "react-redux";
 
-const InvoiceLazyComponent = ()=>{
-  <Suspense fallback={<Text>Loading.....</Text>}>
-    <Invoice />
-  </Suspense>
-}
 
 const renderScene = SceneMap({
   Invoice: Invoice,
   Receipt: Receipt,
 });
 // const patientId = "4060513"
-function Billing() {
-  // const dispatch = useDispatch()
+function Billing({navigation, route}: any) {
+  const dispatch = useDispatch()
   const patientId = useSelector((state: any) => state?.patientId) || "";
+  const patientDetails = useSelector((state: any) => state?.patientDetails) || null;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -33,10 +30,14 @@ function Billing() {
     { key: "Receipt", title: "Receipt" },
   ]);
 
+  //  const {data:patientDetails,isLoading} = useQuery(["getPatientDetails",patientId],()=>getPatientDetailsService({id:patientId}),{
+  //   enabled: !!patientId,
+  //  })
+  
 
   return (
     <View style={styles.container}>
-      {patientId && <PatientDetailsTiles patientId={patientId} />}
+      {Boolean(patientDetails) && <PatientDetailsTiles patientId={patientId} />}
       <Divider />
       <TabView
         navigationState={{ index, routes }}

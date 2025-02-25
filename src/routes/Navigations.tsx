@@ -209,7 +209,10 @@ export const NavigationContainers = () => {
         <Stack.Screen
           name={NavigationList.appoinmentDetails}
           component={AppoinmentDetails}
-          options={{ headerShown: false, animation: "slide_from_right" }}
+          options={{
+            headerShown: false,
+            animation: "slide_from_right",
+          }}
         />
         <Stack.Screen
           name={NavigationList.addpatient}
@@ -235,7 +238,7 @@ export const NavigationContainers = () => {
           name={NavigationList.billing}
           component={Billing}
           options={{
-            title:"Billing",
+            title: "Billing",
             headerShown: true,
             headerTintColor: colorList.white,
             headerStyle: {

@@ -4,7 +4,7 @@ import {colorList} from '../../styles/global.styles';
 export const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
-    paddingTop: 15,
+    paddingTop: 5,
   },
   patientDetailsContainer: {
     backgroundColor: colorList.white,

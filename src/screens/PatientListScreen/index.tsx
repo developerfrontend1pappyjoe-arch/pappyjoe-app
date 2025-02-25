@@ -189,6 +189,7 @@ const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
                     navigate={() =>
                       navigation.navigate(NavigationList.appoinmentDetails, {
                         patientId: item.id,
+                        patientData: item,
                         from: "patient-list",
                       })
                     }

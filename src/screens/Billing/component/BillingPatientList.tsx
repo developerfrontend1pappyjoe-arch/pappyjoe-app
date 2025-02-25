@@ -11,7 +11,7 @@ import { CustomContentLoader } from "components/CustomContentLoader";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationList } from "routes/NavigationList";
 import { useDispatch } from "react-redux";
-import { setPatientId } from "redux/actions";
+import { assignPatientDetails, setPatientId } from "redux/actions";
 
 const SearchInput = ({ searchParams, setSearchParams, clearSearch }: any) => {
   return (
@@ -80,12 +80,13 @@ function BillingPatientList() {
       }
     },
   });
+
 const dispatch = useDispatch();
+
  const navigate = (data: PatientListObjectType)=>{
-    console.log(data.id);
-    
     dispatch(setPatientId(data.id)); 
-    navigation.navigate(NavigationList.billing);
+    dispatch(assignPatientDetails(data)); 
+    navigation.navigate(NavigationList.billing as never);
  }
 
   const handleStart = () => {
