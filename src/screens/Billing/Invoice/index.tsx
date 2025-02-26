@@ -77,6 +77,7 @@ const InvoiceContent: FC = () => {
         ) : (
           <FlatList
             keyExtractor={(_, index) => index.toString()}
+            contentContainerStyle={{ paddingBottom: 50 }}
             showsVerticalScrollIndicator={false}
             data={data?.invoiceList || []}
             renderItem={({ item }: { item: ResultArrayType }) => (

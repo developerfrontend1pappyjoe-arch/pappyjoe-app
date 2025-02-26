@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
-import { Avatar, Divider, List, TextInput, Text } from "react-native-paper";
+import {
+  Avatar,
+  Divider,
+  List,
+  TextInput,
+  Text,
+  ActivityIndicator,
+} from "react-native-paper";
 import { colorList } from "styles/global.styles";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { useMutation } from "@tanstack/react-query";
@@ -13,66 +20,25 @@ import { NavigationList } from "routes/NavigationList";
 import { useDispatch } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
 
-const SearchInput = ({ searchParams, setSearchParams, clearSearch }: any) => {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        marginBottom: 10,
-      }}
-    >
-      {/* <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 10,
-            borderRadius: 12,
-          }}>
-          <Image source={SearchIcon} />
-        </View> */}
-      <TextInput
-        mode="outlined"
-        placeholder="Search patients..."
-        value={searchParams}
-        onChangeText={(text) => setSearchParams(text)}
-        placeholderTextColor={colorList.Grey4}
-        left={
-          <TextInput.Icon
-            icon={() => (
-              <Icons name="search" color={colorList.dark} size={25} />
-            )}
-          />
-        }
-        right={
-          <TextInput.Icon
-            onPress={clearSearch}
-            icon={() => <Icons name="close" color={colorList.dark} size={25} />}
-          />
-        }
-        style={{
-          backgroundColor: colorList.white,
-          color: colorList.Grey1,
-          flex: 1,
-        }}
-      />
-    </View>
-  );
-};
 const limit = 10;
 function BillingPatientList() {
   const [searchText, setSearchText] = useState<string>("");
   const [patiantList, setPatientList] = useState<PatientListObjectType[]>([]);
   const [page, setPage] = useState(0);
   const navigation = useNavigation();
-  const { mutate, data, isLoading } = useMutation(getPatientListService, {
+  const {
+    mutate,
+    data: patientListResponse,
+    isLoading,
+  } = useMutation(getPatientListService, {
     onSuccess(result) {
       try {
         const { data } = result;
         if (data?.status == 200) {
           if (_.isEqual([[]], data.data)) {
             setPatientList([]);
-          } else { 
-            setPatientList((prev)=>searchText !== "" ? data?.data : [...prev, ...data.data]);
+          } else {
+            setPatientList((prev) => [...prev, ...data.data]);
           }
         }
       } catch (err) {
@@ -81,39 +47,108 @@ function BillingPatientList() {
     },
   });
 
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
- const navigate = (data: PatientListObjectType)=>{
-    dispatch(setPatientId(data.id)); 
-    dispatch(assignPatientDetails(data)); 
+  const navigate = (data: PatientListObjectType) => {
+    dispatch(setPatientId(data.id));
+    dispatch(assignPatientDetails(data));
     navigation.navigate(NavigationList.billing as never);
- }
+  };
 
-  const handleStart = () => {
-    setPage((prev) => prev == 0 ? limit : prev + limit);
+  const onPageEndReach = () => {
+    // console.log("api called---------->", page == 0 ? limit : page + limit);
+    if (patiantList?.length > 7) {
+      setPage((prev) => (prev == 0 ? limit : prev + limit));
+      mutate({
+        params: searchText,
+        limit: `start=${page == 0 ? limit : page + limit}&limit=${limit}`,
+      });
+    }
+  };
+
+  const handleSearch = (text: string) => {
+    setPage(0);
+    mutate({
+      params: text,
+      limit: `start=${page}&limit=${limit}`,
+    });
+  };
+
+  const debouncedSearch = useCallback(_.debounce(handleSearch, 500), []);
+
+  const handleTextChange = (text: string) => {
+    setPatientList([])
+    setSearchText(text);
+    debouncedSearch(text);
+  };
+
+  const clearSearch = () => {
+    setSearchText("");
+    setPatientList([])
+    mutate({
+      params: "",
+      limit: `start=${page}&limit=${limit}`,
+    });
   };
 
   useEffect(() => {
     mutate({
-      params: searchText,
+      params: "",
       limit: `start=${page}&limit=${limit}`,
     });
-  }, [searchText,page]);
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     return () => {
-        setSearchText("");
-        setPage(0);
-      };
-  },[])
+      setSearchText("");
+      setPage(0);
+    };
+  }, []);
   return (
     <View>
       <View style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}>
-        <SearchInput
-          searchParams={searchText}
-          setSearchParams={setSearchText}
-          clearSearch={() => setSearchText("")}
-        />
+        <View
+          style={{
+            flexDirection: "row",
+            marginBottom: 10,
+          }}
+        >
+          <TextInput
+            mode="outlined"
+            placeholder="Search patients..."
+            value={searchText}
+            onChangeText={handleTextChange}
+            placeholderTextColor={colorList.Grey4}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Icons name="search" color={colorList.dark} size={25} />
+                )}
+              />
+            }
+            right={
+              <TextInput.Icon
+                onPress={clearSearch}
+                disabled={isLoading}
+                icon={() =>
+                  isLoading && searchText != "" ? (
+                    <ActivityIndicator
+                      animating={true}
+                      color={colorList.primary}
+                    />
+                  ) : (
+                    <Icons name="close" color={colorList.dark} size={25} />
+                  )
+                }
+              />
+            }
+            style={{
+              backgroundColor: colorList.white,
+              color: colorList.Grey1,
+              flex: 1,
+            }}
+          />
+        </View>
       </View>
       <View style={{ height: 525 }}>
         <FlatList
@@ -122,7 +157,11 @@ const dispatch = useDispatch();
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }: { item: PatientListObjectType }) => (
             <>
-              <TouchableOpacity onPress={()=>{navigate(item)}}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigate(item);
+                }}
+              >
                 <List.Item
                   title={
                     <Text
@@ -138,7 +177,11 @@ const dispatch = useDispatch();
                   left={(props) =>
                     item.Photo ? (
                       <Avatar.Image
-                        style={{ marginLeft: 5,borderWidth:.5,borderColor:colorList.Grey1 }}
+                        style={{
+                          marginLeft: 5,
+                          borderWidth: 0.5,
+                          borderColor: colorList.Grey1,
+                        }}
                         size={40}
                         source={{ uri: item.Photo }}
                       />
@@ -154,7 +197,8 @@ const dispatch = useDispatch();
               </TouchableOpacity>
             </>
           )}
-          onEndReached={handleStart}
+          onEndReached={onPageEndReach}
+          onEndReachedThreshold={0.1}
           ListFooterComponent={() =>
             isLoading ? <CustomContentLoader listSize={8} /> : null
           }

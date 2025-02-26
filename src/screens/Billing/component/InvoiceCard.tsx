@@ -20,9 +20,11 @@ import { useDeleteInvoice } from "../hook/invoiceOperationHook";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
 import ShareComponent from "./ShareComponent";
+import { useSelector } from "react-redux";
 const btnSize = 22;
 function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
   const dimention = useWindowDimensions();
+  const patientDetails = useSelector((state:any)=>state.patientDetails)
   const { CustomModal } = useModal();
   const [openShareMenu, setOpenShareMenu] = useState<string | null>("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -259,7 +261,7 @@ function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
               )}
 
               <View style={style.buttonContainer}>
-                 <ShareComponent link="http://rcm.pappyjoe.com/RCM" content="test content"/>
+                 <ShareComponent subject="Invoice" content={`Dear ${patientDetails.Name || ""} click on the link ${print[invoice.inviceNo]?.url || ""} to view your invoice.`}/>
               </View>
             </View>
           </Card>

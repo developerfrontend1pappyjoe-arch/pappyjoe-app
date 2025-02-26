@@ -20,7 +20,6 @@ import { NavigationList } from "routes/NavigationList";
 import { useSelector } from "react-redux";
 
 interface PatientDetailsTileProps {
-  patientId: string;
   isLoading?: boolean;
 }
 

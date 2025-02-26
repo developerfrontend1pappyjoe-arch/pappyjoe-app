@@ -6,23 +6,21 @@ import Invoice from "./Invoice";
 import Receipt from "./Receipt";
 import { colorList } from "styles/global.styles";
 import { PatientDetailsTiles } from "components/PatientDetailsTiles";
-import { Divider } from "react-native-paper";
+import { Divider, FAB } from "react-native-paper";
 import {
   useDispatch,
   // useDispatch,
   useSelector,
 } from "react-redux";
 
-
 const renderScene = SceneMap({
   Invoice: Invoice,
   Receipt: Receipt,
 });
 // const patientId = "4060513"
-function Billing({navigation, route}: any) {
-  const dispatch = useDispatch()
+function Billing({ navigation, route }: any) {
   const patientId = useSelector((state: any) => state?.patientId) || "";
-  const patientDetails = useSelector((state: any) => state?.patientDetails) || null;
+  const patientDetails =  useSelector((state: any) => state?.patientDetails) || null;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -30,14 +28,18 @@ function Billing({navigation, route}: any) {
     { key: "Receipt", title: "Receipt" },
   ]);
 
+  const openMoadl = ()=>{
+    console.log(index);
+    
+  }
+
   //  const {data:patientDetails,isLoading} = useQuery(["getPatientDetails",patientId],()=>getPatientDetailsService({id:patientId}),{
   //   enabled: !!patientId,
   //  })
-  
 
   return (
     <View style={styles.container}>
-      {Boolean(patientDetails) && <PatientDetailsTiles patientId={patientId} />}
+      {Boolean(patientDetails) && <PatientDetailsTiles  />}
       <Divider />
       <TabView
         navigationState={{ index, routes }}
@@ -57,6 +59,12 @@ function Billing({navigation, route}: any) {
           />
         )}
       />
+      <FAB
+        icon="plus"
+        color={colorList.white}
+        style={styles.fab}
+        onPress={openMoadl}
+      />
     </View>
   );
 }
@@ -64,6 +72,14 @@ function Billing({navigation, route}: any) {
 export default Billing;
 
 const styles = StyleSheet.create({
+  fab: {
+    position: "absolute",
+    marginHorizontal: 16,
+    marginBottom:10,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colorList.socondary,
+  },
   container: {
     flex: 1,
   },
