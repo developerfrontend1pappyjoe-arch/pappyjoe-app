@@ -23,17 +23,9 @@ import ShareComponent from "./ShareComponent";
 import { useSelector } from "react-redux";
 const btnSize = 22;
 function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
-  const dimention = useWindowDimensions();
   const patientDetails = useSelector((state:any)=>state.patientDetails)
   const { CustomModal } = useModal();
-  const [openShareMenu, setOpenShareMenu] = useState<string | null>("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const onOpenMenu = (invoiceNo: string) => {
-    setOpenShareMenu(invoiceNo);
-  };
-  const onCloseMenu = () => {
-    setOpenShareMenu(null);
-  };
   const handleCloseModal = () => {
     setDeleteId(null);
   };

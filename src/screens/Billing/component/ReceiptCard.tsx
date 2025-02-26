@@ -1,13 +1,12 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import {
   Alert,
   Linking,
   StyleSheet,
   TouchableOpacity,
-  useWindowDimensions,
   View,
 } from "react-native";
-import { Button, Card, Divider, Menu, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 
 import { colorList } from "styles/global.styles";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -16,20 +15,11 @@ import { FlatList } from "react-native-gesture-handler";
 import DetailsComponent from "./DetailsComponent";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // import MetrialIcon from "react-native-vector-icons/MaterialIcons";
-import { CustomLoaderRound } from "components/CustomLoaderRound";
-import { useModal } from "hooks";
 import ShareComponent from "./ShareComponent";
+import { useSelector } from "react-redux";
 const btnSize = 22;
 function ReceiptCard({ data, print }: { data: any; print: any }) {
-  const dimention = useWindowDimensions();
-  const [openShareMenu, setOpenShareMenu] = useState<string | null>("");
-  const onOpenMenu = (receiptNo: string) => {
-    setOpenShareMenu(receiptNo);
-  };
-  const onCloseMenu = () => {
-    setOpenShareMenu(null);
-  };
-
+  const patientDetails = useSelector((state:any)=>state.patientDetails)
   const handlePrint = (id: string) => {
     if (print[id]?.url) {
       Linking.openURL(print[id]?.url).catch((err) => {
@@ -80,7 +70,7 @@ function ReceiptCard({ data, print }: { data: any; print: any }) {
                 </View>
 
               <View style={style.buttonContainer}>
-               <ShareComponent/>
+               <ShareComponent subject="Receipt" content={`Dear ${patientDetails.Name || ""} click on the link ${print[receipt.inviceNo]?.url || ""} to view your Receipt.`}/>
               </View>
             </View>
           </View>
