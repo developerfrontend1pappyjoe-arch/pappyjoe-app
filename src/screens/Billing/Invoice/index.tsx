@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { Avatar, Card, Divider, Text } from "react-native-paper";
 import { useSelector } from "react-redux";
-import { InvoiceContextType, InvoiceItemType, ResultArrayType } from "./types";
+import { InvoiceContextType, InvoiceItemType, InvoiceSaveObjectType, ResultArrayType } from "./types";
 import { useMutation } from "@tanstack/react-query";
 import { getInvoiceList } from "../services";
 import InvoiceCard from "../component/InvoiceCard";
@@ -29,7 +29,7 @@ export const InvoiceContext = createContext<InvoiceContextType>({
 export const InvoiceProvider: FC<PropsWithChildren> = ({ children }) => {
   const [refreshing, setRefreshing] = useState<boolean>(true);
   return (
-    <InvoiceContext.Provider value={{ refreshing, setRefreshing }}>
+    <InvoiceContext.Provider value={{ refreshing, setRefreshing}}>
       {children}
     </InvoiceContext.Provider>
   );

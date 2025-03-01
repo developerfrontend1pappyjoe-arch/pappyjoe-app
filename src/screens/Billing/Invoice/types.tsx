@@ -30,17 +30,33 @@ export type ResultArrayType = {
   list: InvoiceObjectType[];
 };
 
-export type InvoiceListResponseType = {invoiceList:ResultArrayType[],print:any}
+export type InvoiceListResponseType = {
+  invoiceList: ResultArrayType[];
+  print: any;
+};
 
 export type InvoiceContextType = {
   refreshing: boolean;
   setRefreshing: Dispatch<SetStateAction<boolean>>;
 };
 
+export type ProcedureMatsterItem = {
+  id: string;
+  text: string;
+  tax_id: string;
+};
+
+export type TaxObjectType = {
+    taxType:string,
+    value:number,
+    taxValue:number
+}
+
 export type InvoiceSaveObjectType = {
-  item_id: string;
+  item: ProcedureMatsterItem | null;
   item_quantity: string;
   item_cost: string;
+  item_tax:TaxObjectType | null,
   item_tax_amount: string;
   item_tax_id: string;
   item_discount: string;
@@ -50,11 +66,34 @@ export type InvoiceSaveObjectType = {
   total_discount: string;
   total_tax: string;
   total_amount: string;
-}
+};
 
 export type InvoiceOperationType = {
   patient_id: string;
   date: string;
   inv_number?: string;
-  items:InvoiceSaveObjectType[];
+  items: InvoiceSaveObjectType[];
 };
+
+export type PrescriptionType = {
+  id: string;
+  text: string;
+  tax_id: string;
+};
+
+
+export const initialData:InvoiceSaveObjectType = {
+  item: null,
+  item_tax:null,
+  item_quantity: "",
+  item_cost: "",
+  item_tax_amount: "",
+  item_tax_id: "",
+  item_discount: "",
+  item_discount_type: "%",
+  item_total_amount: "",
+  total_cost: "",
+  total_discount: "",
+  total_tax: "",
+  total_amount: "",
+}

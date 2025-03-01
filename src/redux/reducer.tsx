@@ -1,5 +1,5 @@
-import persistConfig from '../config/redux.config';
-import {persistReducer} from 'redux-persist';
+import persistConfig from "../config/redux.config";
+import { persistReducer } from "redux-persist";
 import {
   ADD_LOGIN_DETAILS,
   GET_LOGIN_DETAILS,
@@ -7,31 +7,42 @@ import {
   IS_LOGIN,
   REMOVE_LOGIN_DETAILS,
   PATIENT_ID,
-  PATIENT_DETAILS
-} from './types';
-import moment from 'moment';
-import { PatientDataProps } from 'types/PatientDetailsTypes';
+  PATIENT_DETAILS,
+  EDIT_INVOICE,
+  EDIT_RECEIPT,
+} from "./types";
+import moment from "moment";
+import { PatientDataProps } from "types/PatientDetailsTypes";
+import { InvoiceSaveObjectType } from "screens/Billing/Invoice/types";
 
 interface StoreTypes {
   loginData: Object | null;
   isLoggedIn: boolean;
   homeAppoinmentFilter: Object;
-  patientId:string | null,
-  patientDetails:PatientDataProps | null
+  patientId: string | null;
+  patientDetails: PatientDataProps | null;
+  billing: {
+    invoiceEditList: InvoiceSaveObjectType[];
+    receiptEditList: any[];
+  };
 }
 
 const initialState: StoreTypes = {
   loginData: null,
   isLoggedIn: false,
   homeAppoinmentFilter: {
-    appointment_status: '',
-    from_date: moment().format('DD-MM-YYYY'),
-    to_date: moment().format('DD-MM-YYYY'),
-    patient_name: '',
-    doctor_id: '',
+    appointment_status: "",
+    from_date: moment().format("DD-MM-YYYY"),
+    to_date: moment().format("DD-MM-YYYY"),
+    patient_name: "",
+    doctor_id: "",
   },
-  patientId:null,
-  patientDetails:null
+  patientId: null,
+  patientDetails: null,
+  billing: {
+    invoiceEditList: [],
+    receiptEditList: [],
+  },
 };
 
 const commonReducer = (state = initialState, action: any) => {
@@ -60,16 +71,32 @@ const commonReducer = (state = initialState, action: any) => {
         ...state,
         loginData: action.payload,
       };
-      case PATIENT_ID:
-        return {
-          ...state,
-          patientId:action.payload
-        }
-      case PATIENT_DETAILS:
-        return {
-          ...state,
-          patientDetails:action.payload
-        }
+    case PATIENT_ID:
+      return {
+        ...state,
+        patientId: action.payload,
+      };
+    case PATIENT_DETAILS:
+      return {
+        ...state,
+        patientDetails: action.payload,
+      };
+    case EDIT_INVOICE:
+      return {
+        ...state,
+        billing: {
+          ...state.billing,
+          invoiceEditList: action.payload,
+        },
+      };
+    case EDIT_RECEIPT:
+      return {
+        ...state,
+        billing: {
+          ...state.billing,
+          receiptEditList: action.payload,
+        },
+      };
     default:
       return state;
   }

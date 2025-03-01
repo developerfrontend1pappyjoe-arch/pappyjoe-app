@@ -1,4 +1,5 @@
 // actions.js
+import { InvoiceSaveObjectType } from 'screens/Billing/Invoice/types';
 import {
   ADD_LOGIN_DETAILS,
   GET_LOGIN_DETAILS,
@@ -6,27 +7,28 @@ import {
   IS_LOGIN,
   REMOVE_LOGIN_DETAILS,
   PATIENT_ID,
-  PATIENT_DETAILS
+  PATIENT_DETAILS,
+  EDIT_INVOICE
 } from './types';
 
-export const handleHomeAppoinmentFilter = (data: any) => {
+export const handleHomeAppoinmentFilter = (payload: any) => {
   return {
     type: HOME_APPOINMENTS_FILTER,
-    payload: data,
+    payload,
   };
 };
 
-export const handleLoggedInStatus = (data: any) => {
+export const handleLoggedInStatus = (payload: any) => {
   return {
     type: IS_LOGIN,
-    payload: data,
+    payload,
   };
 };
 
-export const addLoginDetails = (data: any) => {
+export const addLoginDetails = (payload: any) => {
   return {
     type: ADD_LOGIN_DETAILS,
-    payload: data,
+    payload,
   };
 };
 
@@ -38,16 +40,23 @@ export const removeLoginDetails = () => {
   };
 };
 
-export const setPatientId = (id:string | null)=>{
+export const setPatientId = (payload:string | null)=>{
    return {
       type:PATIENT_ID,
-      payload:id
+      payload
    }
 }
 
-export const assignPatientDetails = (data:any)=>{
+export const assignPatientDetails = (payload:any)=>{
    return {
       type:PATIENT_DETAILS,
-      payload:data
+      payload
    }
+}
+
+export const editInvoiceList = (payload:InvoiceSaveObjectType[])=>{
+    return {
+       type:EDIT_INVOICE,
+       payload
+    }
 }

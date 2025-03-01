@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 import Invoice from "./Invoice";
@@ -8,10 +8,10 @@ import { colorList } from "styles/global.styles";
 import { PatientDetailsTiles } from "components/PatientDetailsTiles";
 import { Divider, FAB } from "react-native-paper";
 import {
-  useDispatch,
-  // useDispatch,
   useSelector,
 } from "react-redux";
+import { useModal } from "hooks";
+import AddInvoice from "./Invoice/components/AddInvoice";
 
 const renderScene = SceneMap({
   Invoice: Invoice,
@@ -19,7 +19,9 @@ const renderScene = SceneMap({
 });
 // const patientId = "4060513"
 function Billing({ navigation, route }: any) {
-  const patientId = useSelector((state: any) => state?.patientId) || "";
+  const dimention = useWindowDimensions()
+  const {CustomModal} = useModal()
+  const [open,setOpen] = useState<boolean>(false)
   const patientDetails =  useSelector((state: any) => state?.patientDetails) || null;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -31,6 +33,7 @@ function Billing({ navigation, route }: any) {
   const openMoadl = ()=>{
     console.log(index);
     
+    setOpen(true)
   }
 
   //  const {data:patientDetails,isLoading} = useQuery(["getPatientDetails",patientId],()=>getPatientDetailsService({id:patientId}),{
@@ -39,6 +42,11 @@ function Billing({ navigation, route }: any) {
 
   return (
     <View style={styles.container}>
+      <CustomModal title={index == 0 ? "Add invoice" : "Add receipt"} open={open} setOpen={setOpen}>
+         <ScrollView style={{height:dimention.height-80}}>
+            <AddInvoice/>
+         </ScrollView>
+      </CustomModal>
       {Boolean(patientDetails) && <PatientDetailsTiles  />}
       <Divider />
       <TabView

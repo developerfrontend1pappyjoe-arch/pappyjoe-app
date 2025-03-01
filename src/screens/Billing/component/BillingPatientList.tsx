@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NavigationList } from "routes/NavigationList";
 import { useDispatch } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
+import AddInvoice from "../Invoice/components/AddInvoice";
 
 const limit = 10;
 function BillingPatientList() {
@@ -91,12 +92,12 @@ function BillingPatientList() {
     });
   };
 
-  useEffect(() => {
-    mutate({
-      params: "",
-      limit: `start=${page}&limit=${limit}`,
-    });
-  }, []);
+  // useEffect(() => {
+  //   mutate({
+  //     params: "",
+  //     limit: `start=${page}&limit=${limit}`,
+  //   });
+  // }, []);
 
   useEffect(() => {
     return () => {
@@ -106,7 +107,11 @@ function BillingPatientList() {
   }, []);
   return (
     <View>
-      <View style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}>
+
+      <AddInvoice/>
+
+      
+      {/* <View style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}>
         <View
           style={{
             flexDirection: "row",
@@ -203,7 +208,7 @@ function BillingPatientList() {
             isLoading ? <CustomContentLoader listSize={8} /> : null
           }
         />
-      </View>
+      </View> */}
     </View>
   );
 }
