@@ -15,7 +15,7 @@ import moment from "moment";
 import { PatientDataProps } from "types/PatientDetailsTypes";
 import { InvoiceSaveObjectType } from "screens/Billing/Invoice/types";
 
-interface StoreTypes {
+export interface StoreTypes {
   loginData: Object | null;
   isLoggedIn: boolean;
   homeAppoinmentFilter: Object;

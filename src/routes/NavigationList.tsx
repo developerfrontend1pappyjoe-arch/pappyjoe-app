@@ -21,4 +21,5 @@ export const NavigationList = {
   update:"updateScreen",
   billing:"billing",
   billingList:"billinglist",
+  addInvoice:"addinvoice"
 };

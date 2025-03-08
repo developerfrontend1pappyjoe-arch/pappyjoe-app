@@ -31,7 +31,9 @@ const API_URL = {
   patientProfileUpload: `${BASE_URL}/profilephoto`,
   getInvoice: `${BASE_URL}/invoicelist`,
   getReceipt: `${BASE_URL}/receiptlist`,
-  invoiceOperation:`${BASE_URL}/invoice`
+  invoiceOperation:`${BASE_URL}/invoice`,
+  invoiceMasterList:`${BASE_URL}/invoiceitems`,
+  financeMaster:`${BASE_URL}/financialmaster`
 };
 
 export {BASE_URL, API_URL};

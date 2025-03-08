@@ -38,6 +38,7 @@ import Billing from "screens/Billing";
 import { colorList } from "styles/global.styles";
 import BillingPatientList from "screens/Billing/component/BillingPatientList";
 import PatientListScreen from "../screens/PatientListScreen";
+import AddInvoice from "screens/Billing/Invoice/components/AddInvoice";
 const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -239,6 +240,19 @@ export const NavigationContainers = () => {
           component={Billing}
           options={{
             title: "Billing",
+            headerShown: true,
+            headerTintColor: colorList.white,
+            headerStyle: {
+              backgroundColor: colorList.primary,
+            },
+            animation: "slide_from_right",
+          }}
+        />
+        <Stack.Screen
+          name={NavigationList.addInvoice}
+          component={AddInvoice}
+          options={{
+            title: "Add invoice",
             headerShown: true,
             headerTintColor: colorList.white,
             headerStyle: {

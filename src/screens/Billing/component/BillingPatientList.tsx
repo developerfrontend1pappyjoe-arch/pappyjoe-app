@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Dimensions, FlatList, TouchableOpacity, View } from "react-native";
 import {
   Avatar,
   Divider,
@@ -19,8 +19,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NavigationList } from "routes/NavigationList";
 import { useDispatch } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
-import AddInvoice from "../Invoice/components/AddInvoice";
-
 const limit = 10;
 function BillingPatientList() {
   const [searchText, setSearchText] = useState<string>("");
@@ -92,12 +90,12 @@ function BillingPatientList() {
     });
   };
 
-  // useEffect(() => {
-  //   mutate({
-  //     params: "",
-  //     limit: `start=${page}&limit=${limit}`,
-  //   });
-  // }, []);
+  useEffect(() => {
+    mutate({
+      params: "",
+      limit: `start=${page}&limit=${limit}`,
+    });
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -108,14 +106,14 @@ function BillingPatientList() {
   return (
     <View>
 
-      <AddInvoice/>
+      {/* <AddInvoice/> */}
 
       
-      {/* <View style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}>
+      <View style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}>
         <View
           style={{
             flexDirection: "row",
-            marginBottom: 10,
+            marginBottom: 4,
           }}
         >
           <TextInput
@@ -155,7 +153,7 @@ function BillingPatientList() {
           />
         </View>
       </View>
-      <View style={{ height: 525 }}>
+      <View style={{ height: Dimensions.get("screen").height - 272 }}>
         <FlatList
           style={{ paddingHorizontal: 1, paddingBottom: 10 }}
           data={patiantList}
@@ -208,7 +206,7 @@ function BillingPatientList() {
             isLoading ? <CustomContentLoader listSize={8} /> : null
           }
         />
-      </View> */}
+      </View>
     </View>
   );
 }

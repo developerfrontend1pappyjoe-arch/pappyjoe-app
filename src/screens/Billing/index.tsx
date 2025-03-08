@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 
 import Invoice from "./Invoice";
@@ -12,7 +12,9 @@ import {
 } from "react-redux";
 import { useModal } from "hooks";
 import AddInvoice from "./Invoice/components/AddInvoice";
-
+import { useQuery } from "@tanstack/react-query/build/lib/useQuery";
+import { getFinaceMaster } from "./services";
+import { useToast } from "react-native-toast-notifications";
 const renderScene = SceneMap({
   Invoice: Invoice,
   Receipt: Receipt,
@@ -25,6 +27,15 @@ function Billing({ navigation, route }: any) {
   const patientDetails =  useSelector((state: any) => state?.patientDetails) || null;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const toast = useToast()
+  useQuery(["financeMaster"], getFinaceMaster, {
+
+      onError: (e:any) => {
+        toast.show(e.message || "Something error!",{
+            type:"warning"
+        })
+      },
+    });
   const [routes] = useState([
     { key: "Invoice", title: "Invoice" },
     { key: "Receipt", title: "Receipt" },
@@ -43,9 +54,9 @@ function Billing({ navigation, route }: any) {
   return (
     <View style={styles.container}>
       <CustomModal title={index == 0 ? "Add invoice" : "Add receipt"} open={open} setOpen={setOpen}>
-         <ScrollView style={{height:dimention.height-80}}>
+         <View style={{height:Dimensions.get("screen").height - 172}}>
             <AddInvoice/>
-         </ScrollView>
+         </View>
       </CustomModal>
       {Boolean(patientDetails) && <PatientDetailsTiles  />}
       <Divider />

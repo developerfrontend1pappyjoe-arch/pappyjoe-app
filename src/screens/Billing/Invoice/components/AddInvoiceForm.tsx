@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import {
@@ -14,6 +14,10 @@ import { InvoiceSaveObjectType } from "../types";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useToast } from "react-native-toast-notifications";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getInvoiceMasterList } from "screens/Billing/services";
+import { useSelector } from "react-redux";
+import _ from "lodash"
 const keyboardType = "number-pad";
 type AddInvoiceFormParamsType = {
   index: number;
@@ -33,6 +37,13 @@ const AddInvoiceForm = ({
     Quandity: 0,
     Discount: 0,
   });
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const patientDetails = useSelector((state: any) => state.patientDetails) || {id:""};
+  const { data:masterList, isLoading } = useQuery(["fetchInvoiceMaster", {searchTerm,patientDetails}], () =>
+    getInvoiceMasterList({ searchTerm, patientId: patientDetails.id })
+  );
+  const queryClient = useQueryClient();
+  const cachedData = queryClient.getQueryData(["financeMaster"]);
   const deleteFromList = () => {
     if (handleDelete) {
       handleDelete(index);
@@ -52,11 +63,33 @@ const AddInvoiceForm = ({
         calculationData.Price * calculationData.Quandity -
         calculationData.Discount;
     }
-    data.item_total_amount = `${total}`
+    data.item_total_amount = `${total}`;
     if (handleEdit) {
       handleEdit({ data, index });
     }
   };
+
+  const handleCalculateTax = (taxId:string,taxItem?:any)=>{
+      let findItem =  taxItem ? taxItem :  cachedData?.taxes?.find(i=>i.id == taxId)
+      let item_total_amount:string|number = 0
+      console.log("item_total_amount");
+      if(findItem){
+         const taxValue = parseFloat(findItem?.percentage || "0")
+         console.log("item_total_amount",taxValue);
+         item_total_amount = parseFloat(item.item_total_amount || "0")
+         console.log("item_total_amount",item_total_amount);
+         item_total_amount = `${(taxValue * item_total_amount) / 100}`
+         
+         return `${item_total_amount}`
+      }
+      return item_total_amount
+  }
+
+  const handleTaxChange = (item_tax)=>{
+    const item_total_amount = handleCalculateTax(item_tax.id,item_tax) 
+    console.log("item_total_amount",item_tax);
+    handleEdit({data:{...item,item_total_amount,item_tax,item_tax_id:item_tax.id}, index });
+  }
 
   const handleChange = (field: string, data: any) => {
     const update = { ...item };
@@ -74,11 +107,7 @@ const AddInvoiceForm = ({
         typeof updated.Quandity == "number" &&
         typeof updated.Price == "number" &&
         typeof updated.Discount == "number"
-      ) {
-        console.log(
-          (updated.Discount / 100) * (updated.Price * updated.Quandity)
-        );
-
+      ) { 
         total =
           item.item_discount_type == "%"
             ? updated.Price * updated.Quandity -
@@ -98,6 +127,13 @@ const AddInvoiceForm = ({
       handleEdit({ data: update, index });
     }
   };
+
+  const searchItem = (text:string)=>{
+      setSearchTerm(text)
+  } 
+
+  const handleSearch = _.debounce(searchItem,500)
+
 
   return (
     <View style={{ paddingVertical: 5 }}>
@@ -122,10 +158,16 @@ const AddInvoiceForm = ({
           }}
           value={item.item}
           mode="default"
-          data={arra}
+          data={masterList?.data || []}
           labelField="text"
           valueField="id"
           accessibilityLabel="Select an item"
+          searchQuery={(e,labelValue)=>{ console.log(e,labelValue);   return true}}
+          renderInputSearch={() => (
+            <View style={{paddingHorizontal:6}}>
+                <TextInput dense mode="outlined" onChangeText={handleSearch} label={"Search"} />
+            </View>
+          )}
           renderItem={(item) => (
             <>
               <List.Item title={item.text} />
@@ -221,80 +263,80 @@ const AddInvoiceForm = ({
             flexDirection: "row",
             gap: 5,
             alignItems: "center",
-            justifyContent:'center'
+            justifyContent: "center",
           }}
         >
-        <Dropdown
-          search
-          inputSearchStyle={style.inputSearchStyle}
-          style={[style.dropdownContainer,{paddingVertical:2,borderWidth:.8}]}
-          selectedTextStyle={{
-            fontSize: 13,
-            color: colorList.dark,
-          }}
-          containerStyle={{
-            marginTop: 8,
-            borderRadius: 8,
-            borderWidth: 0.8,
-            borderBlockColor: colorList.Grey1,
-            paddingVertical: 5,
-          }}
-          value={item.item_tax}
-          mode="default"
-          data={taxArray}
-          labelField="taxValue"
-          valueField="value"
-          
-          accessibilityLabel="Tax"
-          renderItem={(tax) => (
-            <>
-              <List.Item title={`${tax.taxValue}`} />
-              <Divider />
-            </>
-          )}
-          onChange={(data) => {
-            handleChange("item_tax", data);
-          }}
-        />
+          <Dropdown
+            search
+            inputSearchStyle={style.inputSearchStyle}
+            style={[
+              style.dropdownContainer,
+              { paddingVertical: 2, borderWidth: 0.8,marginTop:5 },
+            ]}
+            selectedTextStyle={{
+              fontSize: 13,
+              color: colorList.dark,
+            }}
+            containerStyle={{
+              marginTop: 8,
+              borderRadius: 8,
+              borderWidth: 0.8,
+              borderBlockColor: colorList.Grey1,
+              paddingVertical: 5,
+            }}
+            value={item.item_tax}
+            mode="default"
+            data={cachedData?.data?.taxes || []}
+            labelField="percentage"
+            valueField="percentage"
+            accessibilityLabel="Tax"
+            renderItem={(tax) => (
+              <>
+                <List.Item title={`${tax?.taxname || ""} ${tax?.percentage || ""} %`} />
+                <Divider />
+              </>
+            )}
+            onChange={handleTaxChange}
+          />
           <TextInput
             style={{ flex: 1 }}
             editable={false}
-            value={item.item_total_amount}
+            value={item.fullTotal}
             dense
             mode="outlined"
             label="Total"
           />
         </View>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              paddingTop:8
-            }}
-          >
-            {index > 0 && (
-              <TouchableOpacity
-                style={{
-                  //   backgroundColor: colorList.red,
-                  borderColor: colorList.red,
-                  borderWidth: 0.5,
-                  padding: 5,
-                  borderRadius: 10,
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-                onPress={deleteFromList}
-              >
-                <Text style={{ color: colorList.red }}>Delete</Text>
-                <Text style={{ color: colorList.red }}>
-                  <Icon name="delete" size={20} />
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            paddingTop: 8,
+          }}
+        >
+          {index > 0 && (
+            <TouchableOpacity
+              style={{
+                //   backgroundColor: colorList.red,
+                borderColor: colorList.red,
+                borderWidth: 0.5,
+                padding: 5,
+                borderRadius: 10,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+              }}
+              onPress={deleteFromList}
+            >
+              <Text style={{ color: colorList.red }}>Delete</Text>
+              <Text style={{ color: colorList.red }}>
+                <Icon name="delete" size={20} />
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </Card>
     </View>
   );
@@ -317,7 +359,7 @@ const style = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 3,
-    flex:1
+    flex: 1,
   },
   containerStyle: {
     padding: 5,
@@ -333,78 +375,7 @@ const style = StyleSheet.create({
 });
 
 const checkingKeys = {
-  item_discount: "Discount",
+  // item_discount: "Discount",
   item_quantity: "Quandity",
   item_cost: "Price",
 };
-
-const taxArray = [
-    {
-        taxType:"cess",
-        value:1,  
-        taxValue:"Cess 1%"
-    }
-]
-
-const arra = [
-  {
-    id: "PT_398899__4642954",
-    text: "USG ABDOMEN SCAN (PLANNED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_395713__4033385",
-    text: "MRI HEAD 10 TESLA (COMPLETED PROCEDURE)",
-    tax_id: "211",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-  {
-    id: "PT_0__4032028",
-    text: "Consultation (COMPLETED PROCEDURE)",
-    tax_id: "",
-  },
-];

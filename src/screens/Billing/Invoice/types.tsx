@@ -53,6 +53,7 @@ export type TaxObjectType = {
 }
 
 export type InvoiceSaveObjectType = {
+  item_id?:string;
   item: ProcedureMatsterItem | null;
   item_quantity: string;
   item_cost: string;
@@ -66,6 +67,7 @@ export type InvoiceSaveObjectType = {
   total_discount: string;
   total_tax: string;
   total_amount: string;
+  fullTotal:number | string
 };
 
 export type InvoiceOperationType = {
@@ -96,4 +98,5 @@ export const initialData:InvoiceSaveObjectType = {
   total_discount: "",
   total_tax: "",
   total_amount: "",
+  fullTotal:0
 }

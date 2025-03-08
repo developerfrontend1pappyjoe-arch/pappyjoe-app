@@ -34,41 +34,41 @@ export default function App() {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <PaperProvider theme={theme}>
-          <PersistGate loading={null} persistor={persistor}>
-            <ToastProvider
-              placement="top"
-              duration={2500}
-              animationType="slide-in"
-              animationDuration={500}
-              swipeEnabled={true}
-              offsetTop={15}
-              renderType={{
-                custom_type: (toast) => {
-                  return (
-                    <View
-                      style={{
-                        padding: 15,
-                        backgroundColor: "red",
-                        borderRadius: 12,
-                      }}
-                    >
-                      <Text style={{ color: "green" }}>{toast.message}</Text>
-                    </View>
-                  );
-                },
-              }}
-            >
+        <ToastProvider
+          placement="top"
+          duration={2500}
+          animationType="slide-in"
+          animationDuration={500}
+          swipeEnabled={true}
+          offsetTop={15}
+          renderType={{
+            custom_type: (toast) => {
+              return (
+                <View
+                  style={{
+                    padding: 15,
+                    backgroundColor: "red",
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text style={{ color: "green" }}>{toast.message}</Text>
+                </View>
+              );
+            },
+          }}
+        >
+          <PaperProvider theme={theme}>
+            <PersistGate loading={null} persistor={persistor}>
               <ModalProvider>
-              <SafeAreaProvider>
-                <GestureHandlerRootView>
-                  <NavigationContainers />
-                </GestureHandlerRootView>
-              </SafeAreaProvider>
+                <SafeAreaProvider>
+                  <GestureHandlerRootView>
+                    <NavigationContainers />
+                  </GestureHandlerRootView>
+                </SafeAreaProvider>
               </ModalProvider>
-            </ToastProvider>
-          </PersistGate>
-        </PaperProvider>
+            </PersistGate>
+          </PaperProvider>
+        </ToastProvider>
       </QueryClientProvider>
     </Provider>
   );
