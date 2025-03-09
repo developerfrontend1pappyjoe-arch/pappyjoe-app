@@ -2,218 +2,138 @@ import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
-  Image,
   RefreshControl,
   SafeAreaView,
   View,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import Icons from "react-native-vector-icons/MaterialIcons";
+import { useMutation } from "@tanstack/react-query";
 import _ from "lodash";
+import Icons from "react-native-vector-icons/MaterialIcons";
+import { Button, TextInput } from "react-native-paper";
 
-// import {CustomHeader} from '../../components/CustomHeader';
 import { colorList } from "../../styles/global.styles";
-
-import { styles } from "./patientlist.styles";
 import { getPatientListService } from "./service/patientList.service";
 import { NavigationList } from "../../routes/NavigationList";
 import { PatientList } from "./components/PatientList";
-import { TextInput } from "react-native-paper";
-import { NavigationProps } from "types/CommonTypes";
 import { CustomContentLoader } from "components/CustomContentLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
+import { NavigationProps } from "types/CommonTypes";
 
-const SearchInput = ({ searchParams, setSearchParams, clearSearch }: any) => {
+const SearchInput = ({ searchParams, onSearch, clearSearch }: any) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        marginBottom: 10,
-      }}
-    >
-      {/* <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: 10,
-          borderRadius: 12,
-        }}>
-        <Image source={SearchIcon} />
-      </View> */}
+    <View style={{ flexDirection: "row", marginBottom: 10 }}>
       <TextInput
         mode="outlined"
         placeholder="Search patients..."
         value={searchParams}
-        onChangeText={(text) => setSearchParams(text)}
+        onChangeText={onSearch}
         placeholderTextColor={colorList.Grey4}
-        left={
-          <TextInput.Icon
-            icon={() => (
-              <Icons name="search" color={colorList.dark} size={25} />
-            )}
-          />
-        }
-        right={
-          <TextInput.Icon
-            onPress={clearSearch}
-            icon={() => <Icons name="close" color={colorList.dark} size={25} />}
-          />
-        }
-        style={{
-          backgroundColor: colorList.white,
-          color: colorList.Grey1,
-          flex: 1,
-        }}
+        left={<TextInput.Icon icon={() => <Icons name="search" color={colorList.dark} size={25} />} />}
+        right={<TextInput.Icon onPress={clearSearch} icon={() => <Icons name="close" color={colorList.dark} size={25} />} />}
+        style={{ backgroundColor: colorList.white, color: colorList.Grey1, flex: 1 }}
       />
-      {/* <TextInput
-        placeholder="Search here"
-        value={searchParams}
-        onChangeText={text => setSearchParams(text)}
-        placeholderTextColor={colorList.Grey4}
-        style={{
-          backgroundColor: colorList.white,
-          color: colorList.Grey1,
-          flex: 1,
-        }}
-      /> */}
-      {/* <Button  mode="text" onPress={clearSearch}>
-        <Text style={{fontSize: 20}}>X</Text>
-      </Button> */}
     </View>
   );
 };
 
 const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
-  const [searchParams, setSearchParams] = useState<string>("");
-  const [isLoading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState({ search: "", start: 0, limit: 15 });
   const [refreshing, setRefreshing] = useState(false);
-  const [patiantList, setPatientList] = useState([]);
-  const [page, setPage] = useState(1);
+  const [patientList, setPatientList] = useState([]);
+  const isFetching = useRef(false); // Prevents duplicate API calls on `onEndReached`
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getPatientListApi();
-  //     return () => {
-  //       // console.log('Un Foxuzzed In Patient Listing ');
-
-  //       setSearchParams("");
-  //       setPatientList([]);
-  //       setPage(1);
-  //     };
-  //   }, [])
-  // );
-
-  // const onRefresh = useCallback(() => {
-  //   if (refreshing) setPage(1);
-  //   getPatientListApi();
-  //   setTimeout(() => {
-  //     setRefreshing(false);
-  //   }, 2000);
-  // }, []);
-
-  const clearSearch = () => {
-    // setPatientList([]);
-    setSearchParams("");
-  };
-
-  const getPatientListApi = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getPatientListService({
-        params: searchParams,
-        limit: `start=${page === 1 ? 0 : page * 10 - 11}&limit=10`,
-      });
-
-      if (data?.status == 200) {
-        if (_.isEqual([[]], data.data)) {
+  const { mutate: getPatientListApi, isLoading } = useMutation(getPatientListService, {
+    onSuccess: (result) => {
+      isFetching.current = false;
+      if (result?.status >= 200 && result?.status < 300) {
+        setRefreshing(false)
+        if (_.isEqual([[]],result.data)) {
           setPatientList([]);
         } else {
-          const newData =
-            searchParams !== "" ? data?.data : [...patiantList, ...data.data];
-          setPatientList(newData);
+          if(!_.isEqual(result?.data|| [],patientList)){
+            setPatientList((prev) => (searchParams.start === 0 ? [...result.data] : [...prev, ...result.data]));
+          }
         }
-        setRefreshing(false);
+      } else {
+        setPatientList([]);
       }
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-    }
+    },
+    onError: (error) => {
+      console.error("Error fetching patient list:", error);
+      isFetching.current = false; // Reset fetch status on error
+    },
+  });
+
+  const clearSearch = () => {
+    const update = { ...searchParams, search: "", start: 0 };
+    setSearchParams(update);
+    getPatientListApi(update);
   };
 
-  useEffect(() => {
-    return () => {
-      // console.log('Un Foxuzzed In Patient Listing ');
+  const searchCall = (search:string)=>{
+    getPatientListApi({ ...searchParams, start: 0, search });
+  }
+const debouncedSearch = useCallback(_.debounce(searchCall, 500), []);
 
-      setSearchParams("");
-      setPatientList([]);
-      setPage(1);
-    };
+  const handleSearch = (search: string) => {
+    const update = { ...searchParams, start: 0, search };
+    setPatientList([]);
+    setSearchParams(update);
+    debouncedSearch(search)
+  };
+
+  const onEndReach = () => {
+    if (isFetching.current || patientList.length < searchParams.limit || isLoading) return;
+    isFetching.current = true; 
+
+    const update = { ...searchParams, start: searchParams.start + searchParams.limit };
+    setSearchParams(update);
+    getPatientListApi(update);
+  };
+
+  const onRefresh = ()=>{
+     setRefreshing(true)
+     clearSearch()
+  }
+
+
+  useEffect(() => {
+    getPatientListApi(searchParams);
   }, []);
-
-  useEffect(() => {
-    if (searchParams === "") {
-      setPatientList([]);
-      setPage(1);
-    }
-    getPatientListApi();
-  }, [page,searchParams]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
-      <>
-        <View>
-          <View
-            style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}
-          >
-            <SearchInput
-              setSearchParams={setSearchParams}
-              searchParams={searchParams}
-              clearSearch={clearSearch}
+      <View style={{ flex: 1, paddingHorizontal: 10, paddingTop: 10 }}>
+        <SearchInput onSearch={handleSearch} searchParams={searchParams.search} clearSearch={clearSearch} />
+        <View style={{ flex: 1, paddingVertical: 5 }}>
+          {isLoading && searchParams.start === 0 ? (
+            <CustomContentLoader listSize={10} />
+          ) : patientList.length > 0 ? (
+            <FlatList
+              data={patientList}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <PatientList
+                  data={item}
+                  navigate={() =>
+                    navigation.navigate(NavigationList.appoinmentDetails, {
+                      patientId: item?.id || "",
+                      patientData: item,
+                      from: "patient-list",
+                    })
+                  }
+                />
+              )}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              onEndReached={onEndReach}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={() => isLoading ? <CustomContentLoader listSize={10} /> : null}
             />
-          </View>
-          <View
-            style={{
-              paddingVertical: 5,
-              height: Dimensions.get("screen").height - 272,
-            }}
-          >
-            {isLoading && page === 1 ? (
-              <CustomContentLoader listSize={20} />
-            ) : patiantList?.length > 0 ? (
-              <FlatList
-                data={patiantList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }: any) => (
-                  <PatientList
-                    data={item}
-                    navigate={() =>
-                      navigation.navigate(NavigationList.appoinmentDetails, {
-                        patientId: item.id,
-                        patientData: item,
-                        from: "patient-list",
-                      })
-                    }
-                  />
-                )}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={getPatientListApi}
-                  />
-                }
-                onEndReached={() => {
-                  patiantList?.length > 7 && setPage(page + 1);
-                }}
-                ListFooterComponent={() =>
-                  isLoading ? <CustomContentLoader listSize={10} /> : null
-                }
-              />
-            ) : (
-              !isLoading && <NoDataAvailable />
-            )}
-          </View>
+          ) : (
+            !isLoading && patientList.length === 0 && <NoDataAvailable />
+          )}
         </View>
-      </>
+      </View>
     </SafeAreaView>
   );
 });
