@@ -1,15 +1,26 @@
 import moment from "moment";
 import React, { lazy, Suspense, useEffect, useState } from "react";
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import DatePicker from "react-native-date-picker";
 import { Badge, Button, TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { colorList } from "styles/global.styles";
 // import AddInvoiceForm from "./AddInvoiceForm";
-const AddInvoiceForm = lazy(()=>import("./AddInvoiceForm"))
+const AddInvoiceForm = lazy(() => import("./AddInvoiceForm"));
 import { useDispatch, useSelector } from "react-redux";
 import { editInvoiceList } from "redux/actions";
-import { initialData, InvoiceSaveObjectType } from "../types";
+import {
+  initialData,
+  InvoicePayloadObject,
+  InvoiceSaveObjectType,
+} from "../types";
 import { StoreTypes } from "redux/reducer";
 import { useToast } from "react-native-toast-notifications";
 import { getInvoiceMasterList } from "screens/Billing/services";
@@ -21,6 +32,17 @@ function AddInvoice() {
     billing: { invoiceEditList },
     patientDetails,
   } = useSelector((state: any) => state) as StoreTypes;
+  const [totalCalculated, setTotalCalculated] = useState<{
+    total_cost: number;
+    total_discount: number;
+    total_tax: number;
+    total_amount: number;
+  }>({
+    total_cost: 0,
+    total_discount: 0,
+    total_tax: 0,
+    total_amount: 0,
+  });
   const toast = useToast();
   const dispatch = useDispatch();
   const handleAddInvoice = () => {
@@ -39,10 +61,21 @@ function AddInvoice() {
   }) => {
     const updated = [...invoiceEditList];
     updated[params.index] = params.data;
+    setTotalCalculated((prev) => ({
+      ...prev,
+      total_amount:
+        prev.total_amount + parseFloat(params?.data?.item_total_amount || "0"),
+      total_discount:
+        prev.total_discount + parseFloat(params?.data?.item_discount || "0"),
+      total_tax:
+        prev.total_tax + parseFloat(params?.data?.item_tax_amount || "0"),
+      total_cost:
+        prev.total_cost + parseFloat(params?.data?.item_total_amount || "0"),
+    }));
     dispatch(editInvoiceList(updated));
   };
 
-  const isObjectValid = (item: SaveObjectType) => {
+  const isObjectValid = (item: InvoicePayloadObject) => {
     for (let key in requiredFields) {
       if (requiredFields[key as keyof typeof requiredFields]) {
         if (!Boolean(item[key as keyof typeof item])) {
@@ -54,27 +87,25 @@ function AddInvoice() {
   };
 
   const handleSaveInvoice = () => {
-    let items: SaveObjectType[] = [];
-    let itemObject: SaveObjectType;
+    let items: InvoicePayloadObject[] = [];
+    let itemObject: InvoicePayloadObject;
     let errorList = "";
     if (invoiceEditList?.length) {
       invoiceEditList.forEach((item, index) => {
         itemObject = {
-          item_id: item?.item?.id,
-          item_quantity: item?.item_quantity,
-          item_cost: item?.item_cost,
-          item_tax_amount: item?.item_tax_amount,
-          item_tax_id: `${item?.item_tax?.value}`,
-          item_discount: item?.item_discount,
-          item_discount_type: item?.item_discount_type,
-          item_total_amount: item?.item_total_amount,
-          total_cost: item?.total_cost,
-          total_discount: item?.total_discount,
-          total_tax: `${item?.item_tax?.taxValue}`,
-          total_amount: item?.total_amount,
-          fullTotal:item?.fullTotal
+          item_id: item.item_id as string,
+          item_cost: item.item_cost,
+          item_discount: item.item_discount,
+          item_discount_type: item.item_discount_type,
+          item_quantity: item.item_quantity,
+          item_tax_amount: item.item_tax_amount,
+          item_tax_id: item.item_tax_id,
+          item_total_amount: item.item_total_amount,
+          total_amount: totalCalculated.total_amount.toFixed(2),
+          total_cost: totalCalculated.total_cost.toFixed(2),
+          total_discount: totalCalculated.total_discount.toFixed(2),
+          total_tax: totalCalculated.total_tax.toFixed(2),
         };
-        console.log(itemObject);
         if (isObjectValid(itemObject)) {
           items = [...items, itemObject];
         } else {
@@ -93,10 +124,10 @@ function AddInvoice() {
         inv_number: null,
         items,
       };
+      console.log(saveObject);
     } else {
       toast.show(`Please fill all fields in sl.no ${errorList}`, {
         type: "warning",
-
       });
     }
   };
@@ -143,7 +174,6 @@ function AddInvoice() {
             alignItems: "flex-end",
           }}
         >
-
           <Button
             compact
             onPress={handleSaveInvoice}
@@ -175,7 +205,13 @@ function AddInvoice() {
           keyboardShouldPersistTaps="handled"
           data={invoiceEditList}
           renderItem={({ item, index }) => (
-            <Suspense fallback={<View><Text>Loading...</Text></View>}>
+            <Suspense
+              fallback={
+                <View>
+                  <Text>Loading...</Text>
+                </View>
+              }
+            >
               <AddInvoiceForm
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
@@ -258,4 +294,26 @@ const requiredFields = {
   total_discount: true,
   total_tax: true,
   total_amount: true,
+};
+
+const data = {
+  date: "2025-03-09",
+  inv_number: null,
+  items: [
+    {
+      item_cost: "18500",
+      item_discount: "0",
+      item_discount_type: "%",
+      item_id: "PT_395713__4754245",
+      item_quantity: "1",
+      item_tax_amount: "925.00",
+      item_tax_id: "211",
+      item_total_amount: "18500.00",
+      total_amount: "37000.00",
+      total_cost: "37000.00",
+      total_discount: "18500.00",
+      total_tax: "19425.00",
+    },
+  ],
+  patient_id: "5596833",
 };

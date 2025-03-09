@@ -10,14 +10,18 @@ import {
   Switch,
 } from "react-native-paper";
 import { colorList } from "styles/global.styles";
-import { InvoiceSaveObjectType } from "../types";
+import {
+  InvoiceSaveObjectType,
+  ProcedureMatsterItem,
+  TaxObjectType,
+} from "../types";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useToast } from "react-native-toast-notifications";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getInvoiceMasterList } from "screens/Billing/services";
 import { useSelector } from "react-redux";
-import _ from "lodash"
+import _ from "lodash";
 const keyboardType = "number-pad";
 type AddInvoiceFormParamsType = {
   index: number;
@@ -32,108 +36,107 @@ const AddInvoiceForm = ({
   handleEdit,
 }: AddInvoiceFormParamsType) => {
   const toast = useToast();
-  const [calculationData, setCalculationData] = useState({
-    Price: 0,
-    Quandity: 0,
-    Discount: 0,
-  });
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const patientDetails = useSelector((state: any) => state.patientDetails) || {id:""};
-  const { data:masterList, isLoading } = useQuery(["fetchInvoiceMaster", {searchTerm,patientDetails}], () =>
-    getInvoiceMasterList({ searchTerm, patientId: patientDetails.id })
+  const patientDetails = useSelector((state: any) => state.patientDetails) || {
+    id: "",
+  };
+  const { data: masterList, isLoading } = useQuery(
+    ["fetchInvoiceMaster", { searchTerm, patientDetails }],
+    () => getInvoiceMasterList({ searchTerm, patientId: patientDetails.id })
   );
   const queryClient = useQueryClient();
   const cachedData = queryClient.getQueryData(["financeMaster"]);
+  const handleCalculate = (
+    item: InvoiceSaveObjectType
+  ): InvoiceSaveObjectType => {
+    const details = {
+      tax: parseFloat(item.item_tax?.percentage || "0"),
+      cost: parseFloat(item?.item_cost || "0"),
+      discount: parseFloat(item?.item_discount || "0"),
+      quantity: parseFloat(item?.item_quantity || "0"),
+      total: 0,
+      calculatedTotal: 0,
+      fullTotal: 0,
+    };
+    details.total = details.quantity * details.cost;
+    details.fullTotal = details.total;
+    if (item.item_discount_type == "%" && details.discount != 0) {
+      details.calculatedTotal =
+        details.total - (details.discount * details.total) / 100;
+      details.fullTotal =
+        details.calculatedTotal + (details.tax * details.calculatedTotal) / 100;
+    } else if (item.item_discount_type == "INR" && details.discount != 0) {
+      details.calculatedTotal = details.total - details.discount;
+      details.fullTotal =
+        details.calculatedTotal + (details.tax * details.calculatedTotal) / 100;
+    } else {
+      details.fullTotal = details.total + (details.tax * details.total) / 100;
+    }
+    return {
+      ...item,
+      item_tax_amount: (
+        ((details.tax * details.total) / 100) *
+        details.quantity
+      ).toFixed(2),
+      item_total_amount: details.total.toFixed(2),
+      fullTotal: details.fullTotal.toFixed(2),
+    };
+  };
   const deleteFromList = () => {
     if (handleDelete) {
       handleDelete(index);
     }
   };
   const handleDiscountChange = (e: boolean) => {
-    const data = { ...item };
-    data.item_discount_type = e ? "INR" : "%";
-    let total = 0;
-    if (data.item_discount_type == "%") {
-      total =
-        calculationData.Price * calculationData.Quandity -
-        (calculationData.Discount / 100) *
-          (calculationData.Price * calculationData.Quandity);
-    } else {
-      total =
-        calculationData.Price * calculationData.Quandity -
-        calculationData.Discount;
-    }
-    data.item_total_amount = `${total}`;
-    if (handleEdit) {
-      handleEdit({ data, index });
-    }
+    handleEdit &&
+      handleEdit({
+        data: handleCalculate({ ...item, item_discount_type: e ? "INR" : "%" }),
+        index,
+      });
   };
 
-  const handleCalculateTax = (taxId:string,taxItem?:any)=>{
-      let findItem =  taxItem ? taxItem :  cachedData?.taxes?.find(i=>i.id == taxId)
-      let item_total_amount:string|number = 0
-      console.log("item_total_amount");
-      if(findItem){
-         const taxValue = parseFloat(findItem?.percentage || "0")
-         console.log("item_total_amount",taxValue);
-         item_total_amount = parseFloat(item.item_total_amount || "0")
-         console.log("item_total_amount",item_total_amount);
-         item_total_amount = `${(taxValue * item_total_amount) / 100}`
-         
-         return `${item_total_amount}`
-      }
-      return item_total_amount
-  }
+  const handleTaxChange = (item_tax: TaxObjectType) => {
+    handleEdit &&
+      handleEdit({
+        data: handleCalculate({ ...item, item_tax, item_tax_id: item_tax.id }),
+        index,
+      });
+  };
 
-  const handleTaxChange = (item_tax)=>{
-    const item_total_amount = handleCalculateTax(item_tax.id,item_tax) 
-    console.log("item_total_amount",item_tax);
-    handleEdit({data:{...item,item_total_amount,item_tax,item_tax_id:item_tax.id}, index });
-  }
+  const handleItemChange = (data: ProcedureMatsterItem) => {
+    let update: InvoiceSaveObjectType = { ...item, item: data };
+    const item_tax = cachedData?.data?.taxes?.find(
+      (i: any) => i.id == update?.item?.tax_id
+    ) || {
+      id: "",
+      percentage: "0",
+      taxname: "",
+    };
+    update.item_cost = update?.item?.cost || "0";
+    update = {
+      ...update,
+      item_tax,
+      item_quantity: "1",
+      item_id: data.id,
+      item_cost: update?.item?.cost || "0",
+      item_tax_id: item_tax.id,
+    };
+
+    handleEdit && handleEdit({ data: handleCalculate(update), index });
+  };
 
   const handleChange = (field: string, data: any) => {
-    const update = { ...item };
-    update[field as keyof typeof update] = data;
-    let total = 0;
-    if (Boolean(checkingKeys[field as keyof typeof checkingKeys])) {
-      const updated = {
-        ...calculationData,
-        [checkingKeys[field as keyof typeof checkingKeys]]: parseFloat(
-          data || "0"
-        ),
-      };
-      setCalculationData(updated);
-      if (
-        typeof updated.Quandity == "number" &&
-        typeof updated.Price == "number" &&
-        typeof updated.Discount == "number"
-      ) { 
-        total =
-          item.item_discount_type == "%"
-            ? updated.Price * updated.Quandity -
-              (updated.Discount / 100) * (updated.Price * updated.Quandity)
-            : updated.Price * updated.Quandity - updated.Discount;
-      } else {
-        toast.show(
-          `${checkingKeys[field as keyof typeof checkingKeys]} must be a number`,
-          {
-            type: "warning",
-          }
-        );
-      }
-    }
-    update.item_total_amount = `${total}`;
+    const update: InvoiceSaveObjectType = { ...item, [field]: data };
     if (handleEdit) {
-      handleEdit({ data: update, index });
+      handleEdit({ data: handleCalculate(update), index });
     }
   };
 
-  const searchItem = (text:string)=>{
-      setSearchTerm(text)
-  } 
+  const searchItem = (text: string) => {
+    setSearchTerm(text);
+  };
 
-  const handleSearch = _.debounce(searchItem,500)
-
+  const handleSearch = _.debounce(searchItem, 500);
 
   return (
     <View style={{ paddingVertical: 5 }}>
@@ -162,10 +165,14 @@ const AddInvoiceForm = ({
           labelField="text"
           valueField="id"
           accessibilityLabel="Select an item"
-          searchQuery={(e,labelValue)=>{ console.log(e,labelValue);   return true}}
           renderInputSearch={() => (
-            <View style={{paddingHorizontal:6}}>
-                <TextInput dense mode="outlined" onChangeText={handleSearch} label={"Search"} />
+            <View style={{ paddingHorizontal: 6 }}>
+              <TextInput
+                dense
+                mode="outlined"
+                onChangeText={handleSearch}
+                label={"Search"}
+              />
             </View>
           )}
           renderItem={(item) => (
@@ -174,9 +181,7 @@ const AddInvoiceForm = ({
               <Divider />
             </>
           )}
-          onChange={(data) => {
-            handleChange("item", data);
-          }}
+          onChange={handleItemChange}
         />
         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
           <TextInput
@@ -271,7 +276,7 @@ const AddInvoiceForm = ({
             inputSearchStyle={style.inputSearchStyle}
             style={[
               style.dropdownContainer,
-              { paddingVertical: 2, borderWidth: 0.8,marginTop:5 },
+              { paddingVertical: 2, borderWidth: 0.8, marginTop: 5 },
             ]}
             selectedTextStyle={{
               fontSize: 13,
@@ -292,7 +297,9 @@ const AddInvoiceForm = ({
             accessibilityLabel="Tax"
             renderItem={(tax) => (
               <>
-                <List.Item title={`${tax?.taxname || ""} ${tax?.percentage || ""} %`} />
+                <List.Item
+                  title={`${tax?.taxname || ""} ${tax?.percentage || ""} %`}
+                />
                 <Divider />
               </>
             )}
@@ -301,7 +308,7 @@ const AddInvoiceForm = ({
           <TextInput
             style={{ flex: 1 }}
             editable={false}
-            value={item.fullTotal}
+            value={`${item.fullTotal}`}
             dense
             mode="outlined"
             label="Total"
@@ -374,8 +381,4 @@ const style = StyleSheet.create({
   },
 });
 
-const checkingKeys = {
-  // item_discount: "Discount",
-  item_quantity: "Quandity",
-  item_cost: "Price",
-};
+

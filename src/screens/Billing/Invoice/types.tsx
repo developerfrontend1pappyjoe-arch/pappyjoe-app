@@ -47,17 +47,33 @@ export type ProcedureMatsterItem = {
 };
 
 export type TaxObjectType = {
-    taxType:string,
-    value:number,
-    taxValue:number
-}
+  id: string;
+  percentage: string;
+  taxname: string;
+};
 
 export type InvoiceSaveObjectType = {
-  item_id?:string;
+  item_id?: string;
   item: ProcedureMatsterItem | null;
   item_quantity: string;
   item_cost: string;
-  item_tax:TaxObjectType | null,
+  item_tax: TaxObjectType | null;
+  item_tax_amount: string;
+  item_tax_id: string;
+  item_discount: string;
+  item_discount_type: string;
+  item_total_amount: string;
+  // total_cost: string;
+  // total_discount: string;
+  // total_tax: string;
+  // total_amount: string;
+  fullTotal: number | string;
+};
+
+export type InvoicePayloadObject = {
+  item_id: string;
+  item_quantity: string;
+  item_cost: string;
   item_tax_amount: string;
   item_tax_id: string;
   item_discount: string;
@@ -67,7 +83,6 @@ export type InvoiceSaveObjectType = {
   total_discount: string;
   total_tax: string;
   total_amount: string;
-  fullTotal:number | string
 };
 
 export type InvoiceOperationType = {
@@ -83,20 +98,15 @@ export type PrescriptionType = {
   tax_id: string;
 };
 
-
-export const initialData:InvoiceSaveObjectType = {
+export const initialData: InvoiceSaveObjectType = {
   item: null,
-  item_tax:null,
+  item_tax: null,
   item_quantity: "",
   item_cost: "",
   item_tax_amount: "",
   item_tax_id: "",
-  item_discount: "",
+  item_discount: "0",
   item_discount_type: "%",
   item_total_amount: "",
-  total_cost: "",
-  total_discount: "",
-  total_tax: "",
-  total_amount: "",
-  fullTotal:0
-}
+  fullTotal: 0,
+};
