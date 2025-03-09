@@ -20,8 +20,8 @@ import {getReceiptList } from "../services";
 import { CustomLoader } from "components/CustomLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { ReceiptContextType, ReceiptResultArrayType } from "./types";
-import ReceiptCard from "../component/ReceiptCard";
 import { colorList } from "styles/global.styles";
+import ReceiptCard from "./components/ReceiptCard";
 
 export const ReceiptContext = createContext<ReceiptContextType>({
   refreshing: true,
@@ -77,6 +77,7 @@ const InvoiceContent: FC = () => {
         ) : (
           <FlatList
             keyExtractor={(_, index) => index.toString()}
+            contentContainerStyle={{ paddingBottom: 58 }}
             showsVerticalScrollIndicator={false}
             data={data?.list || []}
             renderItem={({ item }: { item: ReceiptResultArrayType }) => (

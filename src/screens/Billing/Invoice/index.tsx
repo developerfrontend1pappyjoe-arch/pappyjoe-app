@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 import { InvoiceContextType, InvoiceItemType, InvoiceSaveObjectType, ResultArrayType } from "./types";
 import { useMutation } from "@tanstack/react-query";
 import { getInvoiceList } from "../services";
-import InvoiceCard from "../component/InvoiceCard";
+import InvoiceCard from "./components/InvoiceCard";
 import { CustomLoader } from "components/CustomLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { PatientDataProps } from "types/PatientDetailsTypes";

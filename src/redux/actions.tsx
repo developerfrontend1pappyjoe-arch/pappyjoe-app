@@ -8,7 +8,8 @@ import {
   REMOVE_LOGIN_DETAILS,
   PATIENT_ID,
   PATIENT_DETAILS,
-  EDIT_INVOICE
+  EDIT_INVOICE,
+  BILLING_MODAL
 } from './types';
 
 export const handleHomeAppoinmentFilter = (payload: any) => {
@@ -59,4 +60,18 @@ export const editInvoiceList = (payload:InvoiceSaveObjectType[])=>{
        type:EDIT_INVOICE,
        payload
     }
+}
+
+export const openBillingModal = ()=>{
+    return {
+      type:BILLING_MODAL,
+      payload:true
+    }
+}
+
+export const closeBillingModal = ()=>{
+  return {
+    type:BILLING_MODAL,
+    payload:false
+  }
 }

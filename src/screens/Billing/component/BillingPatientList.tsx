@@ -103,6 +103,7 @@ function BillingPatientList() {
       setPage(0);
     };
   }, []);
+  
   return (
     <View>
 

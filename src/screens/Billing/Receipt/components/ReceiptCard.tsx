@@ -12,11 +12,11 @@ import { colorList } from "styles/global.styles";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 import { FlatList } from "react-native-gesture-handler";
-import DetailsComponent from "./DetailsComponent";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // import MetrialIcon from "react-native-vector-icons/MaterialIcons";
-import ShareComponent from "./ShareComponent";
 import { useSelector } from "react-redux";
+import DetailsComponent from "screens/Billing/component/DetailsComponent";
+import ShareComponent from "screens/Billing/component/ShareComponent";
 const btnSize = 22;
 function ReceiptCard({ data, print }: { data: any; print: any }) {
   const patientDetails = useSelector((state:any)=>state.patientDetails)

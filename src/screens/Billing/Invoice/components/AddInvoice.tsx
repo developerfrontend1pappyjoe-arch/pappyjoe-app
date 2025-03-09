@@ -15,7 +15,7 @@ import { colorList } from "styles/global.styles";
 // import AddInvoiceForm from "./AddInvoiceForm";
 const AddInvoiceForm = lazy(() => import("./AddInvoiceForm"));
 import { useDispatch, useSelector } from "react-redux";
-import { editInvoiceList } from "redux/actions";
+import { closeBillingModal, editInvoiceList } from "redux/actions";
 import {
   initialData,
   InvoicePayloadObject,
@@ -23,8 +23,7 @@ import {
 } from "../types";
 import { StoreTypes } from "redux/reducer";
 import { useToast } from "react-native-toast-notifications";
-import { getInvoiceMasterList } from "screens/Billing/services";
-type SaveObjectType = Omit<InvoiceSaveObjectType, "item" | "item_tax">;
+// type SaveObjectType = Omit<InvoiceSaveObjectType, "item" | "item_tax">;
 function AddInvoice() {
   const [startDateModal, setStartDateModal] = useState<boolean>();
   const [startDate, setStartDate] = useState(new Date());
@@ -124,7 +123,8 @@ function AddInvoice() {
         inv_number: null,
         items,
       };
-      console.log(saveObject);
+      dispatch(closeBillingModal());
+      console.log(patientDetails);
     } else {
       toast.show(`Please fill all fields in sl.no ${errorList}`, {
         type: "warning",
@@ -173,19 +173,7 @@ function AddInvoice() {
             justifyContent: "flex-end",
             alignItems: "flex-end",
           }}
-        >
-          <Button
-            compact
-            onPress={handleSaveInvoice}
-            textColor={colorList.white}
-            contentStyle={{
-              backgroundColor: colorList.socondary,
-              flexDirection: "row-reverse",
-            }}
-          >
-            Save invoice ({invoiceEditList?.length})
-          </Button>
-        </View>
+        ></View>
         <DatePicker
           modal
           mode="date"
@@ -226,9 +214,22 @@ function AddInvoice() {
             style={{
               display: "flex",
               justifyContent: "flex-end",
-              alignItems: "flex-end",
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 3,
             }}
           >
+            <Button
+              compact
+              onPress={handleSaveInvoice}
+              textColor={colorList.white}
+              contentStyle={{
+                backgroundColor: colorList.socondary,
+                flexDirection: "row-reverse",
+              }}
+            >
+              Save invoice ({invoiceEditList?.length})
+            </Button>
             <Button
               onPress={handleAddInvoice}
               compact
@@ -296,24 +297,4 @@ const requiredFields = {
   total_amount: true,
 };
 
-const data = {
-  date: "2025-03-09",
-  inv_number: null,
-  items: [
-    {
-      item_cost: "18500",
-      item_discount: "0",
-      item_discount_type: "%",
-      item_id: "PT_395713__4754245",
-      item_quantity: "1",
-      item_tax_amount: "925.00",
-      item_tax_id: "211",
-      item_total_amount: "18500.00",
-      total_amount: "37000.00",
-      total_cost: "37000.00",
-      total_discount: "18500.00",
-      total_tax: "19425.00",
-    },
-  ],
-  patient_id: "5596833",
-};
+

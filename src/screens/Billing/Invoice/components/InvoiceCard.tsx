@@ -8,18 +8,18 @@ import {
   View,
 } from "react-native";
 import { Button, Card, Menu, Text } from "react-native-paper";
-import { InvoiceObjectType, ResultArrayType } from "../Invoice/types";
+import { InvoiceObjectType, ResultArrayType } from "../types";
 import { colorList } from "styles/global.styles";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
 import { FlatList } from "react-native-gesture-handler";
-import DetailsComponent from "./DetailsComponent";
+import DetailsComponent from "../../component/DetailsComponent";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // import MetrialIcon from "react-native-vector-icons/MaterialIcons";
-import { useDeleteInvoice } from "../hook/invoiceOperationHook";
+import { useDeleteInvoice } from "../../hook/invoiceOperationHook";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
-import ShareComponent from "./ShareComponent";
+import ShareComponent from "../../component/ShareComponent";
 import { useSelector } from "react-redux";
 const btnSize = 22;
 function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
