@@ -1,5 +1,5 @@
 import { API_URL } from "utils/constants";
-import { formatInvoiceData, formatReceiptData } from "./formatData";
+import { formatInvoiceData, formatInvoiceDataReceipt, formatReceiptData } from "./formatData";
 import { axiosInstance } from "config/axios.config.custom";
 import {
   InvoiceListResponseType,
@@ -12,20 +12,31 @@ import { ReceiptResultArrayType } from "./Receipt/types";
 const axios = axiosInstance;
 
 export const getInvoiceList = async (
-  id: string
+  {id,unpaid = false}:{ id: string,unpaid?:boolean}
 ): Promise<InvoiceListResponseType> => {
   console.log("getInvoiceList called");
   try {
-    const result = await (
-      await axios.get(`${API_URL.getInvoice}?patient_id=${id}`)
-    ).data;
-    // const result = billingData.inVoiceList;
-    if (result.status == 200) {
-      const formatedData = formatInvoiceData(result.data);
-      return formatedData;
-    } else {
-      return { invoiceList: [], print: null };
-    }
+     if(unpaid){
+      const result = await (
+        await axios.get(`${API_URL.getInvoice}?unpaid=1&patient_id=${id}`)
+      ).data;
+      if(result.status == 200){
+        return formatInvoiceDataReceipt(result.data)
+      }else{
+        return []
+      }
+     }else{
+      const result = await (
+        await axios.get(`${API_URL.getInvoice}?patient_id=${id}`)
+      ).data;
+      // const result = billingData.inVoiceList;
+      if (result.status == 200) {
+        const formatedData = formatInvoiceData(result.data);
+        return formatedData;
+      } else {
+        return { invoiceList: [], print: null };
+      }
+     }
   } catch (error) {
     return { invoiceList: [], print: null };
   }

@@ -22,6 +22,7 @@ import InvoiceCard from "./components/InvoiceCard";
 import { CustomLoader } from "components/CustomLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { PatientDataProps } from "types/PatientDetailsTypes";
+import { StoreTypes } from "redux/reducer";
 export const InvoiceContext = createContext<InvoiceContextType>({
   refreshing: true,
   setRefreshing: () => {},
@@ -36,7 +37,7 @@ export const InvoiceProvider: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const InvoiceContent: FC = () => {
-  const patientDetails = useSelector<any>((state) => state.patientDetails) as PatientDataProps || null;
+  const {patientDetails,billing} = useSelector<any>((state) => state) as StoreTypes
   const { refreshing, setRefreshing } = useContext(InvoiceContext);
   const { mutate, data, isLoading } = useMutation(getInvoiceList, {
     onSuccess: () => {
@@ -49,11 +50,11 @@ const InvoiceContent: FC = () => {
   const handleRefresh = () => {
     setRefreshing(true);
   };
+
   useEffect(() => {
-    
     if(refreshing){
-      if(Boolean(patientDetails?.id)){
-        mutate(patientDetails?.id as string);
+      if(Boolean(patientDetails?.id) || !Boolean(billing?.billingModalOpen)){
+        mutate({id:patientDetails?.id as string});
       }
     }
     return ()=>{
@@ -61,7 +62,7 @@ const InvoiceContent: FC = () => {
         setRefreshing(true)
       }
     }
-  }, [refreshing,patientDetails]);
+  }, [refreshing,patientDetails,billing.billingModalOpen]);
   return (
     <View style={{ paddingBottom: 5 }}>
       <View style={{ paddingHorizontal: 8, paddingTop: 8 }}>

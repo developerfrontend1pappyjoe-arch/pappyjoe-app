@@ -52,6 +52,22 @@ export const formatInvoiceData = (
   return { invoiceList: result.reverse(), print: data?.print || null };
 };
 
+export const formatInvoiceDataReceipt = (data:any)=>{
+  const items = []
+    for(let key in data){
+      const item = data[key][0] || null
+      if(key != "print"){
+        items.push({
+          invoiceNo:key,
+          date:item?.date_time || "",
+          invoiceBalance:item?.invoicebalance || "",
+          displayText:`INV NO : ${key} | DATE: ${item?.date_time || ""} | BALANCE: ${item?.invoicebalance || ""}`
+       })
+      }
+    }
+    return items
+}
+
 export const formatReceiptData = (
   data: any
 ): { print: any; list: ReceiptResultArrayType[] } => {

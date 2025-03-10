@@ -38,10 +38,22 @@ function AddInvoice() {
   const { mutate: save, isLoading } = useMutation(saveInvoice,{
     onSuccess:(result)=>{
      if(result.status >=200 || result.status < 300){
+      toast.show(result.message,{
+        type:"success"
+      })
       dispatch(editInvoiceList([]));
       dispatch(setInvoiceNo(null));
       dispatch(closeBillingModal());
+     }else{
+      toast.show(result.message,{
+        type:"warning"
+      })
      }
+    },
+    onError:()=>{
+      toast.show("Something went wrong !",{
+        type:"error"
+      })
     }
   });
   const handleAddInvoice = () => {
