@@ -1,10 +1,11 @@
-import React, { FC, PropsWithChildren } from "react";
+import React, { FC, PropsWithChildren, useEffect } from "react";
 import { InvoiceItemType } from "../Invoice/types";
 import { StyleSheet, Text, View } from "react-native";
 import { colorList } from "styles/global.styles";
 import { Table, Row, Rows } from "react-native-table-component";
 import { ReceiptItemType } from "../Receipt/types";
 import moment from "moment";
+import { useQueryClient } from "@tanstack/react-query";
 const tableHead = ["Qty", "Cost", "Discount", "Tax", "Total"];
 const tableData = [
   [
@@ -22,6 +23,22 @@ const DetailsComponent = ({
   data: InvoiceItemType | ReceiptItemType;
   type: "invoice" | "receipt";
 }) => {
+  const queryClient = useQueryClient();
+  const cachedData = queryClient.getQueryData(["financeMaster"]) as any;
+  const calculateTax = (data: InvoiceItemType) => {
+    const taxObect = cachedData?.data?.taxObject;
+    const tax = taxObect ? taxObect[data?.tax_id] : {};
+    let total =
+      parseFloat(data?.cost || "0") * parseFloat(data?.quantity || "1");
+    const percentage = parseFloat(tax?.percentage || "0");
+    let discount = parseFloat(data?.discount || "0");
+    if (data?.discount_type == "%") discount = (discount / 100) * total;
+    // console.log(`cost = ${parseFloat(data?.cost || "0")} | quantity = ${parseFloat(data?.quantity || "1")} | ${discount}`);
+    if (tax?.percentage) {
+      return ((percentage / 100) * (total - discount)).toFixed(2);
+    }
+    return "";
+  };
   return (
     <>
       {type == "invoice" && (
@@ -64,10 +81,7 @@ const DetailsComponent = ({
                   "Discount",
                   `: ${(data as InvoiceItemType)?.discount || ""} ${(data as InvoiceItemType)?.discount_type || ""}`,
                 ],
-                // [
-                //   "Tax",
-                //   `: ${data.cost != data.itemtotal ? data.tax : "0"}`,
-                // ],
+                ["Tax", `: ${calculateTax(data as InvoiceItemType)}`],
                 [
                   <Text style={style.textBold}>Total</Text>,
                   <Text style={style.textBold}>
@@ -153,3 +167,25 @@ const style = StyleSheet.create({
     marginLeft: 2,
   },
 });
+
+const d = {
+  date: "2025-03-10",
+  inv_number: "1484",
+  items: [
+    {
+      item_cost: "4056",
+      item_discount: "0",
+      item_discount_type: "%",
+      item_id: "426182",
+      item_quantity: "2",
+      item_tax_amount: "1460.16",
+      item_tax_id: "208",
+      item_total_amount: "16451136.00",
+      total_amount: "0.00",
+      total_cost: "0.00",
+      total_discount: "0.00",
+      total_tax: "0.00",
+    },
+  ],
+  patient_id: "5596833",
+};

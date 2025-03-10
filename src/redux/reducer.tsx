@@ -11,6 +11,7 @@ import {
   EDIT_INVOICE,
   EDIT_RECEIPT,
   BILLING_MODAL,
+  SET_INVOICENO,
 } from "./types";
 import moment from "moment";
 import { PatientDataProps } from "types/PatientDetailsTypes";
@@ -25,7 +26,8 @@ export interface StoreTypes {
   billing: {
     invoiceEditList: InvoiceSaveObjectType[];
     receiptEditList: any[];
-    billingModalOpen:boolean
+    billingModalOpen:boolean,
+    invoiceNo:string | null,
   };
 }
 
@@ -44,7 +46,8 @@ const initialState: StoreTypes = {
   billing: {
     invoiceEditList: [],
     receiptEditList: [],
-    billingModalOpen:false
+    billingModalOpen:false,
+    invoiceNo:null
   },
 };
 
@@ -106,6 +109,14 @@ const commonReducer = (state = initialState, action: any) => {
         billing: {
           ...state.billing,
           billingModalOpen: action.payload,
+        },
+      };
+    case SET_INVOICENO:
+      return {
+        ...state,
+        billing: {
+          ...state.billing,
+          invoiceNo: action.payload,
         },
       };
     default:

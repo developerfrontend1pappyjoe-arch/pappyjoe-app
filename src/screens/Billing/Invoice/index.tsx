@@ -50,6 +50,7 @@ const InvoiceContent: FC = () => {
     setRefreshing(true);
   };
   useEffect(() => {
+    
     if(refreshing){
       if(Boolean(patientDetails?.id)){
         mutate(patientDetails?.id as string);

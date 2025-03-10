@@ -9,12 +9,14 @@ export type InvoiceItemType = {
   discount: string;
   discount_type: string;
   tax: string;
+  tax_id:string,
   batch: string;
   itemtotal: string;
   invoicetotal: string;
   invoicebalance: string;
   status: string;
   stockqty: string;
+  item_type:string
 };
 
 export type InvoiceObjectType = {

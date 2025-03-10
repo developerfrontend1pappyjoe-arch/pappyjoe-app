@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import {
@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   Switch,
+  ActivityIndicator,
 } from "react-native-paper";
 import { colorList } from "styles/global.styles";
 import {
@@ -137,7 +138,6 @@ const AddInvoiceForm = ({
   };
 
   const handleSearch = _.debounce(searchItem, 500);
-
   return (
     <View style={{ paddingVertical: 5 }}>
       <Card style={style.cardStyle}>
@@ -164,7 +164,8 @@ const AddInvoiceForm = ({
           data={masterList?.data || []}
           labelField="text"
           valueField="id"
-          accessibilityLabel="Select an item"
+          placeholder={item.item?.text || "Select Item"}
+          accessibilityLabel={'Select'}
           renderInputSearch={() => (
             <View style={{ paddingHorizontal: 6 }}>
               <TextInput
@@ -172,6 +173,7 @@ const AddInvoiceForm = ({
                 mode="outlined"
                 onChangeText={handleSearch}
                 label={"Search"}
+                right={ isLoading ? <TextInput.Icon icon={() => <ActivityIndicator />} /> : null }
               />
             </View>
           )}

@@ -8,7 +8,12 @@ import {
   View,
 } from "react-native";
 import { Button, Card, Menu, Text } from "react-native-paper";
-import { InvoiceObjectType, ResultArrayType } from "../types";
+import {
+  InvoiceItemType,
+  InvoiceObjectType,
+  InvoiceSaveObjectType,
+  ResultArrayType,
+} from "../types";
 import { colorList } from "styles/global.styles";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import moment from "moment";
@@ -20,12 +25,16 @@ import { useDeleteInvoice } from "../../hook/invoiceOperationHook";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
 import ShareComponent from "../../component/ShareComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { editInvoiceList, openBillingModal, setInvoiceNo } from "redux/actions";
+import { useQueryClient } from "@tanstack/react-query";
 const btnSize = 22;
-function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
-  const patientDetails = useSelector((state:any)=>state.patientDetails)
+function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
+  const patientDetails = useSelector((state: any) => state.patientDetails);
+
   const { CustomModal } = useModal();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const dispatch = useDispatch();
   const handleCloseModal = () => {
     setDeleteId(null);
   };
@@ -43,29 +52,67 @@ function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
     mutate({ params: formData, method: "delete" });
   };
 
-    const handlePrint = (id:string) => {
-      if (print[id]?.url) {
-        Linking.openURL(print[id]?.url).catch(err => {
-          Alert.alert('Error', err.response.data.message);
-          console.error('An error occurred', err);
-        });
-      } else{
-        Alert.alert('Warning', 'No Print Url Found please try again later');
-      }
-      console.log("print",print[id]);
-    };
+  const handlePrint = (id: string) => {
+    if (print[id]?.url) {
+      Linking.openURL(print[id]?.url).catch((err) => {
+        Alert.alert("Error", err.response.data.message);
+        console.error("An error occurred", err);
+      });
+    } else {
+      Alert.alert("Warning", "No Print Url Found please try again later");
+    }
+    console.log("print", print[id]);
+  };
+
+  const queryClient = useQueryClient();
+  const cachedData = queryClient.getQueryData(["financeMaster"]) as any;
+
+  const handleEdit = (data: InvoiceItemType[], invoiceNo: string) => {
+    const taxObjet = cachedData?.data?.taxObject || {}
+    const list: InvoiceSaveObjectType[] = [];
+    data.forEach((item) => {
+      const item_id = item?.item_type == "procedure" ? `P_${item.item_id}` : `I_${item.item_id}` 
+      const editItems: InvoiceSaveObjectType = {
+        fullTotal: item.itemtotal,
+        item_cost: item.cost,
+        item: {
+          id: item_id,
+          text: item.Item_name,
+          tax_id: "",
+        },
+        item_discount: item.discount,
+        item_discount_type: item.discount_type,
+        item_quantity: item.quantity,
+        item_tax: taxObjet ?  taxObjet[item.tax_id] : {
+          id: "",
+          percentage: "",
+          taxname: "",
+        },
+        item_tax_amount: item.tax,
+        item_tax_id: item.tax_id,
+        item_total_amount: (
+          parseFloat(item?.cost || "0") * parseFloat(item?.quantity || "0")
+        ).toFixed(2),
+        item_id,
+      };
+      list.push(editItems);
+    });   
+    dispatch(setInvoiceNo(invoiceNo));
+    dispatch(editInvoiceList(list));
+    dispatch(openBillingModal());
+  };
 
   return (
     <View style={[style.container]}>
       <CustomModal
         title={
-          <View 
-          style={{
-            alignItems: "center",
-            display: "flex",
-            flexDirection: "row",
-            gap: 3,
-          }}
+          <View
+            style={{
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "row",
+              gap: 3,
+            }}
           >
             <Text>{`Delete Invoice (No : ${deleteId})`}</Text>
           </View>
@@ -198,8 +245,10 @@ function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
             </View>
 
             <FlatList
-              data={invoice.data || []}
-              renderItem={({ item }) => <DetailsComponent type="invoice" data={item} />}
+              data={invoice?.data || []}
+              renderItem={({ item }) => (
+                <DetailsComponent type="invoice" data={item} />
+              )}
             />
             <View
               style={{
@@ -208,13 +257,16 @@ function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
                 paddingVertical: 8,
               }}
             >
-              {invoice.status != "paid" ? (
+              {invoice.status == "Active" ? (
                 <View style={[style.buttonContainer]}>
                   <TouchableOpacity>
                     <Icon
                       name="pencil"
                       size={btnSize}
                       color={colorList.socondary}
+                      onPress={() => {
+                        handleEdit(invoice.data, invoice.inviceNo);
+                      }}
                     />
                   </TouchableOpacity>
                   {isLoading ? (
@@ -232,7 +284,9 @@ function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
                       />
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity onPress={() => handlePrint(invoice.inviceNo)}>
+                  <TouchableOpacity
+                    onPress={() => handlePrint(invoice.inviceNo)}
+                  >
                     <Icon
                       name="printer"
                       size={btnSize}
@@ -253,7 +307,10 @@ function InvoiceCard({ data,print }: { data: ResultArrayType,print:any }) {
               )}
 
               <View style={style.buttonContainer}>
-                 <ShareComponent subject="Invoice" content={`Dear ${patientDetails.Name || ""} click on the link ${print[invoice.inviceNo]?.url || ""} to view your invoice.`}/>
+                <ShareComponent
+                  subject="Invoice"
+                  content={`Dear ${patientDetails.Name || ""} click on the link ${print[invoice.inviceNo]?.url || ""} to view your invoice.`}
+                />
               </View>
             </View>
           </Card>

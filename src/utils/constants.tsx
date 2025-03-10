@@ -33,7 +33,8 @@ const API_URL = {
   getReceipt: `${BASE_URL}/receiptlist`,
   invoiceOperation:`${BASE_URL}/invoice`,
   invoiceMasterList:`${BASE_URL}/invoiceitems`,
-  financeMaster:`${BASE_URL}/financialmaster`
+  financeMaster:`${BASE_URL}/financialmaster`,
+  saveInvoice:`${BASE_URL}/invoice`
 };
 
 export {BASE_URL, API_URL};

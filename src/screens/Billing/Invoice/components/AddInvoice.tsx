@@ -15,7 +15,7 @@ import { colorList } from "styles/global.styles";
 // import AddInvoiceForm from "./AddInvoiceForm";
 const AddInvoiceForm = lazy(() => import("./AddInvoiceForm"));
 import { useDispatch, useSelector } from "react-redux";
-import { closeBillingModal, editInvoiceList } from "redux/actions";
+import { closeBillingModal, editInvoiceList, setInvoiceNo } from "redux/actions";
 import {
   initialData,
   InvoicePayloadObject,
@@ -23,27 +23,27 @@ import {
 } from "../types";
 import { StoreTypes } from "redux/reducer";
 import { useToast } from "react-native-toast-notifications";
+import { useMutation } from "@tanstack/react-query";
+import { saveInvoice } from "screens/Billing/services";
 // type SaveObjectType = Omit<InvoiceSaveObjectType, "item" | "item_tax">;
 function AddInvoice() {
   const [startDateModal, setStartDateModal] = useState<boolean>();
   const [startDate, setStartDate] = useState(new Date());
   const {
-    billing: { invoiceEditList },
+    billing: { invoiceEditList, invoiceNo },
     patientDetails,
   } = useSelector((state: any) => state) as StoreTypes;
-  const [totalCalculated, setTotalCalculated] = useState<{
-    total_cost: number;
-    total_discount: number;
-    total_tax: number;
-    total_amount: number;
-  }>({
-    total_cost: 0,
-    total_discount: 0,
-    total_tax: 0,
-    total_amount: 0,
-  });
   const toast = useToast();
   const dispatch = useDispatch();
+  const { mutate: save, isLoading } = useMutation(saveInvoice,{
+    onSuccess:(result)=>{
+     if(result.status >=200 || result.status < 300){
+      dispatch(editInvoiceList([]));
+      dispatch(setInvoiceNo(null));
+      dispatch(closeBillingModal());
+     }
+    }
+  });
   const handleAddInvoice = () => {
     // console.log([...invoiceEditList,initialData])
     dispatch(editInvoiceList([...invoiceEditList, initialData]));
@@ -60,17 +60,6 @@ function AddInvoice() {
   }) => {
     const updated = [...invoiceEditList];
     updated[params.index] = params.data;
-    setTotalCalculated((prev) => ({
-      ...prev,
-      total_amount:
-        prev.total_amount + parseFloat(params?.data?.item_total_amount || "0"),
-      total_discount:
-        prev.total_discount + parseFloat(params?.data?.item_discount || "0"),
-      total_tax:
-        prev.total_tax + parseFloat(params?.data?.item_tax_amount || "0"),
-      total_cost:
-        prev.total_cost + parseFloat(params?.data?.item_total_amount || "0"),
-    }));
     dispatch(editInvoiceList(updated));
   };
 
@@ -89,8 +78,18 @@ function AddInvoice() {
     let items: InvoicePayloadObject[] = [];
     let itemObject: InvoicePayloadObject;
     let errorList = "";
+
+    let total_amount: number = 0;
+    let total_cost: number = 0;
+    let total_discount: number = 0;
+    let total_tax: number = 0;
+
     if (invoiceEditList?.length) {
       invoiceEditList.forEach((item, index) => {
+        total_amount = parseFloat(item.item_total_amount || "0");
+        total_cost = parseFloat(item.item_cost || "0");
+        total_discount = parseFloat(item.item_discount || "0");
+        total_tax = parseFloat(item.item_tax_amount || "0");
         itemObject = {
           item_id: item.item_id as string,
           item_cost: item.item_cost,
@@ -100,31 +99,44 @@ function AddInvoice() {
           item_tax_amount: item.item_tax_amount,
           item_tax_id: item.item_tax_id,
           item_total_amount: item.item_total_amount,
-          total_amount: totalCalculated.total_amount.toFixed(2),
-          total_cost: totalCalculated.total_cost.toFixed(2),
-          total_discount: totalCalculated.total_discount.toFixed(2),
-          total_tax: totalCalculated.total_tax.toFixed(2),
+          total_amount: "",
+          total_cost: "",
+          total_discount: "",
+          total_tax: "",
         };
-        if (isObjectValid(itemObject)) {
-          items = [...items, itemObject];
-        } else {
-          errorList +=
-            index == invoiceEditList.length - 1
-              ? `${index + 1}`
-              : ` ${index + 1},`;
-        }
+        items = [...items, itemObject];
+        // if (isObjectValid(itemObject)) {
+        //   items = [...items, itemObject];
+        // } else {
+        //   errorList +=
+        //     index == invoiceEditList.length - 1
+        //       ? `${index + 1}`
+        //       : ` ${index + 1},`;
+        // }
       });
     }
 
     if (errorList.length == 0) {
-      const saveObject = {
+      const saveObject: {
+        patient_id: string | undefined;
+        date: string;
+        items: InvoicePayloadObject[];
+        inv_number?: string;
+      } = {
         patient_id: patientDetails?.id,
         date: moment(startDate).format("YYYY-MM-DD"),
-        inv_number: null,
         items,
       };
-      dispatch(closeBillingModal());
-      console.log(patientDetails);
+      invoiceNo && (saveObject["inv_number"] = invoiceNo);
+      save({
+        ...saveObject,
+        total: {
+          total_amount: total_amount.toFixed(2),
+          total_cost: total_cost.toFixed(2),
+          total_discount: total_discount.toFixed(2),
+          total_tax: total_tax.toFixed(2),
+        },
+      });
     } else {
       toast.show(`Please fill all fields in sl.no ${errorList}`, {
         type: "warning",
@@ -133,7 +145,9 @@ function AddInvoice() {
   };
 
   useEffect(() => {
-    dispatch(editInvoiceList([initialData]));
+    if (invoiceEditList?.length == 0) {
+      dispatch(editInvoiceList([initialData]));
+    }
   }, []);
   return (
     <View style={style.container}>
@@ -227,6 +241,8 @@ function AddInvoice() {
                 backgroundColor: colorList.socondary,
                 flexDirection: "row-reverse",
               }}
+              disabled={isLoading}
+              loading={isLoading}
             >
               Save invoice ({invoiceEditList?.length})
             </Button>

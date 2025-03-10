@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import {
   Dimensions,
   ScrollView,
@@ -19,7 +19,7 @@ import { useModal } from "hooks";
 import { useQuery } from "@tanstack/react-query/build/lib/useQuery";
 import { getFinaceMaster } from "./services";
 import { useToast } from "react-native-toast-notifications";
-import { closeBillingModal, openBillingModal } from "redux/actions";
+import { closeBillingModal, editInvoiceList, openBillingModal, setInvoiceNo } from "redux/actions";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
 const AddInvoice = lazy(() => import("./Invoice/components/AddInvoice"));
 const AddReceipt = lazy(() => import("./Receipt/components/AddReceipt"));
@@ -29,7 +29,6 @@ const renderScene = SceneMap({
 });
 // const patientId = "4060513"
 function Billing({ navigation, route }: any) {
-  const dimention = useWindowDimensions();
   const { CustomModal } = useModal();
   // const [open,setOpen] = useState<boolean>(false)
   const { patientDetails, billing } = useSelector((state: any) => state) || {
@@ -53,10 +52,13 @@ function Billing({ navigation, route }: any) {
   ]);
 
   const openMoadl = () => {
+      
     dispatch(openBillingModal());
   };
 
   const closeModal = () => {
+    dispatch(setInvoiceNo(null))
+    dispatch(editInvoiceList([]))
     dispatch(closeBillingModal());
   };
 
@@ -64,9 +66,6 @@ function Billing({ navigation, route }: any) {
   //   enabled: !!patientId,
   //  })
 
-useEffect(()=>{
- console.log("billing?.billingModalOpen---->",billing?.billingModalOpen)
-},[billing?.billingModalOpen])
 
   return (
     <View style={styles.container}>
