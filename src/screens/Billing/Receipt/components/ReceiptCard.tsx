@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Alert,
   Linking,
@@ -30,6 +30,10 @@ function ReceiptCard({ data, print }: { data: any; print: any }) {
       Alert.alert("Warning", "No Print Url Found please try again later");
     }
   };
+
+ useEffect(()=>{
+  console.log("receipt------>",print)
+ },[])
 
   return (
     <View style={[style.container]}>
@@ -70,7 +74,7 @@ function ReceiptCard({ data, print }: { data: any; print: any }) {
                 </View>
 
               <View style={style.buttonContainer}>
-               <ShareComponent subject="Receipt" content={`Dear ${patientDetails.Name || ""} click on the link ${print[receipt.inviceNo]?.url || ""} to view your Receipt.`}/>
+               <ShareComponent subject="Receipt" content={`Dear ${patientDetails.Name || ""} click on the link ${print[receipt.receiptNo]?.url || ""} to view your Receipt.`}/>
               </View>
             </View>
           </View>
