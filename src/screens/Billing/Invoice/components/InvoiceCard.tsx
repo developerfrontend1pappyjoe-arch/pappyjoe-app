@@ -26,7 +26,7 @@ import { CustomLoaderRound } from "components/CustomLoaderRound";
 import { useModal } from "hooks";
 import ShareComponent from "../../component/ShareComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { editInvoiceList, openBillingModal, setInvoiceNo } from "redux/actions";
+import { editInvoiceList, openBillingModal, setBillingDate, setInvoiceNo } from "redux/actions";
 import { useQueryClient } from "@tanstack/react-query";
 const btnSize = 22;
 function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
@@ -70,8 +70,10 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
   const handleEdit = (data: InvoiceItemType[], invoiceNo: string) => {
     const taxObjet = cachedData?.data?.taxObject || {}
     const list: InvoiceSaveObjectType[] = [];
+    let date = moment().format("YYYY-MM-DD")
     data.forEach((item) => {
       const item_id = item?.item_type == "procedure" ? `P_${item.item_id}` : `I_${item.item_id}` 
+      date = item.date_time
       const editItems: InvoiceSaveObjectType = {
         fullTotal: item.itemtotal,
         item_cost: item.cost,
@@ -96,7 +98,10 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
         item_id,
       };
       list.push(editItems);
-    });   
+    });  
+    console.log("date in edit on click-->",date);
+    
+    dispatch(setBillingDate(date)) 
     dispatch(setInvoiceNo(invoiceNo));
     dispatch(editInvoiceList(list));
     dispatch(openBillingModal());
@@ -265,7 +270,7 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
                       size={btnSize}
                       color={colorList.socondary}
                       onPress={() => {
-                        handleEdit(invoice.data, invoice.inviceNo);
+                        handleEdit(invoice.data, invoice.inviceNo,);
                       }}
                     />
                   </TouchableOpacity>

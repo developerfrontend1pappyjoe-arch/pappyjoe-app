@@ -22,6 +22,7 @@ import { NoDataAvailable } from "components/NoDataAvailable";
 import { ReceiptContextType, ReceiptResultArrayType } from "./types";
 import { colorList } from "styles/global.styles";
 import ReceiptCard from "./components/ReceiptCard";
+import { StoreTypes } from "redux/reducer";
 
 export const ReceiptContext = createContext<ReceiptContextType>({
   refreshing: true,
@@ -37,8 +38,8 @@ export const ReceiptProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-const InvoiceContent: FC = () => {
-  const patientId = useSelector<any>((state) => state.patientId) || null;
+const ReceiptContent: FC = () => {
+  const {patientId,billing} = useSelector<any>((state) => state) as StoreTypes || null;
   const { refreshing, setRefreshing } = useContext(ReceiptContext);
   const { mutate, data, isLoading } = useMutation(getReceiptList, {
     onSuccess: () => {
@@ -52,7 +53,7 @@ const InvoiceContent: FC = () => {
     setRefreshing(true);
   };
   useEffect(() => {
-    if(refreshing){
+    if(refreshing || !Boolean(billing?.billingModalOpen)){
       mutate(patientId as string);
     }
     return ()=>{
@@ -60,7 +61,7 @@ const InvoiceContent: FC = () => {
         setRefreshing(true)
       }
     }
-  }, [refreshing,patientId]);
+  }, [refreshing,patientId,billing.billingModalOpen]);
   return (
     <View style={{ paddingBottom: 5 }}>
       <View style={{ paddingHorizontal: 8, paddingTop: 8 }}>
@@ -105,7 +106,7 @@ const Receipt: FC = () => {
   
   return (
  <ReceiptProvider>
-      <InvoiceContent />
+      <ReceiptContent />
  </ReceiptProvider>
   );
 };

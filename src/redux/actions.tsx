@@ -1,5 +1,5 @@
 // actions.js
-import { InvoiceSaveObjectType } from 'screens/Billing/Invoice/types';
+import { InvoiceSaveObjectType } from "screens/Billing/Invoice/types";
 import {
   ADD_LOGIN_DETAILS,
   GET_LOGIN_DETAILS,
@@ -10,8 +10,9 @@ import {
   PATIENT_DETAILS,
   EDIT_INVOICE,
   BILLING_MODAL,
-  SET_INVOICENO
-} from './types';
+  SET_INVOICENO,
+  SET_BILLING_DATE,
+} from "./types";
 
 export const handleHomeAppoinmentFilter = (payload: any) => {
   return {
@@ -42,44 +43,51 @@ export const removeLoginDetails = () => {
   };
 };
 
-export const setPatientId = (payload:string | null)=>{
-   return {
-      type:PATIENT_ID,
-      payload
-   }
-}
-
-export const assignPatientDetails = (payload:any)=>{
-   return {
-      type:PATIENT_DETAILS,
-      payload
-   }
-}
-
-export const editInvoiceList = (payload:InvoiceSaveObjectType[])=>{
-    return {
-       type:EDIT_INVOICE,
-       payload
-    }
-}
-
-export const openBillingModal = ()=>{
-    return {
-      type:BILLING_MODAL,
-      payload:true
-    }
-}
-
-export const closeBillingModal = ()=>{
+export const setPatientId = (payload: string | null) => {
   return {
-    type:BILLING_MODAL,
-    payload:false
-  }
-}
+    type: PATIENT_ID,
+    payload,
+  };
+};
 
-export const setInvoiceNo = (payload:string | null)=>{
-    return {
-      type:SET_INVOICENO,
-      payload
-    }
-}
+export const assignPatientDetails = (payload: any) => {
+  return {
+    type: PATIENT_DETAILS,
+    payload,
+  };
+};
+
+export const editInvoiceList = (payload: InvoiceSaveObjectType[]) => {
+  return {
+    type: EDIT_INVOICE,
+    payload,
+  };
+};
+
+export const openBillingModal = () => {
+  return {
+    type: BILLING_MODAL,
+    payload: true,
+  };
+};
+
+export const closeBillingModal = () => {
+  return {
+    type: BILLING_MODAL,
+    payload: false,
+  };
+};
+
+export const setInvoiceNo = (payload: string | null) => {
+  return {
+    type: SET_INVOICENO,
+    payload,
+  };
+};
+
+export const setBillingDate = (payload: string) => {
+  return {
+    type: SET_BILLING_DATE,
+    payload,
+  };
+};

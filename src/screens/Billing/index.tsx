@@ -19,8 +19,9 @@ import { useModal } from "hooks";
 import { useQuery } from "@tanstack/react-query/build/lib/useQuery";
 import { getFinaceMaster } from "./services";
 import { useToast } from "react-native-toast-notifications";
-import { closeBillingModal, editInvoiceList, openBillingModal, setInvoiceNo } from "redux/actions";
+import { closeBillingModal, editInvoiceList, openBillingModal, setBillingDate, setInvoiceNo } from "redux/actions";
 import { CustomLoaderRound } from "components/CustomLoaderRound";
+import moment from "moment";
 const AddInvoice = lazy(() => import("./Invoice/components/AddInvoice"));
 const AddReceipt = lazy(() => import("./Receipt/components/AddReceipt"));
 const renderScene = SceneMap({
@@ -52,7 +53,7 @@ function Billing({ navigation, route }: any) {
   ]);
 
   const openMoadl = () => {
-      
+    dispatch(setBillingDate(moment().format("YYYY-MM-DD")))
     dispatch(openBillingModal());
   };
 

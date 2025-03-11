@@ -1,5 +1,9 @@
 import { API_URL } from "utils/constants";
-import { formatInvoiceData, formatInvoiceDataReceipt, formatReceiptData } from "./formatData";
+import {
+  formatInvoiceData,
+  formatInvoiceDataReceipt,
+  formatReceiptData,
+} from "./formatData";
 import { axiosInstance } from "config/axios.config.custom";
 import {
   InvoiceListResponseType,
@@ -11,21 +15,25 @@ import { billingData } from "../../mockData";
 import { ReceiptResultArrayType } from "./Receipt/types";
 const axios = axiosInstance;
 
-export const getInvoiceList = async (
-  {id,unpaid = false}:{ id: string,unpaid?:boolean}
-): Promise<InvoiceListResponseType> => {
+export const getInvoiceList = async ({
+  id,
+  unpaid = false,
+}: {
+  id: string;
+  unpaid?: boolean;
+}): Promise<InvoiceListResponseType> => {
   console.log("getInvoiceList called");
   try {
-     if(unpaid){
+    if (unpaid) {
       const result = await (
         await axios.get(`${API_URL.getInvoice}?unpaid=1&patient_id=${id}`)
       ).data;
-      if(result.status == 200){
-        return formatInvoiceDataReceipt(result.data)
-      }else{
-        return []
+      if (result.status == 200) {
+        return formatInvoiceDataReceipt(result.data);
+      } else {
+        return [];
       }
-     }else{
+    } else {
       const result = await (
         await axios.get(`${API_URL.getInvoice}?patient_id=${id}`)
       ).data;
@@ -36,7 +44,7 @@ export const getInvoiceList = async (
       } else {
         return { invoiceList: [], print: null };
       }
-     }
+    }
   } catch (error) {
     return { invoiceList: [], print: null };
   }
@@ -153,24 +161,11 @@ export const saveInvoice = async (params: {
     return error;
   }
 };
-const data = {
-  date: "2025-03-10",
-  inv_number: "1484",
-  items: [
-    {
-      item_cost: "17500",
-      item_discount: "0",
-      item_discount_type: "%",
-      item_id: "395661",
-      item_quantity: "1",
-      item_tax_amount: "3150",
-      item_tax_id: "208",
-      item_total_amount: "17500.00",
-      total_amount: "17500.00",
-      total_cost: "17500.00",
-      total_discount: "0.00",
-      total_tax: "3150.00",
+
+export const saveReceipt = async (params: any) => {
+  return (await axios.post(API_URL.saveReceipt, params, {
+    headers: {
+      "Content-Type": "multipart/form-data",
     },
-  ],
-  patient_id: "5596833",
+  })).data;
 };

@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -15,7 +15,12 @@ import { colorList } from "styles/global.styles";
 // import AddInvoiceForm from "./AddInvoiceForm";
 const AddInvoiceForm = lazy(() => import("./AddInvoiceForm"));
 import { useDispatch, useSelector } from "react-redux";
-import { closeBillingModal, editInvoiceList, setInvoiceNo } from "redux/actions";
+import {
+  closeBillingModal,
+  editInvoiceList,
+  setBillingDate,
+  setInvoiceNo,
+} from "redux/actions";
 import {
   initialData,
   InvoicePayloadObject,
@@ -30,32 +35,34 @@ function AddInvoice() {
   const [startDateModal, setStartDateModal] = useState<boolean>();
   const [startDate, setStartDate] = useState(new Date());
   const {
-    billing: { invoiceEditList, invoiceNo },
+    billing: { invoiceEditList, invoiceNo, editDate },
     patientDetails,
   } = useSelector((state: any) => state) as StoreTypes;
   const toast = useToast();
   const dispatch = useDispatch();
-  const { mutate: save, isLoading } = useMutation(saveInvoice,{
-    onSuccess:(result)=>{
-     if(result.status >=200 || result.status < 300){
-      toast.show(result.message,{
-        type:"success"
-      })
-      dispatch(editInvoiceList([]));
-      dispatch(setInvoiceNo(null));
-      dispatch(closeBillingModal());
-     }else{
-      toast.show(result.message,{
-        type:"warning"
-      })
-     }
+  const { mutate: save, isLoading } = useMutation(saveInvoice, {
+    onSuccess: (result) => {
+      if (result.status >= 200 || result.status < 300) {
+        toast.show(result.message, {
+          type: "success",
+        });
+        dispatch(setBillingDate(moment().format("YYYY-MM-DD")));
+        dispatch(editInvoiceList([]));
+        dispatch(setInvoiceNo(null));
+        dispatch(closeBillingModal());
+      } else {
+        toast.show(result.message, {
+          type: "warning",
+        });
+      }
     },
-    onError:()=>{
-      toast.show("Something went wrong !",{
-        type:"error"
-      })
-    }
+    onError: () => {
+      toast.show("Something went wrong !", {
+        type: "error",
+      });
+    },
   });
+
   const handleAddInvoice = () => {
     // console.log([...invoiceEditList,initialData])
     dispatch(editInvoiceList([...invoiceEditList, initialData]));
@@ -136,10 +143,11 @@ function AddInvoice() {
         inv_number?: string;
       } = {
         patient_id: patientDetails?.id,
-        date: moment(startDate).format("YYYY-MM-DD"),
+        date: editDate,
         items,
       };
       invoiceNo && (saveObject["inv_number"] = invoiceNo);
+      console.log(saveObject);
       save({
         ...saveObject,
         total: {
@@ -156,11 +164,17 @@ function AddInvoice() {
     }
   };
 
+  const editList = useMemo(() => invoiceEditList, [invoiceEditList]);
+
   useEffect(() => {
     if (invoiceEditList?.length == 0) {
       dispatch(editInvoiceList([initialData]));
     }
   }, []);
+
+  useEffect(() => {
+    console.log("editDate========>", editDate);
+  }, [editDate]);
   return (
     <View style={style.container}>
       <View
@@ -177,7 +191,7 @@ function AddInvoice() {
             dense
             mode="outlined"
             editable={false}
-            value={moment(startDate).format("DD-MM-YYYY")}
+            value={moment(editDate).format("DD-MM-YYYY")}
             label="Invoice Date"
             right={
               <TextInput.Icon
@@ -204,11 +218,12 @@ function AddInvoice() {
           modal
           mode="date"
           open={startDateModal}
-          date={startDate}
+          date={new Date(editDate)}
           style={{ backgroundColor: colorList.white }}
           onConfirm={(date) => {
             setStartDateModal(false);
-            setStartDate(date);
+            console.log(`moment(new Date(date)).format("YYYY-MM-DD")--->`,moment(new Date(date)).format("YYYY-MM-DD"))
+            dispatch(setBillingDate(moment(new Date(date)).format("YYYY-MM-DD")));
           }}
           onCancel={() => setStartDateModal(false)}
         />
@@ -217,7 +232,7 @@ function AddInvoice() {
         <FlatList
           style={{ height: Dimensions.get("screen").height - 272 }}
           keyboardShouldPersistTaps="handled"
-          data={invoiceEditList}
+          data={editList}
           renderItem={({ item, index }) => (
             <Suspense
               fallback={
@@ -325,4 +340,23 @@ const requiredFields = {
   total_amount: true,
 };
 
-
+const data = {
+  date: "2025-03-11",
+  items: [
+    {
+      item_cost: "18500",
+      item_discount: "0",
+      item_discount_type: "%",
+      item_id: "P_395713",
+      item_quantity: "1",
+      item_tax_amount: "925.00",
+      item_tax_id: "211",
+      item_total_amount: "18500.00",
+      total_amount: "",
+      total_cost: "",
+      total_discount: "",
+      total_tax: "",
+    },
+  ],
+  patient_id: "5596833",
+};

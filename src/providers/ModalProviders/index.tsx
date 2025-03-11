@@ -58,7 +58,7 @@ const ModalProvider: FC<PropsWithChildren> = ({ children }) => {
                       <Icon
                         name="close-circle"
                         color={colorList.red}
-                        size={20}
+                        size={26}
                       />
                     </TouchableOpacity>
                   </View>

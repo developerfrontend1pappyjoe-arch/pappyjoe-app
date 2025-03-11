@@ -23,6 +23,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getInvoiceMasterList } from "screens/Billing/services";
 import { useSelector } from "react-redux";
 import _ from "lodash";
+import { StoreTypes } from "redux/reducer";
 const keyboardType = "number-pad";
 type AddInvoiceFormParamsType = {
   index: number;
@@ -38,8 +39,9 @@ const AddInvoiceForm = ({
 }: AddInvoiceFormParamsType) => {
   const toast = useToast();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const patientDetails = useSelector((state: any) => state.patientDetails) || {
+  const {patientDetails} = useSelector((state: any) => state) as StoreTypes || {
     id: "",
+    billing:null
   };
   const { data: masterList, isLoading } = useQuery(
     ["fetchInvoiceMaster", { searchTerm, patientDetails }],
