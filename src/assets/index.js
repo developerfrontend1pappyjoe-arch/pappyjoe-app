@@ -50,7 +50,7 @@ import LogOutIcon from '../assets/Common/Icons/LogOutIcon.png';
 import CloseIcon from '../assets/Common/Icons/CloseIcon.png';
 import CheckboxFillIcon from '../assets/Common/Icons/checkboxFill.png';
 import CloseLargeImage from '../assets/Common/Icons/closeBtnLarge.png';
-import NoDataImage from '../assets/Common/Images/NoDataImage.png';
+import NoDataImage from '../assets/Common/Images/NoData.png';
 
 export {
   NoDataImage,

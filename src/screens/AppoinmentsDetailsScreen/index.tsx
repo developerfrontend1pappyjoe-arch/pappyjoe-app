@@ -63,7 +63,7 @@ export const AppoinmentDetails = ({navigation, route}: any) => {
   // const [patientDetails, setPatientDetails] = useState(null);
   // const [isLoading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch()
-  const id = useSelector((state:any)=>state.patientId)
+  // const id = useSelector((state:any)=>state.patientId)
   // useEffect(() => {
   //   if (patientId) {
   //     getPatientDetails(patientId);
@@ -109,7 +109,6 @@ let isLoading = false;
 
 useEffect(()=>{
  if(Boolean(patientDetails)){
-  console.log("patientData----------->",patientDetails);
   dispatch(assignPatientDetails(patientDetails))
  }
  return()=>{
