@@ -31,9 +31,9 @@ function ReceiptCard({ data, print }: { data: any; print: any }) {
     }
   };
 
- useEffect(()=>{
-  console.log("receipt------>",print)
- },[])
+//  useEffect(()=>{
+//   console.log("receipt------>",print)
+//  },[])
 
   return (
     <View style={[style.container]}>

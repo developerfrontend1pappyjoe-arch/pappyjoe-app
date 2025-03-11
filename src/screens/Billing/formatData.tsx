@@ -75,6 +75,7 @@ export const formatReceiptData = (
   const arraIndex: any = {};
   let date = "";
   for (let key in data) {
+    // console.log(key);
     if (key != "print") {
       date = data[key][0]?.date_time as string;
       if (date) {
@@ -84,7 +85,7 @@ export const formatReceiptData = (
             list: [
               ...result[arraIndex[date]].list,
               { receiptNo: key, data: data[key] },
-            ],
+            ].reverse(),
           };
         } else {
           arraIndex[date] = result.length;

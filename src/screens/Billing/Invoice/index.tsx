@@ -4,6 +4,7 @@ import React, {
   PropsWithChildren,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -51,6 +52,8 @@ const InvoiceContent: FC = () => {
     setRefreshing(true);
   };
 
+const displayList = useMemo(()=> data?.invoiceList ? data?.invoiceList : [],[data?.invoiceList])
+
   useEffect(() => {
     if(refreshing){
       if(Boolean(patientDetails?.id) || !Boolean(billing?.billingModalOpen)){
@@ -81,7 +84,7 @@ const InvoiceContent: FC = () => {
             keyExtractor={(_, index) => index.toString()}
             contentContainerStyle={{ paddingBottom: 50 }}
             showsVerticalScrollIndicator={false}
-            data={data?.invoiceList || []}
+            data={displayList || []}
             renderItem={({ item }: { item: ResultArrayType }) => (
               <View>
                 <InvoiceCard print={data?.print || null} data={item} />

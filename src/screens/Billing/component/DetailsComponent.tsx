@@ -124,7 +124,7 @@ const DetailsComponent = ({
                   <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
                     Payment Type:
                   </Text>,
-                  `: ${(data as ReceiptItemType)?.category}`,
+                  `: ${(data as ReceiptItemType)?.ptype}`,
                 ],
                 [
                   <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
@@ -168,24 +168,3 @@ const style = StyleSheet.create({
   },
 });
 
-const d = {
-  date: "2025-03-10",
-  inv_number: "1484",
-  items: [
-    {
-      item_cost: "4056",
-      item_discount: "0",
-      item_discount_type: "%",
-      item_id: "426182",
-      item_quantity: "2",
-      item_tax_amount: "1460.16",
-      item_tax_id: "208",
-      item_total_amount: "16451136.00",
-      total_amount: "0.00",
-      total_cost: "0.00",
-      total_discount: "0.00",
-      total_tax: "0.00",
-    },
-  ],
-  patient_id: "5596833",
-};

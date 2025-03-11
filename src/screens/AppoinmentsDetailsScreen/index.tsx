@@ -21,7 +21,7 @@ import {MenuListDetailsVitalSigns} from './components/vitals/MenuLIstVitalSigns'
 import {NavigationList} from '../../routes/NavigationList';
 import {MenuListPrescription} from './components/prescription/MenuListPrescription';
 import { useDispatch, useSelector } from "react-redux";
-import { assignPatientDetails } from "redux/actions";
+import { assignPatientDetails, setPatientId } from "redux/actions";
 
 const MenuList = [
   {id: 1, name: 'Vital Signs'},
@@ -110,6 +110,7 @@ let isLoading = false;
 useEffect(()=>{
  if(Boolean(patientDetails)){
   dispatch(assignPatientDetails(patientDetails))
+  dispatch(setPatientId(patientDetails?.id || ""))
  }
  return()=>{
   dispatch(assignPatientDetails(null))

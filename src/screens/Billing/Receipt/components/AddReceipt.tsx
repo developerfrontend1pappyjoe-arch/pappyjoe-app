@@ -172,9 +172,9 @@ const dispatch = useDispatch()
       mutate({ id: patientDetails?.id as string, unpaid: true });
     }
   }, []);
-  useEffect(()=>{
-   console.log("cachedData========>",financeData)
-  },[financeData])
+  // useEffect(()=>{
+  //  console.log("cachedData========>",financeData)
+  // },[financeData])
   return (
     <View>
       <ScrollView style={style.container}>

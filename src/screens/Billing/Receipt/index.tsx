@@ -16,7 +16,7 @@ import {
 import { Avatar, Card, Divider, Text } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
-import {getReceiptList } from "../services";
+import { getReceiptList } from "../services";
 import { CustomLoader } from "components/CustomLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { ReceiptContextType, ReceiptResultArrayType } from "./types";
@@ -39,7 +39,8 @@ export const ReceiptProvider: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const ReceiptContent: FC = () => {
-  const {patientId,billing} = useSelector<any>((state) => state) as StoreTypes || null;
+  const { patientId, billing,patientDetails } =
+    (useSelector<any>((state) => state) as StoreTypes) || null;
   const { refreshing, setRefreshing } = useContext(ReceiptContext);
   const { mutate, data, isLoading } = useMutation(getReceiptList, {
     onSuccess: () => {
@@ -47,21 +48,21 @@ const ReceiptContent: FC = () => {
     },
   });
   const onRefresh = () => {
-    setRefreshing(true)
+    setRefreshing(true);
   };
   const handleRefresh = () => {
     setRefreshing(true);
   };
   useEffect(() => {
-    if(refreshing || !Boolean(billing?.billingModalOpen)){
+    if (refreshing || !Boolean(billing?.billingModalOpen)) {
       mutate(patientId as string);
     }
-    return ()=>{
-      if(!refreshing){
-        setRefreshing(true)
+    return () => {
+      if (!refreshing) {
+        setRefreshing(true);
       }
-    }
-  }, [refreshing,patientId,billing.billingModalOpen]);
+    };
+  }, [refreshing, patientId, billing.billingModalOpen]);
   return (
     <View style={{ paddingBottom: 5 }}>
       <View style={{ paddingHorizontal: 8, paddingTop: 8 }}>
@@ -82,7 +83,13 @@ const ReceiptContent: FC = () => {
             showsVerticalScrollIndicator={false}
             data={data?.list || []}
             renderItem={({ item }: { item: ReceiptResultArrayType }) => (
-              <Card style={{ marginVertical: 5, padding: 5,backgroundColor:colorList.white }}>
+              <Card
+                style={{
+                  marginVertical: 5,
+                  padding: 5,
+                  backgroundColor: colorList.white,
+                }}
+              >
                 <ReceiptCard print={data?.print || null} data={item} />
               </Card>
             )}
@@ -93,22 +100,30 @@ const ReceiptContent: FC = () => {
             onRefresh={handleRefresh}
           />
         )}
-        {
-          (!Boolean(data?.list?.length) && !isLoading) && <View style={{justifyContent:"center",alignItems:"center",height: 400}}><NoDataAvailable /></View>
-        }
+        {!Boolean(data?.list?.length) && !isLoading && (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              height: 400,
+            }}
+          >
+            <NoDataAvailable />
+          </View>
+        )}
       </View>
     </View>
   );
 };
 
 const Receipt: FC = () => {
-  const patientId = useSelector<any>(state=>state.patientId) || null
-  
+  const patientId = useSelector<any>((state) => state.patientId) || null;
+
   return (
- <ReceiptProvider>
+    <ReceiptProvider>
       <ReceiptContent />
- </ReceiptProvider>
+    </ReceiptProvider>
   );
 };
 
-export default Receipt
+export default Receipt;
