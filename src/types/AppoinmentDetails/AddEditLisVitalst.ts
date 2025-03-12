@@ -21,10 +21,11 @@ export interface ShareModalTypes {
   data: dataTypes;
   closeMenu: () => void;
   openMenu: () => void;
-  prints:boolean 
-  email:boolean 
-  whatsapp:boolean 
-  message:boolean 
-  mailTitle?: string
-  mailContent?: string
+  prints:boolean;
+  email:boolean;
+  whatsapp:boolean;
+  message:boolean;
+  mailTitle?: string;
+  mailContent?: string;
+  buttonMode?:'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal'
 }

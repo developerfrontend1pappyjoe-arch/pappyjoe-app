@@ -15,7 +15,7 @@ import {
   StyleSheet,
   RefreshControl,
 } from "react-native";
-import { Divider, Surface, Text } from "react-native-paper";
+import { Divider, FAB, Surface, Text } from "react-native-paper";
 import { NoDataAvailable } from "../../../../components/NoDataAvailable";
 import RNFS from "react-native-fs";
 import { CustomModal } from "../../../../components/CustomModal";
@@ -30,13 +30,18 @@ import { axiosInstance as axios } from "../../../../config/axios.config.custom";
 import { VideoPlayer } from "./VideoPlayer";
 import FileContentCard from "./FileContentCard";
 import { ExtentionTypes, allFileTypes } from "./fileExtentionTypes";
+import { StoreTypes } from "redux/reducer";
+import { useSelector } from "react-redux";
 type ShowFileViewerType = { type: ExtentionTypes | null; url: string };
-export const MenuListDetailsFileList = ({ patientDetails }: any) => {
+export const MenuListDetailsFileList = () => {
   const [isLoading, setLoading] = useState(false);
   const [isPopup, setIspoup] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [fileList, setFileList] = useState(null);
   const [showFileViewer, setShowFileViewer] = useState<ShowFileViewerType>();
+  const patientDetails = useSelector(
+    (state: StoreTypes) => state.patientDetails
+  );
   const getFileListApi = async () => {
     setLoading(true);
     try {
@@ -111,9 +116,7 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
           }
-          style={{
-            maxHeight: Dimensions.get("screen").height * 0.55,
-          }}
+          style={{maxHeight: Dimensions.get("screen").height }}
         >
           {allFiles.map(([key, val], ids: number) => {
             return (
@@ -124,7 +127,7 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
                   borderRadius: 8,
                   padding: 10,
                   margin: 2,
-                  marginBottom: 10,
+                  marginBottom: 45,
                   gap: 15,
                 }}
               >
@@ -171,11 +174,20 @@ export const MenuListDetailsFileList = ({ patientDetails }: any) => {
           </CustomModal>
         </ScrollView>
 
-        <View style={{ height: 70, position: "absolute", bottom: 5, right: 5 }}>
+        {/* <View style={{ height: 70, position: "absolute", bottom: 5, right: 5 }}>
           <View style={styles.MenuListDetailsChiefComplaintsAddBtnContainer}>
             <CustomAddButton onClick={() => setIspoup(true)} />
           </View>
-        </View>
+        </View> */}
+        <FAB
+          mode="flat"
+          style={filesStyles.fab}
+          color={colorList.white}
+          icon="plus"
+          onPress={() => {
+            setIspoup(true);
+          }}
+        />
         <CustomModal show={isPopup} close={() => setIspoup(false)}>
           <AddFilesPopup
             close={() => setIspoup(false)}
@@ -225,5 +237,13 @@ const filesStyles = StyleSheet.create({
   },
   dropdownItemTextStyle: {
     color: colorList.dark,
+  },
+  fab: {
+    position: "absolute",
+    marginHorizontal: 16,
+    marginBottom: 10,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colorList.socondary,
   },
 });

@@ -331,16 +331,18 @@ function FileContentCard({
           {!isAlreadyDownloaded && !isDownloadCicked && !isLoading && (
             <Button
               compact
-              mode="elevated"
+              mode="text"
               loading={isDownloadCicked}
               disabled={isDownloadCicked || isLoading}
               contentStyle={{
-                backgroundColor: colorList.primary,
+                // backgroundColor: colorList.primary,
               }}
-              labelStyle={{ color: colorList.white }}
+              labelStyle={{
+                //  color: colorList.white 
+                }}
               onPress={handleDownloadFiles}
             >
-              <Icons name="download" size={25} />
+              <Icons color={colorList.primary} name="download" size={25} />
             </Button>
           )}
 
@@ -367,14 +369,16 @@ function FileContentCard({
             onDismiss={() => setOpenMenu(false)}
             anchor={
               <Button
-                mode="elevated"
+                mode="text"
                 disabled={isLoading || isDownloadCicked}
                 loading={isLoading}
-                contentStyle={{ backgroundColor: colorList.red }}
-                labelStyle={{ color: colorList.white }}
+                contentStyle={{ 
+                  // backgroundColor: colorList.red
+                 }}
+                labelStyle={{ color: colorList.red }}
                 onPress={deleteFile}
               >
-                <Icons name="delete" size={20} />
+                <Icons name="delete" size={23} />
               </Button>
             }
           >

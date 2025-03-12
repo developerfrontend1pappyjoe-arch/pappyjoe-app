@@ -135,7 +135,7 @@ function AddInvoice() {
       });
     }
 
-    if (errorList.length == 0) {
+    if (errorList.length == 0 && invoiceEditList?.length > 0) {
       const saveObject: {
         patient_id: string | undefined;
         date: string;
@@ -158,9 +158,14 @@ function AddInvoice() {
         },
       });
     } else {
-      toast.show(`Please fill all fields in sl.no ${errorList}`, {
-        type: "warning",
-      });
+      toast.show(
+        invoiceEditList.length == 0
+          ? `There is no invoice to save. Please add an invoice before saving.`
+          : `Please fill all fields in sl.no ${errorList}`,
+        {
+          type: "warning",
+        }
+      );
     }
   };
 
@@ -222,8 +227,13 @@ function AddInvoice() {
           style={{ backgroundColor: colorList.white }}
           onConfirm={(date) => {
             setStartDateModal(false);
-            console.log(`moment(new Date(date)).format("YYYY-MM-DD")--->`,moment(new Date(date)).format("YYYY-MM-DD"))
-            dispatch(setBillingDate(moment(new Date(date)).format("YYYY-MM-DD")));
+            console.log(
+              `moment(new Date(date)).format("YYYY-MM-DD")--->`,
+              moment(new Date(date)).format("YYYY-MM-DD")
+            );
+            dispatch(
+              setBillingDate(moment(new Date(date)).format("YYYY-MM-DD"))
+            );
           }}
           onCancel={() => setStartDateModal(false)}
         />

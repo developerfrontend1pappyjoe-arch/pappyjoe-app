@@ -171,6 +171,7 @@ function BillingPatientList() {
             renderItem={({ item }: { item: PatientListObjectType }) => (
               <>
                 <TouchableOpacity
+                style={{paddingHorizontal:4}}
                   onPress={() => {
                     navigate(item);
                   }}

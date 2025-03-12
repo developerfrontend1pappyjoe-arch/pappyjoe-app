@@ -28,6 +28,7 @@ import ShareComponent from "../../component/ShareComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { editInvoiceList, openBillingModal, setBillingDate, setInvoiceNo } from "redux/actions";
 import { useQueryClient } from "@tanstack/react-query";
+import { moderateScale } from "react-native-size-matters";
 const btnSize = 22;
 function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
   const patientDetails = useSelector((state: any) => state.patientDetails);
@@ -353,7 +354,7 @@ const style = StyleSheet.create({
   },
   dateContainer: {
     backgroundColor: colorList.primary,
-    width: 100,
+    width: 120,
     paddingVertical: 2,
     justifyContent: "center",
     alignItems: "center",

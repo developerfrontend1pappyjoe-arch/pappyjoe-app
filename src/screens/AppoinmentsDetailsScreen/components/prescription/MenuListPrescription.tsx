@@ -17,8 +17,10 @@ import ProcedureDetailsList from './ProcedureDetailsList';
 import moment from 'moment';
 import {ShareModal} from '../ShareModal';
 import {axiosInstance as axios} from '../../../../config/axios.config.custom';
+import { useSelector } from 'react-redux';
+import { StoreTypes } from 'redux/reducer';
 
-export const MenuListPrescription = ({patientDetails}: any) => {
+export const MenuListPrescription = () => {
   const [isPopup, setIspoup] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [refetch, setRefetch] = useState(false);
@@ -26,13 +28,12 @@ export const MenuListPrescription = ({patientDetails}: any) => {
     processed: null,
     original: null,
   });
-
   const [prescriptionEditData, setPrescriptionEditData] = useState(null);
   const [openedShareListId, setOpenedShareListId] = useState(null);
   const handleOpenShareModal = (listId: any) => setOpenedShareListId(listId);
   const handleCloseShareModal = () => setOpenedShareListId(null);
   const [medicineUnitList, setMedicineUnitList] = useState([]);
-
+  const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
   useEffect(() => {
     getPrescriptionListApi();
     getMedicineListApi();
@@ -371,29 +372,35 @@ export const MenuListPrescription = ({patientDetails}: any) => {
                               justifyContent: 'space-between',
                             }}>
                             <Button
-                              mode="elevated"
+                              mode="text"
                               onPress={() => handleEditPriscription(list)}
                               style={{
-                                backgroundColor: colorList.primary,
+                                // backgroundColor: colorList.primary,
                               }}
-                              labelStyle={{color: colorList.white}}>
+                              labelStyle={{
+                                // color: colorList.white
+                                }}>
                               <Icons
                                 name="edit"
-                                size={20}
-                                color={colorList.white}
+                                size={22}
+                                color={
+                                  colorList.primary
+                                }
                               />
                             </Button>
                             <Button
-                              mode="elevated"
+                              mode="text"
                               onPress={() => handleDeletePriscription(list)}
                               style={{
-                                backgroundColor: colorList.red,
+                                // backgroundColor: colorList.red,
                               }}
-                              labelStyle={{color: colorList.white}}>
+                              labelStyle={{
+                                // color: colorList.white
+                                }}>
                               <Icons
                                 name="delete"
-                                size={20}
-                                color={colorList.white}
+                                size={24}
+                                color={colorList.red}
                               />
                             </Button>
                             <ShareModal

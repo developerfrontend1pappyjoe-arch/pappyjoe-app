@@ -142,7 +142,7 @@ const DetailsComponent = ({
                   <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
                     Date added:
                   </Text>,
-                  `: ${moment((data as ReceiptItemType)?.added_date).format("DD-MM-YYYY hh:MM A")}`,
+                  `: ${moment((data as ReceiptItemType)?.added_date).format("DD-MM-YYYY")}`,
                 ],
               ]}
               style={{ height: 20 }}

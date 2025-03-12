@@ -18,6 +18,7 @@ export const ShareModal = memo(
     message = false,
     mailTitle,
     mailContent = '',
+    buttonMode="text"
   }: ShareModalTypes) => {
     // console.log('mailTitle ====>', mailTitle);
 
@@ -80,12 +81,12 @@ export const ShareModal = memo(
         onDismiss={closeMenu}
         anchor={
           <Button
-            mode="elevated"
+            mode={buttonMode}
             onPress={openMenu}
             style={{
-              backgroundColor: colorList?.socondary,
+              // backgroundColor: colorList?.socondary,
             }}>
-            <Icons name="share" size={20} color={colorList.white} />
+            <Icons name="share" size={20} color={colorList.socondary} />
           </Button>
         }>
         {prints && (

@@ -112,8 +112,9 @@ const style = StyleSheet.create({
   },
   dateContainer: {
     backgroundColor: colorList.primary,
-    width: 100,
+    width: 120,
     paddingVertical: 2,
+    paddingHorizontal:8,
     justifyContent: "center",
     alignItems: "center",
     display: "flex",

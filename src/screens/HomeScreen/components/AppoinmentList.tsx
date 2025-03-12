@@ -13,7 +13,7 @@ import { styles } from "../home.style";
 import {
   ProfileAvatar,
 } from "../../../assets";
-import { scale, verticalScale, moderateScale } from "react-native-size-matters";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import { colorList } from "../../../styles/global.styles";
 import { useState } from "react";
 import { CustomModal } from "../../../components/CustomModal";
@@ -165,7 +165,7 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
             <Text
               style={{
                 position: "absolute",
-                fontSize: scale(9),
+                fontSize: moderateScale(8.2),
                 fontWeight: "bold",
                 color: colorList.white,
               }}

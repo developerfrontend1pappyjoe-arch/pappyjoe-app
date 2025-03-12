@@ -66,7 +66,7 @@ const ReceiptContent: FC = () => {
   return (
     <View style={{ paddingBottom: 5 }}>
       <View style={{ paddingHorizontal: 8, paddingTop: 8 }}>
-        {isLoading ? (
+        {(isLoading && !Boolean(billing?.billingModalOpen)) ? (
           <View
             style={{
               justifyContent: "center",

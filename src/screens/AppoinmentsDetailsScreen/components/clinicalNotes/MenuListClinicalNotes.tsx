@@ -34,6 +34,7 @@ import CustomMultiselect from "components/CustomMultiselect";
 import { clinicalNotesMaster } from "screens/AppoinmentsDetailsScreen/services/getClinicalNotesMaster";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { Table, Row, Rows } from "react-native-table-component";
+import { StoreTypes } from "redux/reducer";
 const ClinicalNoteList = [
   "complaint",
   "history",
@@ -50,13 +51,13 @@ const noteTite = {
   diagnose: "Diagnosis",
   note: "Notes",
 };
-export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
+export const MenuListDetailsChiefComplaints = () => {
   const [isPopup, setIspoup] = useState(false);
   const [printList, setPrints] = useState(null);
   const [clinicalNotesList, setClinicalNotes] = useState([]);
   const [chiefComplaintEditdata, setChiefComplaintEditData] = useState(null);
   const [isLoadings, setLoading] = useState(false);
-
+const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
   const getClinicNotesDetails = async () => {
     try {
       const res = await axios.get(
@@ -220,7 +221,7 @@ export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
                   key={index}
                   style={{
                     padding: 5,
-                    marginBottom: 15,
+                    marginBottom: 35,
                     borderRadius: 8,
                     backgroundColor: "#fff",
                   }}
@@ -292,7 +293,7 @@ export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
                                   >
                                     <Button
                                       mode="text"
-                                      compact
+                                      // compact
                                       onPress={() =>
                                         handleEditChiefComplaint(k1, v1, k)
                                       }
@@ -313,7 +314,7 @@ export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
                                       />
                                     </Button>
                                     <Button
-                                      compact
+                                      // compact
                                       mode="text"
                                       onPress={() =>
                                         handleDeleteChiefComplaint(k1)
@@ -331,12 +332,12 @@ export const MenuListDetailsChiefComplaints = ({ patientDetails }: any) => {
                                     >
                                       <Icons
                                         name="delete"
-                                        size={20}
+                                        size={22}
                                         color={colorList.red}
                                       />
                                     </Button>
                                     <Button
-                                      compact
+                                      // compact
                                       mode="text"
                                       onPress={() => handlePrint(k1)}
                                       style={

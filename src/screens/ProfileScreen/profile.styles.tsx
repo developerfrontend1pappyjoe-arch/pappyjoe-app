@@ -2,12 +2,12 @@ import {StyleSheet} from 'react-native';
 import {colorList} from '../../styles/global.styles';
 export const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 5,
   },
   clinickContainer: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    paddingVertical: 5,
   },
   clicnicHeadContainer: {
     flexDirection: 'row',
@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding:10
   },
   clinicLabel: {
     fontSize: 14,
@@ -38,7 +39,7 @@ export const styles = StyleSheet.create({
   hrLine: {
     height: 1,
     backgroundColor: colorList.Grey6,
-    marginVertical: 16,
+    marginVertical: 0,
   },
   addMoreClicnicBtnContainer: {
     justifyContent: 'center',
@@ -61,7 +62,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingRight: 15,
   },
-  profIconLabelContainer: {flexDirection: 'row', alignItems: 'center'},
+  profIconLabelContainer: {flexDirection: 'row', alignItems: 'center',paddingVertical:8},
   profIconContainer: {
     backgroundColor: '#fff',
     borderRadius: 100,

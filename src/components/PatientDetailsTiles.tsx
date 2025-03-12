@@ -68,9 +68,10 @@ export const PatientDetailsTiles = memo(
                   backgroundColor: colorList.socondary,
                   padding: 4,
                   borderRadius: 5,
+                  marginRight:5
                 }}
               >
-                <IonIcon name="receipt" color={colorList.white} size={17} />
+                <IonIcon name="receipt" color={colorList.white} size={20} />
               </TouchableOpacity>
             )}
             <View style={styles.profileSection}>

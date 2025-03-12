@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  StyleSheet,
+  useWindowDimensions,
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { styles } from "./appoinmentDetails.styles";
@@ -22,7 +24,8 @@ import { NavigationList } from "../../routes/NavigationList";
 import { MenuListPrescription } from "./components/prescription/MenuListPrescription";
 import { useDispatch, useSelector } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
-
+import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { colorList } from "styles/global.styles";
 const MenuList = [
   { id: 1, name: "Vital Signs" },
   { id: 2, name: "Clinical notes" }, //'Chief Complaints'
@@ -30,6 +33,14 @@ const MenuList = [
   { id: 4, name: "Prescription" },
   { id: 5, name: "Add X-Rays/Photos/Files" },
 ];
+
+const renderScene = SceneMap({
+  "Vitals": MenuListDetailsVitalSigns,
+  "ChiefComplaints": MenuListDetailsChiefComplaints,
+  "Procedure":MenuListDetailsProcedure,
+  "Prescription":MenuListPrescription,
+  "Files":MenuListDetailsFileList
+});
 
 const HorizontalMenus = ({ id, name, focused, isFocused }: any) => {
   const focusedItem = isFocused === id;
@@ -61,10 +72,18 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
     appointmentDetails = null,
     from = "",
   } = route.params;
+  const layout = useWindowDimensions();
   const [isFocused, setIsFocused] = useState(1);
   const dispatch = useDispatch();
   let isLoading = false;
-
+  const [index, setIndex] = useState<number>(0)
+  const [routes] = useState([
+    { key: "Vitals", title: "Vital Signs" },
+    { key: "ChiefComplaints", title: "Clinical notes" },
+    { key: "Procedure", title: "Procedure" },
+    { key: "Prescription", title: "Prescription" },
+    { key: "Files", title: "Add X-Rays/Photos/Files" },
+  ]);
   useEffect(() => {
     if (Boolean(patientDetails)) {
       dispatch(setPatientId(patientDetails?.id || ""));
@@ -80,7 +99,7 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
   } else {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
+        <View style={{backgroundColor:"red" }}>
           <CustomHeader
             headerText={
               from === "patient-list"
@@ -107,7 +126,7 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
           <PatientDetailsTiles isLoading={isLoading} patientId={patientId} />
         </View>
         <View style={[styles.container, { flex: 1 }]}>
-          <ScrollView
+          {/* <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
@@ -126,24 +145,72 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
                 />
               );
             })}
-          </ScrollView>
+          </ScrollView> */}
+                {patientDetails && <TabView
+                  navigationState={{ index, routes }}
+                  renderScene={renderScene}
+                  onIndexChange={setIndex}
+                  initialLayout={{ width: layout.width }}
+                  swipeEnabled={true} // Enables swiping
+                  style={style.tabView}
+                  renderTabBar={(props) => (
+                    <TabBar
+                      {...props}
+                      style={style.tabBar} // Background color
+                      indicatorStyle={style.indicator} // Active tab indicator
+                      activeColor={colorList.primary} // Active tab text color
+                      scrollEnabled={true}
+                      inactiveColor={colorList.Grey1} // Inactive tab text color
+                      labelStyle={style.label} // Tab text styling
+                    />
+                  )}
+                />}
         </View>
-        {Boolean(patientDetails) && (
+        {/* {Boolean(patientDetails) && (
           <View style={{ flex: 7.5, paddingHorizontal: 16 }}>
             {patientDetails && isFocused === 1 ? (
-              <MenuListDetailsVitalSigns patientDetails={patientDetails} />
+              <MenuListDetailsVitalSigns />
             ) : isFocused === 2 ? (
-              <MenuListDetailsChiefComplaints patientDetails={patientDetails} />
+              <MenuListDetailsChiefComplaints />
             ) : isFocused === 3 ? (
-              <MenuListDetailsProcedure patientDetails={patientDetails} />
+              <MenuListDetailsProcedure />
             ) : isFocused === 4 ? (
-              <MenuListPrescription patientDetails={patientDetails} />
+              <MenuListPrescription/>
             ) : isFocused === 5 ? (
-              <MenuListDetailsFileList patientDetails={patientDetails} />
+              <MenuListDetailsFileList/>
             ) : null}
           </View>
-        )}
+        )} */}
       </SafeAreaView>
     );
   }
 };
+
+const style = StyleSheet.create({
+  fab: {
+    position: "absolute",
+    marginHorizontal: 16,
+    marginBottom: 10,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colorList.socondary,
+  },
+  container: {
+    flex: 1,
+  },
+  tabView: {
+    flex: 1,
+  },
+  tabBar: {
+    backgroundColor: colorList.white, // Background color of the tab bar
+    height: 50, // Height of the tab bar
+  },
+  indicator: {
+    backgroundColor: colorList.primary, // Active tab indicator color
+    height: 4, // Thickness of the active tab indicator
+  },
+  label: {
+    fontSize: 14, // Font size for the tab labels
+    fontWeight: "bold", // Bold text
+  },
+});

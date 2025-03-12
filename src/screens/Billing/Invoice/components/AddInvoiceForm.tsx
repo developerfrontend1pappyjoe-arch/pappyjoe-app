@@ -326,7 +326,7 @@ const AddInvoiceForm = ({
             paddingTop: 8,
           }}
         >
-          {index > 0 && (
+       
             <TouchableOpacity
               style={{
                 //   backgroundColor: colorList.red,
@@ -346,7 +346,7 @@ const AddInvoiceForm = ({
                 <Icon name="delete" size={20} />
               </Text>
             </TouchableOpacity>
-          )}
+       
         </View>
       </Card>
     </View>

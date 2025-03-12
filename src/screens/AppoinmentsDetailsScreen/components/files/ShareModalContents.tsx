@@ -131,14 +131,16 @@ export const ShareModalContents = memo(
         onDismiss={closeMenu}
         anchor={
           <Button
-            mode="elevated"
+            mode="text"
             onPress={openMenu}
             style={{
-              backgroundColor: colorList?.socondary,
+              // backgroundColor: colorList?.socondary,
             }}
-            labelStyle={{ color: colorList.white }}
+            labelStyle={{ 
+              // color: colorList.white
+             }}
           >
-            <Icons name="share" color={colorList.white} size={20} />
+            <Icons name="share" color={colorList.socondary} size={20} />
           </Button>
         }
       >
