@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Text } from "react-native";
+import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { Button, Menu, Divider } from "react-native-paper";
 import { colorList } from "../../../../styles/global.styles";
 import Share from "react-native-share";
@@ -10,6 +10,7 @@ import { getStoreData } from "utils/commonUtil";
 import extensions, { ExtentionTypes } from "./fileExtentionTypes";
 import { useSelector } from "react-redux";
 import { StoreTypes } from "redux/reducer";
+import { scale } from "react-native-size-matters";
 
 interface ShareModalContentsTypes {
   open: boolean;
@@ -142,7 +143,7 @@ export const ShareModalContents = memo(
         }
       >
         {isLoading ? (
-          <ActivityIndicator />
+          <View style={{padding:scale(15)}}><ActivityIndicator /></View>
         ) : (
           <>
             <Menu.Item
