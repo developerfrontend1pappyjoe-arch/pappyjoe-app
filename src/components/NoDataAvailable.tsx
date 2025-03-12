@@ -3,12 +3,14 @@ import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import {colorList} from '../styles/global.styles';
 import {NoDataImage} from '../assets';
 import LottieView from "lottie-react-native";
+import { Button } from "react-native-paper";
 
-export const NoDataAvailable = () => {
+export const NoDataAvailable = ({refresh}:{refresh?:()=>void}) => {
   const animation = useRef(null);
   return (
     <View style={styles.container}>
            <Image source={NoDataImage} style={styles.image} />
+           {Boolean(refresh) && <Button compact mode="outlined" onPress={refresh} icon={"refresh"} contentStyle={{ flexDirection: "row-reverse" }} >Refresh</Button>}
     </View>
   );
 };

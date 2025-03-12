@@ -13,6 +13,7 @@ import { styles } from "../home.style";
 import {
   ProfileAvatar,
 } from "../../../assets";
+import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { colorList } from "../../../styles/global.styles";
 import { useState } from "react";
 import { CustomModal } from "../../../components/CustomModal";
@@ -144,27 +145,27 @@ export const AppoinmentList = ({ data, navigate, refetch }: any) => {
         <Surface style={[styles.appoinmentContainer]}>
           <View
             style={{
-              width: 82,
-              height: 14,
+              width: scale(82),
+              height: verticalScale(14),
               backgroundColor: "transparent",
               borderBottomColor:statusColor[`${data?.Appointment_Status}Status` as keyof typeof statusColor]  || colorList.primary, // Adjust color
-              borderBottomWidth: 15,
-              borderRightWidth: 19,
-              borderLeftWidth: 19,
+              borderBottomWidth: scale(15),
+              borderRightWidth: scale(19),
+              borderLeftWidth: scale(19),
               borderLeftColor: "transparent",
               borderRightColor: "transparent",
               alignItems: "center",
               justifyContent: "center",
               transform: [{ rotate: "-42deg" }],
               position: "absolute",
-              left: -21,
-              top: 13,
+              left: scale(-21),
+              top: scale(13),
             }}
           >
             <Text
               style={{
                 position: "absolute",
-                fontSize: 9,
+                fontSize: scale(9),
                 fontWeight: "bold",
                 color: colorList.white,
               }}

@@ -52,6 +52,7 @@ const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
         } else {
           if(!_.isEqual(result?.data|| [],patientList)){
             setPatientList((prev) => (searchParams.start === 0 ? [...result.data] : [...prev, ...result.data]));
+            // setPatientList([]) 
           }
         }
       } else {
@@ -130,7 +131,7 @@ const debouncedSearch = useCallback(_.debounce(searchCall, 500), []);
               ListFooterComponent={() => isLoading ? <CustomContentLoader listSize={10} /> : null}
             />
           ) : (
-            !isLoading && patientList.length === 0 && <NoDataAvailable />
+            !isLoading && patientList.length === 0 && <NoDataAvailable refresh={clearSearch} />
           )}
         </View>
       </View>

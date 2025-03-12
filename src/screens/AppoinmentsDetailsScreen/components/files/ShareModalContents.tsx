@@ -1,5 +1,5 @@
-import { memo, useEffect, useState } from "react";
-import { Alert, Text } from "react-native";
+import React, { memo, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Text } from "react-native";
 import { Button, Menu, Divider } from "react-native-paper";
 import { colorList } from "../../../../styles/global.styles";
 import Share from "react-native-share";
@@ -8,6 +8,8 @@ import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { getStoreData } from "utils/commonUtil";
 import extensions, { ExtentionTypes } from "./fileExtentionTypes";
+import { useSelector } from "react-redux";
+import { StoreTypes } from "redux/reducer";
 
 interface ShareModalContentsTypes {
   open: boolean;
@@ -18,7 +20,8 @@ interface ShareModalContentsTypes {
 
 export const ShareModalContents = memo(
   ({ open, data, closeMenu, openMenu }: ShareModalContentsTypes) => {
-    const [patientData, setPatientData] = useState<any>();
+    // const [patientData, setPatientData] = useState<any>();
+    const {patientDetails:patientData} = useSelector(state=>state) as StoreTypes
     const [isLoading, setLoading] = useState(false);
     const downloadFiles = async (url, fileName) => {
       try {
@@ -64,7 +67,6 @@ export const ShareModalContents = memo(
         const resultFilePath = result
           ? `${RNFS.DownloadDirectoryPath}/Pappyjoe/${sanitizedFileName}`
           : await downloadFiles(url, fileName);
-        console.log(patientData);
         const type = url?.split("/").pop()?.split(".").pop();
         const mimeType = `${extensions[type]}/${type}`;
 
@@ -111,17 +113,17 @@ export const ShareModalContents = memo(
       }
     };
 
-    const getPatientData = async () => {
-      const data = await getStoreData("patientData");
-      setPatientData(data);
-    };
+    // const getPatientData = async () => {
+    //   const data = await getStoreData("patientData");
+    //   setPatientData(data);
+    // };
 
-    useEffect(() => {
-      getPatientData();
-      return () => {
-        setPatientData(null);
-      };
-    }, []);
+    // useEffect(() => {
+    //   getPatientData();
+    //   return () => {
+    //     setPatientData(null);
+    //   };
+    // }, []);
     return (
       <Menu
         visible={open}
@@ -140,7 +142,7 @@ export const ShareModalContents = memo(
         }
       >
         {isLoading ? (
-          <CustomLoaderRound />
+          <ActivityIndicator />
         ) : (
           <>
             <Menu.Item

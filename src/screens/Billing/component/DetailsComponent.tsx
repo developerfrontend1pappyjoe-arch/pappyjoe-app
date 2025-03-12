@@ -120,12 +120,12 @@ const DetailsComponent = ({
             />
             <Rows
               data={[
-                [
-                  <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
-                    Payment Type:
-                  </Text>,
-                  `: ${(data as ReceiptItemType)?.ptype}`,
-                ],
+                // [
+                //   <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
+                //     Payment Type:
+                //   </Text>,
+                //   `: ${(data as ReceiptItemType)?.ptype}`,
+                // ],
                 [
                   <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
                     Amount:

@@ -5,159 +5,118 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
-} from 'react-native';
-import {useCallback, useEffect, useState} from 'react';
-import {styles} from './appoinmentDetails.styles';
-import {CustomHeader} from '../../components/CustomHeader';
-import {ArrowLeftIcon} from '../../assets';
+} from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { styles } from "./appoinmentDetails.styles";
+import { CustomHeader } from "../../components/CustomHeader";
+import { ArrowLeftIcon } from "../../assets";
 
-import {CustomLoaderRound} from '../../components/CustomLoaderRound';
-import {MenuListDetailsChiefComplaints} from './components/clinicalNotes/MenuListClinicalNotes';
-import {MenuListDetailsFileList} from './components/files/MenuListFileLists';
+import { CustomLoaderRound } from "../../components/CustomLoaderRound";
+import { MenuListDetailsChiefComplaints } from "./components/clinicalNotes/MenuListClinicalNotes";
+import { MenuListDetailsFileList } from "./components/files/MenuListFileLists";
 
-import {PatientDetailsTiles} from '../../components/PatientDetailsTiles';
-import {MenuListDetailsProcedure} from './components/procedure/MenuLIstProcedure';
-import {MenuListDetailsVitalSigns} from './components/vitals/MenuLIstVitalSigns';
-import {NavigationList} from '../../routes/NavigationList';
-import {MenuListPrescription} from './components/prescription/MenuListPrescription';
+import { PatientDetailsTiles } from "../../components/PatientDetailsTiles";
+import { MenuListDetailsProcedure } from "./components/procedure/MenuLIstProcedure";
+import { MenuListDetailsVitalSigns } from "./components/vitals/MenuLIstVitalSigns";
+import { NavigationList } from "../../routes/NavigationList";
+import { MenuListPrescription } from "./components/prescription/MenuListPrescription";
 import { useDispatch, useSelector } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
 
 const MenuList = [
-  {id: 1, name: 'Vital Signs'},
-  {id: 2, name: 'Clinical notes'}, //'Chief Complaints'
-  {id: 3, name: 'Procedure'}, //'Treatments'
-  {id: 4, name: 'Prescription'},
-  {id: 5, name: 'Add X-Rays/Photos/Files'},
+  { id: 1, name: "Vital Signs" },
+  { id: 2, name: "Clinical notes" }, //'Chief Complaints'
+  { id: 3, name: "Procedure" }, //'Treatments'
+  { id: 4, name: "Prescription" },
+  { id: 5, name: "Add X-Rays/Photos/Files" },
 ];
 
-const HorizontalMenus = ({id, name, focused, isFocused}: any) => {
+const HorizontalMenus = ({ id, name, focused, isFocused }: any) => {
   const focusedItem = isFocused === id;
   return (
     <TouchableOpacity
       onPress={focused}
       style={[
         styles.HorizontalMenusContainer,
-        {borderWidth: isFocused === id ? 1 : 0},
-      ]}>
+        { borderWidth: isFocused === id ? 1 : 0 },
+      ]}
+    >
       <Text
         style={
           focusedItem
             ? styles.HorizontalMenusFocusedText
             : styles.HorizontalMenusNormalText
-        }>
+        }
+      >
         {name}
       </Text>
     </TouchableOpacity>
   );
 };
 
-export const AppoinmentDetails = ({navigation, route}: any) => {
+export const AppoinmentDetails = ({ navigation, route }: any) => {
   const {
     patientId,
-    patientData:patientDetails,
+    patientData: patientDetails,
     appointmentDetails = null,
-    from = '',
+    from = "",
   } = route.params;
   const [isFocused, setIsFocused] = useState(1);
-  // const [patientDetails, setPatientDetails] = useState(null);
-  // const [isLoading, setLoading] = useState<boolean>(false);
-  const dispatch = useDispatch()
-  // const id = useSelector((state:any)=>state.patientId)
-  // useEffect(() => {
-  //   if (patientId) {
-  //     getPatientDetails(patientId);
-  //   }
-  //   return ()=>{
-  //     clearStoreData("patientData")
-  //     setPatientDetails(null)
-  //   }
-  // }, [patientId]);
+  const dispatch = useDispatch();
+  let isLoading = false;
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getPatientDetails(patientId);
-
-  //     return () => {
-  //       // console.log('Screen unfocused');
-  //     };
-  //   }, []),
-  // );
-
-  // const getPatientDetails = async (patientId: number) => {
-  //   try {
-  //     setLoading(true);
-  //     const {data} = await getPatientService({id: patientId});
-  //     setLoading(false);
-  //     if (data?.status === 200) {
-  //       setPatientDetails(data?.data[0]);
-  //       storeData("patientData",data?.data[0])
-  //     } else {
-  //       setPatientDetails(null);
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error('Errors in getAppoinment Details....', error);
-  //     setPatientDetails(null);
-  //   }
-  // };
-//  const {data:patientDetails,isLoading} = useQuery(["getPatientDetails",patientId],()=>getPatientDetailsService({id:patientId}),{
-//   enabled: !!id,
-//  })
-
-let isLoading = false;
-
-useEffect(()=>{
- if(Boolean(patientDetails)){
-  dispatch(assignPatientDetails(patientDetails))
-  dispatch(setPatientId(patientDetails?.id || ""))
- }
- return()=>{
-  dispatch(assignPatientDetails(null))
- }
-},[patientDetails])
+  useEffect(() => {
+    if (Boolean(patientDetails)) {
+      dispatch(setPatientId(patientDetails?.id || ""));
+      dispatch(assignPatientDetails(patientDetails));
+    }
+    return () => {
+      dispatch(assignPatientDetails(null));
+    };
+  }, [patientDetails]);
 
   if (isLoading) {
     return <CustomLoaderRound center />;
   } else {
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <View style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
           <CustomHeader
             headerText={
-              from === 'patient-list'
-                ? 'Patient Details'
-                : 'Appointment Details'
+              from === "patient-list"
+                ? "Patient Details"
+                : "Appointment Details"
             }
             leftIcon={ArrowLeftIcon}
             leftIconAction={() => navigation.goBack()}
-            rightText={'Edit'}
+            rightText={"Edit"}
             rightTextAction={() =>
               appointmentDetails
                 ? navigation.navigate(NavigationList.bookingAppoinment, {
-                    data: {data: appointmentDetails, mode: 'edit'},
+                    data: { data: appointmentDetails, mode: "edit" },
                   })
                 : navigation.navigate(NavigationList.patientProfile, {
                     patientDetails,
-                    mode: 'edit',
+                    mode: "edit",
                   })
             }
           />
         </View>
 
         <View style={[styles.container]}>
-        <PatientDetailsTiles isLoading={isLoading} patientId={patientId} />
+          <PatientDetailsTiles isLoading={isLoading} patientId={patientId} />
         </View>
-        <View style={[styles.container, {flex: 1}]}>
+        <View style={[styles.container, { flex: 1 }]}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
-              flexDirection: 'row',
-              flexWrap: 'nowrap',
+              flexDirection: "row",
+              flexWrap: "nowrap",
               marginVertical: 10,
-            }}>
-            {MenuList?.map(item => {
+            }}
+          >
+            {MenuList?.map((item) => {
               return (
                 <HorizontalMenus
                   key={item?.id}
@@ -169,19 +128,21 @@ useEffect(()=>{
             })}
           </ScrollView>
         </View>
-      {Boolean(patientDetails) && <View style={{flex: 7.5, paddingHorizontal: 16}}>
-          {patientDetails && isFocused === 1 ? (
-            <MenuListDetailsVitalSigns patientDetails={patientDetails} />
-          ) : isFocused === 2 ? (
-            <MenuListDetailsChiefComplaints patientDetails={patientDetails} />
-          ) : isFocused === 3 ? (
-            <MenuListDetailsProcedure patientDetails={patientDetails} />
-          ) : isFocused === 4 ? (
-            <MenuListPrescription patientDetails={patientDetails} />
-          ) : isFocused === 5 ? (
-            <MenuListDetailsFileList patientDetails={patientDetails} />
-          ) : null}
-        </View>}
+        {Boolean(patientDetails) && (
+          <View style={{ flex: 7.5, paddingHorizontal: 16 }}>
+            {patientDetails && isFocused === 1 ? (
+              <MenuListDetailsVitalSigns patientDetails={patientDetails} />
+            ) : isFocused === 2 ? (
+              <MenuListDetailsChiefComplaints patientDetails={patientDetails} />
+            ) : isFocused === 3 ? (
+              <MenuListDetailsProcedure patientDetails={patientDetails} />
+            ) : isFocused === 4 ? (
+              <MenuListPrescription patientDetails={patientDetails} />
+            ) : isFocused === 5 ? (
+              <MenuListDetailsFileList patientDetails={patientDetails} />
+            ) : null}
+          </View>
+        )}
       </SafeAreaView>
     );
   }

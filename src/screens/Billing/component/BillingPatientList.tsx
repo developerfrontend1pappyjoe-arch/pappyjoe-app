@@ -54,6 +54,7 @@ function BillingPatientList() {
                   ? [...result.data]
                   : [...prev, ...result.data]
               );
+              // setPatientList([])
             }
           }
         } else {
@@ -223,7 +224,7 @@ function BillingPatientList() {
             }
           />
         ) : (
-          !isLoading && patientList.length === 0 && <NoDataAvailable />
+          !isLoading && patientList.length === 0 && <NoDataAvailable refresh={clearSearch} />
         )}
       </View>
     </SafeAreaView>
