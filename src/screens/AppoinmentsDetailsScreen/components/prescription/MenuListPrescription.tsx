@@ -274,7 +274,7 @@ export const MenuListPrescription = () => {
           flex: 1,
         }}>
         <ScrollView
-          style={{maxHeight: Dimensions.get('screen').height * 0.65}}
+          style={{maxHeight: Dimensions.get('screen').height}}
           showsVerticalScrollIndicator={false}>
           {prescriptionList?.processed ? (
             Object.entries(prescriptionList?.processed)?.map(

@@ -25,7 +25,7 @@ export const ProcedureDetailsList = ({
         <View
           style={{
             flex: 1,
-            height: 15,
+            // height: 15,
           }}>
           <Text variant="labelMedium">
             {keys === 'note'

@@ -202,15 +202,15 @@ const style = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    backgroundColor: colorList.white, // Background color of the tab bar
-    height: 50, // Height of the tab bar
+    backgroundColor: colorList.white,
+    height: 50,
   },
   indicator: {
-    backgroundColor: colorList.primary, // Active tab indicator color
-    height: 4, // Thickness of the active tab indicator
+    backgroundColor: colorList.primary,
+    height: 4, 
   },
   label: {
-    fontSize: 14, // Font size for the tab labels
-    fontWeight: "bold", // Bold text
+    fontSize: 10,
+    fontWeight: "bold",
   },
 });

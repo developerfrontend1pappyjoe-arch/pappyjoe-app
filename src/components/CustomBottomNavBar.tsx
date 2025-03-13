@@ -25,62 +25,62 @@ import {
 } from "../assets";
 import { colorList } from "../styles/global.styles";
 import { NavigationList } from "../routes/NavigationList";
-import { CustomModal } from "./CustomModal";
+// import { CustomModal } from "./CustomModal";
 import MetrialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { useModal } from "hooks";
 const btnIconSize = 23;
 const AddAllModal = ({ closeModal, navigate }: any) => {
   return (
-    <View style={{}}>
-      <View
+    <View
+      style={{
+        padding: 10,
+        borderRadius: 10,
+        width: Dimensions.get("screen").width - 20,
+        height: Dimensions.get("screen").height * 0.15,
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <TouchableOpacity
+        onPress={() => {
+          closeModal();
+          navigate(NavigationList.bookingAppoinment);
+        }}
         style={{
-          padding: 10,
-          borderRadius: 10,
-          width: Dimensions.get("screen").width * 0.8,
-          height: Dimensions.get("screen").height * 0.15,
-          position: "relative",
+          borderRadius: 8,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colorList.primary,
+          marginBottom: 15,
+          width: Dimensions.get("screen").width - 60,
         }}
       >
-        {/* <View style={{position: 'relative'}}>
-          <Button>
-            <Image source={CloseLargeImage} style />
-          </Button>
-        </View> */}
-        <TouchableOpacity
-          onPress={() => {
-            closeModal();
-            navigate(NavigationList.bookingAppoinment);
-          }}
-          style={{
-            borderRadius: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: colorList.primary,
-            marginBottom: 15,
-          }}
-        >
-          <Text style={{ fontSize: 18, padding: 10, color: colorList.white }}>
-            New Appointment
-          </Text>
-        </TouchableOpacity>
+        <Text style={{ fontSize: 18, padding: 10, color: colorList.white }}>
+          New Appointment
+        </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            closeModal();
-            navigate(NavigationList.addpatient);
-          }}
-          style={{
-            borderRadius: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: colorList.socondary,
-          }}
-        >
-          <Text style={{ fontSize: 18, padding: 10, color: colorList.white }}>
-            New Patient
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          closeModal();
+          navigate(NavigationList.addpatient);
+        }}
+        style={{
+          borderRadius: 8,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colorList.socondary,
+          width: Dimensions.get("screen").width - 60,
+        }}
+      >
+        <Text style={{ fontSize: 18, padding: 10, color: colorList.white }}>
+          New Patient
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -91,6 +91,7 @@ export const CustomTabBar = ({ navigation }: any) => {
     setIndex(index);
     navigation.navigate(route, { index: index });
   };
+  const { CustomModal } = useModal();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const openModal = () => setIsModalVisible(true);
   const closeModal = () => setIsModalVisible(false);
@@ -210,7 +211,11 @@ export const CustomTabBar = ({ navigation }: any) => {
         </Text>
       </TouchableOpacity>
 
-      <CustomModal close={closeModal} show={isModalVisible}>
+      <CustomModal
+        title="Add"
+        open={isModalVisible}
+        handleCloseModal={closeModal}
+      >
         <AddAllModal closeModal={closeModal} {...navigation} />
       </CustomModal>
     </View>

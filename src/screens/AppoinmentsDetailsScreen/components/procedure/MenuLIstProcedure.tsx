@@ -266,6 +266,8 @@ export const MenuListDetailsProcedure = () => {
                       borderRadius: 8,
                       padding: 10,
                       marginBottom: 35,
+                      borderColor: colorList.Grey1,
+                      borderWidth:.5
                     }}
                   >
                     <View style={{ padding: 5 }}>
@@ -308,7 +310,10 @@ export const MenuListDetailsProcedure = () => {
                                       padding: 10,
                                     }}
                                   >
-                                    <View style={{ flex: 1, height: 15 }}>
+                                    <View style={{ flex: 1, 
+                                      // height: 15
+
+                                     }}>
                                       <Text variant="labelMedium">
                                         {k
                                           ?.split("_")
@@ -318,19 +323,28 @@ export const MenuListDetailsProcedure = () => {
                                       </Text>
                                     </View>
                                     {k === "date_time" ? (
-                                      <View style={{ flex: 1, height: 15 }}>
+                                      <View style={{ flex: 1, 
+                                      // height: 15
+
+                                       }}>
                                         <Text variant="labelMedium">
                                           {moment(v).format("DD-MM-YYYY")}
                                         </Text>
                                       </View>
                                     ) : k === "discount" ? (
-                                      <View style={{ flex: 1, height: 15 }}>
+                                      <View style={{ flex: 1, 
+                                      // height: 15
+
+                                       }}>
                                         <Text variant="labelMedium">
                                           {v} {list["discount_type"]}
                                         </Text>
                                       </View>
                                     ) : (
-                                      <View style={{ flex: 1, height: 15 }}>
+                                      <View style={{ flex: 1, 
+                                      // height: 15
+
+                                       }}>
                                         <Text variant="labelMedium">{v}</Text>
                                       </View>
                                     )}
