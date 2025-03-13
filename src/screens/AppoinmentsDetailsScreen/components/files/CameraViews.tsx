@@ -86,7 +86,6 @@ export const CameraViews = ({ setImageFiles }: any) => {
     }
   };
 
-
   const PendingView = () => {
     return (
       <View
@@ -115,9 +114,20 @@ export const CameraViews = ({ setImageFiles }: any) => {
     setShowPermisionBtn(!granted);
   };
 
+  const zoomIn = ()=>{
+      if(zoomValue < 16){
+         setZoomValue(prev=>prev+1)
+      }
+  }
+  const zoomOut = ()=>{
+      if(zoomValue > 1){
+         setZoomValue(prev=>prev-1)
+      }
+  }
+
   useEffect(() => {
     checkPermision();
-    
+
     return () => {
       setZoomValue(0.1);
     };
@@ -128,14 +138,20 @@ export const CameraViews = ({ setImageFiles }: any) => {
   } else {
     return (
       <SafeAreaView
-        style={{
-          flex: 1,
-          width: Dimensions.get("screen").width,
-          height: Dimensions.get("screen").height,
-        }}
+        // style={{
+        //   flex: 1,
+        //   width: Dimensions.get("screen").width,
+        //   height: Dimensions.get("screen").height,
+        // }}
       >
         {photoUri ? (
-          <View style={{ flex: 1, width: Dimensions.get("screen").width * 1 }}>
+          <View
+            style={{
+              flex: 1,
+              width: Dimensions.get("screen").width,
+              height: Dimensions.get("screen").height,
+            }}
+          >
             <ImageViewer
               imageUrls={[
                 {
@@ -164,77 +180,83 @@ export const CameraViews = ({ setImageFiles }: any) => {
               </Button>
             </View>
           </View>
-        ) : 
-         (
+        ) : (
           <>
-    <Camera
-      ref={cameraRef}
-      photo={true}
-      style={{
-        flex: 1,
-        width: Dimensions.get("screen").width,
-        height: Dimensions.get("screen").height,
-        // position: "relative",
-      }}
-      device={device}
-      isActive={true}
-      minZoom={1}
-      zoom={zoomValue}
-      enableZoomGesture
-      resizeMode="cover"
-      enableHighQualityPhotos
-    />
-    <View
-      style={
-        Platform.OS === "ios"
-          ? {
-              position: "absolute",
-              bottom: 30,
-              left: "40%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }
-          : {
-              position: "absolute",
-              bottom: 50,
-              left: "40%",
-              // backgroundColor: colorList.primary,
-              width: 80,
-              height: 80,
-              borderRadius: 100,
-              justifyContent: "center",
-              alignItems: "center",
-            }
-      }
-    >
-      <Slider
-        value={zoomValue}
-        onValueChange={(value) => { setZoomValue(value);}}
-        style={{ width: 200, height: 40 }}
-        minimumValue={1}
-        maximumValue={16}
-        minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
-      />
-      <TouchableOpacity onPress={takePicture}>
-        <Icon source={"camera-iris"} color="white" size={80} />
-        {Platform.OS === "ios" ? (
-          <Surface
-            elevation={5}
-            style={{
-              backgroundColor: "red",
-              width: 80,
-              height: 80,
-              borderRadius: 100,
-            }}
-          />
-        ) : null}
-      </TouchableOpacity>
-    </View>
-  </>
-         )
-        }
+            <Camera
+              ref={cameraRef}
+              photo={true}
+              style={{
+                flex: 1,
+                width: Dimensions.get("screen").width,
+                height: Dimensions.get("screen").height,
+              }}
+              device={device}
+              isActive={true}
+              minZoom={1}
+              zoom={zoomValue}
+              enableZoomGesture
+              resizeMode="cover"
+              enableHighQualityPhotos
+            />
+            <View
+              style={
+                Platform.OS === "ios"
+                  ? {
+                      position: "absolute",
+                      bottom: 30,
+                      left: "40%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+                  : {
+                      position: "absolute",
+                      bottom: 50,
+                      left: "40%",
+                      width: 80,
+                      height: 80,
+                      borderRadius: 100,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }
+              }
+            >
+            <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+              <TouchableOpacity onPress={zoomOut}>
+                  <Icon source="minus" color="white" size={20}/>
+              </TouchableOpacity>
+            <Slider
+                value={zoomValue}
+                onValueChange={(value) => {
+                  setZoomValue(value);
+                }}
+                style={{ width: 150, height: 40 }}
+                minimumValue={1}
+                maximumValue={16}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+              />
+               <TouchableOpacity onPress={zoomIn}>
+                  <Icon source="plus" color="white" size={20}/>
+              </TouchableOpacity>
+            </View>
+              <TouchableOpacity onPress={takePicture}>
+                <Icon source={"camera-iris"} color="white" size={80} />
+                {Platform.OS === "ios" ? (
+                  <Surface
+                    elevation={5}
+                    style={{
+                      backgroundColor: "red",
+                      width: 80,
+                      height: 80,
+                      borderRadius: 100,
+                    }}
+                  />
+                ) : null}
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </SafeAreaView>
     );
   }
