@@ -22,7 +22,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
   const [imageFileName, setImageFileName] = useState("");
   const [showPermisionBtn, setShowPermisionBtn] = useState(true);
   const [imgExtention, setImgExtention] = useState<string>("");
-  const [zoomValue, setZoomValue] = useState<number>(1);
+  const [zoomValue, setZoomValue] = useState<number>(device?.neutralZoom || 1);
   async function requestCameraPermission() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -117,6 +117,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
 
   useEffect(() => {
     checkPermision();
+    
     return () => {
       setZoomValue(0.1);
     };
