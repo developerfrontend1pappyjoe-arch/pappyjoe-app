@@ -13,7 +13,7 @@
     "start": "react-native start",
     "test": "jest",
     "ios-build-pre": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
-    "release-linus": "cd android && ./gradlew clean && cd.. && npx react-native build-android --mode=release",
+    "release-linux": "cd android && ./gradlew clean && cd.. && npx react-native build-android --mode=release",
     "release-windows": "cd android && ./gradlew clean && cd.. && npx react-native build-android --mode=release",
     "restart": "yarn start --reset-cache",
     "lint:check": "eslint ./src",
