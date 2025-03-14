@@ -57,7 +57,7 @@ Now that you have successfully run the app, let's modify it.
 ## To View or edit keystore password 
  To view or edit the [keystore](/android/app/AndroidKey.jks) password for android build go to [gradle.properties](/android/gradle.properties)
 
- ## NPM Commands
+ ## NPM Commands .
 
 | Ation   | Linux | Windows | 
 | Clean   | npm run clean-linux | npm run clean-windows |
