@@ -59,7 +59,8 @@ Now that you have successfully run the app, let's modify it.
 
  ## NPM Commands .
 
-| Ation   | Linux | Windows | 
-| Clean   | npm run clean-linux | npm run clean-windows |
-| Build   | npm run build-linux | npm run build-windows |
-| Release | npm run release-linux | npm run release-windows |
+| # | Ation | Linux | Windows | 
+| ----- | ------------------------------ |---------------------------------------------- | ------------------------------------------- |
+| 1 | Clean | ```bash npm run clean-linux  ``` | ```bash npm run clean-windows ``` |
+| 2 | Build | ```bash npm run build-linux``` | ```bash npm run build-windows ``` |
+| 3 | Release | ```bash npm run release-linux ``` | ```bash npm run release-windows ``` |
