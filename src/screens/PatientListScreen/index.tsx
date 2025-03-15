@@ -18,6 +18,10 @@ import { PatientList } from "./components/PatientList";
 import { CustomContentLoader } from "components/CustomContentLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { NavigationProps } from "types/CommonTypes";
+import { useFocusEffect } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { StoreTypes } from "redux/reducer";
+import { controlRefetch } from "redux/actions";
 
 const SearchInput = ({ searchParams, onSearch, clearSearch }: any) => {
   return (
@@ -28,42 +32,70 @@ const SearchInput = ({ searchParams, onSearch, clearSearch }: any) => {
         value={searchParams}
         onChangeText={onSearch}
         placeholderTextColor={colorList.Grey4}
-        left={<TextInput.Icon icon={() => <Icons name="search" color={colorList.dark} size={25} />} />}
-        right={<TextInput.Icon onPress={clearSearch} icon={() => <Icons name="close" color={colorList.dark} size={25} />} />}
-        style={{ backgroundColor: colorList.white, color: colorList.Grey1, flex: 1 }}
+        left={
+          <TextInput.Icon
+            icon={() => (
+              <Icons name="search" color={colorList.dark} size={25} />
+            )}
+          />
+        }
+        right={
+          <TextInput.Icon
+            onPress={clearSearch}
+            icon={() => <Icons name="close" color={colorList.dark} size={25} />}
+          />
+        }
+        style={{
+          backgroundColor: colorList.white,
+          color: colorList.Grey1,
+          flex: 1,
+        }}
       />
     </View>
   );
 };
 
 const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
-  const [searchParams, setSearchParams] = useState({ search: "", start: 0, limit: 15 });
+  const [searchParams, setSearchParams] = useState({
+    search: "",
+    start: 0,
+    limit: 15,
+  });
   const [refreshing, setRefreshing] = useState(false);
   const [patientList, setPatientList] = useState([]);
   const isFetching = useRef(false); // Prevents duplicate API calls on `onEndReached`
-
-  const { mutate: getPatientListApi, isLoading } = useMutation(getPatientListService, {
-    onSuccess: (result) => {
-      isFetching.current = false;
-      if (result?.status >= 200 && result?.status < 300) {
-        setRefreshing(false)
-        if (_.isEqual([[]],result.data)) {
-          setPatientList([]);
-        } else {
-          if(!_.isEqual(result?.data|| [],patientList)){
-            setPatientList((prev) => (searchParams.start === 0 ? [...result.data] : [...prev, ...result.data]));
-            // setPatientList([]) 
+  const refetch = useSelector((state: StoreTypes) => state.refetchPatientLit);
+  const dispatch = useDispatch();
+  const { mutate: getPatientListApi, isLoading } = useMutation(
+    getPatientListService,
+    {
+      onSuccess: (result) => {
+        isFetching.current = false;
+        dispatch(controlRefetch(false));
+        if (result?.status >= 200 && result?.status < 300) {
+          setRefreshing(false);
+          if (_.isEqual([[]], result.data)) {
+            setPatientList([]);
+          } else {
+            if (!_.isEqual(result?.data || [], patientList)) {
+              setPatientList((prev) =>
+                searchParams.start === 0
+                  ? [...result.data]
+                  : [...prev, ...result.data]
+              );
+              // setPatientList([])
+            }
           }
+        } else {
+          setPatientList([]);
         }
-      } else {
-        setPatientList([]);
-      }
-    },
-    onError: (error) => {
-      console.error("Error fetching patient list:", error);
-      isFetching.current = false; // Reset fetch status on error
-    },
-  });
+      },
+      onError: (error) => {
+        console.error("Error fetching patient list:", error);
+        isFetching.current = false; // Reset fetch status on error
+      },
+    }
+  );
 
   const clearSearch = () => {
     const update = { ...searchParams, search: "", start: 0 };
@@ -71,41 +103,58 @@ const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
     getPatientListApi(update);
   };
 
-  const searchCall = (search:string)=>{
+  const searchCall = (search: string) => {
     getPatientListApi({ ...searchParams, start: 0, search });
-  }
-const debouncedSearch = useCallback(_.debounce(searchCall, 500), []);
+  };
+  const debouncedSearch = useCallback(_.debounce(searchCall, 500), []);
 
   const handleSearch = (search: string) => {
     const update = { ...searchParams, start: 0, search };
     setPatientList([]);
     setSearchParams(update);
-    debouncedSearch(search)
+    debouncedSearch(search);
   };
 
   const onEndReach = () => {
-    if (isFetching.current || patientList.length < searchParams.limit || isLoading) return;
-    isFetching.current = true; 
+    if (
+      isFetching.current ||
+      patientList.length < searchParams.limit ||
+      isLoading
+    )
+      return;
+    isFetching.current = true;
 
-    const update = { ...searchParams, start: searchParams.start + searchParams.limit };
+    const update = {
+      ...searchParams,
+      start: searchParams.start + searchParams.limit,
+    };
     setSearchParams(update);
     getPatientListApi(update);
   };
 
-  const onRefresh = ()=>{
-     setRefreshing(true)
-     clearSearch()
-  }
+  const onRefresh = () => {
+    setRefreshing(true);
+    clearSearch();
+  };
 
+  useEffect(()=>{
+    getPatientListApi(searchParams);
+  },[])
 
   useEffect(() => {
-    getPatientListApi(searchParams);
-  }, []);
+    if (refetch) {
+      getPatientListApi(searchParams);
+    }
+  }, [refetch]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
       <View style={{ flex: 1, paddingHorizontal: 10, paddingTop: 10 }}>
-        <SearchInput onSearch={handleSearch} searchParams={searchParams.search} clearSearch={clearSearch} />
+        <SearchInput
+          onSearch={handleSearch}
+          searchParams={searchParams.search}
+          clearSearch={clearSearch}
+        />
         <View style={{ flex: 1, paddingVertical: 5 }}>
           {isLoading && searchParams.start === 0 ? (
             <CustomContentLoader listSize={10} />
@@ -125,13 +174,20 @@ const debouncedSearch = useCallback(_.debounce(searchCall, 500), []);
                   }
                 />
               )}
-              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
               onEndReached={onEndReach}
               onEndReachedThreshold={0.5}
-              ListFooterComponent={() => isLoading ? <CustomContentLoader listSize={10} /> : null}
+              ListFooterComponent={() =>
+                isLoading ? <CustomContentLoader listSize={10} /> : null
+              }
             />
           ) : (
-            !isLoading && patientList.length === 0 && <NoDataAvailable refresh={clearSearch} />
+            !isLoading &&
+            patientList.length === 0 && (
+              <NoDataAvailable refresh={clearSearch} />
+            )
           )}
         </View>
       </View>

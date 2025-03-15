@@ -125,7 +125,8 @@ export const PatientList = memo(({ data, navigate }: PatientListProps) => {
             />
           ) : (
             <Avatar.Text
-              style={{ marginLeft: 3 }}
+              color={colorList.white}
+              style={{ marginLeft: 3,backgroundColor: colorList.palette.primary.main }}
               size={40}
               label={data.Name[0]}
             />

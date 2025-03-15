@@ -17,7 +17,10 @@ import { API_URL } from "../../utils/constants";
 import { axiosInstance as axios } from "../../config/axios.config.custom";
 import { CustomImageViewer } from "../AppoinmentsDetailsScreen/components/files/ImageViewer";
 import { launchImageLibrary } from "react-native-image-picker";
-import ImageResizer from 'react-native-image-resizer';
+import ImageResizer from "react-native-image-resizer";
+import { useDispatch } from "react-redux";
+import { assignPatientDetails, controlRefetch } from "redux/actions";
+
 export const ProfileProfile = ({ navigation, route }: any) => {
   const { patientDetails } = route.params;
   const [isLoading, setLoading] = useState(false);
@@ -25,33 +28,28 @@ export const ProfileProfile = ({ navigation, route }: any) => {
   const [imageFile, setImageFile] = useState<any>(null);
   const [imageViews, setImageViews] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
-  const [imagePreview,setImagePreview] = useState<any>(null)
-  const [downloadProgress,setDownloadProgress] = useState("")
-  useEffect(() => {
-    if(patientDetails.Photo){
-      getFileDetails();
-    }
-    // console.log(patientDetails);
-  }, [patientDetails]);
+  const [imagePreview, setImagePreview] = useState<any>(null);
+  const [downloadProgress, setDownloadProgress] = useState("");
+const dispatch = useDispatch()
 
   const handleConfirmImage = async (file) => {
     const resizedImage = await ImageResizer.createResizedImage(
       file.uri,
       800, // maxWidth
       600, // maxHeight
-      'JPEG', // format
-      80, // quality (1-100, 100 being the highest quality)
+      "JPEG", // format
+      80 // quality (1-100, 100 being the highest quality)
     );
     setImageFile({
-      name:resizedImage.name,
-      type:file.type,
-      uri:resizedImage.uri
+      name: resizedImage.name,
+      type: file.type,
+      uri: resizedImage.uri,
     });
     setImagePreview({
-      name:resizedImage.name,
-      type:file.type,
-      uri:resizedImage.uri
-    })
+      name: resizedImage.name,
+      type: file.type,
+      uri: resizedImage.uri,
+    });
     setShowCamera(false);
   };
 
@@ -63,8 +61,8 @@ export const ProfileProfile = ({ navigation, route }: any) => {
         el.name = el.fileName;
         el.size = el.fileSize;
       });
-      setImageFile(temp[0])
-      setImagePreview(temp[0])
+      setImageFile(temp[0]);
+      setImagePreview(temp[0]);
     } catch (err) {
       console.error("Errrr ===> ", err);
     }
@@ -87,6 +85,11 @@ export const ProfileProfile = ({ navigation, route }: any) => {
       );
       if (data.status == 200) {
         setLoading(false);
+        dispatch(assignPatientDetails({
+          ...patientDetails,
+          Photo:imageFile.uri
+        }))
+        dispatch(controlRefetch(true))
         Alert.alert("Success", data?.message, [
           {
             text: "OK",
@@ -113,7 +116,7 @@ export const ProfileProfile = ({ navigation, route }: any) => {
       const downloadDest = `${RNFS.DocumentDirectoryPath}/${sanitizedFileName}`;
       const fileExists = await RNFS.exists(downloadDest);
       if (fileExists) {
-        return downloadDest; 
+        return downloadDest;
       }
       setImageLoading(true);
       const options = {
@@ -123,7 +126,7 @@ export const ProfileProfile = ({ navigation, route }: any) => {
         discretionary: true,
         progress: (res) => {
           const progress = (res.bytesWritten / res.contentLength) * 100;
-          setDownloadProgress(`Loading: ${progress.toFixed(2)}% ...`)
+          setDownloadProgress(`Loading: ${progress.toFixed(2)}% ...`);
           // console.log(`Progress: ${progress.toFixed(2)}%`);
         },
       };
@@ -160,129 +163,139 @@ export const ProfileProfile = ({ navigation, route }: any) => {
       type: `image/${patientDetails.Photo?.split("/").pop().split(".").pop()}`,
       uri: `file://${result}`,
     };
-    setImagePreview(obj)
+    setImagePreview(obj);
   };
 
   const displayImageUrl = useMemo(() => {
-    let urlContent = null
+    let urlContent = null;
     if (imageFile?.uri) {
       urlContent = imageFile.uri;
     }
     if (patientDetails?.Photo) {
       urlContent = patientDetails.Photo;
     }
-    if(imagePreview?.uri){
-      urlContent = imagePreview?.uri
+    if (imagePreview?.uri) {
+      urlContent = imagePreview?.uri;
     }
     // console.log(urlContent);
-   return urlContent 
+    return urlContent;
   }, [patientDetails, imageFile, imagePreview]);
 
-  if (showCamera) return <CameraViews setImageFiles={handleConfirmImage} />;
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
-      <CustomHeader
-        headerText="Patient Profile"
-        leftIcon={ArrowLeftIcon}
-        leftIconAction={() => navigation.goBack()}
-      />
-      <View
+  useEffect(() => {
+    if (patientDetails.Photo) {
+      getFileDetails();
+    }
+    // console.log(patientDetails);
+  }, [patientDetails]);
+
+  if (showCamera) {
+    return <CameraViews setImageFiles={handleConfirmImage} />;
+  } else {
+    return (
+      <SafeAreaView
         style={{
           flex: 1,
-          padding: 20,
         }}
       >
-        {isLoading ? (
-          <CustomLoaderRound />
-        ) : (
-          <>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                mode="contained"
-                onPress={() => setShowCamera(true)}
-                buttonColor={colorList.socondary}
-                style={{
-                  marginVertical: 10,
-                }}
-              >
-                Take Photo
-              </Button>
-              <Button
-                mode="contained"
-                onPress={galleryPicker}
-                buttonColor={colorList.socondary}
-                style={{
-                  marginVertical: 10,
-                }}
-              >
-                Gallery
-              </Button>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 20,
-                aspectRatio: 0.7,
-              }}
-            >
-              {displayImageUrl != null ? (
-                imageLoading && !imageFile?.uri ? (
-                  <View>
-                    <Text>{downloadProgress}</Text>
-                  </View>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setImageViews(true);
-                    }}
-                  >
-                    <Image
-                      source={{ uri: displayImageUrl }}
-                      style={{
-                        width: 300,
-                        height: 400,
-                        resizeMode: "contain",
-                        borderRadius: 10,
-                      }}
-                    />
-                  </TouchableOpacity>
-                )
-              ) : (
-                <Text>No File Uploaded...!</Text>
-              )}
-            </View>
-            <View style={{ flex: 0.2 }}>
-              <Button
-                mode="elevated"
-                onPress={handleSubmitApi}
-                buttonColor={colorList.primary}
-                textColor={colorList.white}
-              >
-                Submit
-              </Button>
-            </View>
-          </>
-        )}
-      </View>
-      {imageViews && imagePreview && (
-        <CustomImageViewer
-          visible={imageViews}
-          close={() => setImageViews(false)}
-          img={[imagePreview]}
+        <CustomHeader
+          headerText="Patient Profile"
+          leftIcon={ArrowLeftIcon}
+          leftIconAction={() => navigation.goBack()}
         />
-      )}
-    </SafeAreaView>
-  );
+        <View
+          style={{
+            flex: 1,
+            padding: 20,
+          }}
+        >
+          {isLoading ? (
+            <CustomLoaderRound />
+          ) : (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+              >
+                <Button
+                  mode="contained"
+                  onPress={() => setShowCamera(true)}
+                  buttonColor={colorList.socondary}
+                  style={{
+                    marginVertical: 10,
+                  }}
+                >
+                  Take Photo
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={galleryPicker}
+                  buttonColor={colorList.socondary}
+                  style={{
+                    marginVertical: 10,
+                  }}
+                >
+                  Gallery
+                </Button>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 20,
+                  aspectRatio: 0.7,
+                }}
+              >
+                {displayImageUrl != null ? (
+                  imageLoading && !imageFile?.uri ? (
+                    <View>
+                      <Text>{downloadProgress}</Text>
+                    </View>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setImageViews(true);
+                      }}
+                    >
+                      <Image
+                        source={{ uri: displayImageUrl }}
+                        style={{
+                          width: 300,
+                          height: 400,
+                          resizeMode: "contain",
+                          borderRadius: 10,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )
+                ) : (
+                  <Text>No File Uploaded...!</Text>
+                )}
+              </View>
+              <View style={{ flex: 0.2 }}>
+                <Button
+                  mode="elevated"
+                  onPress={handleSubmitApi}
+                  buttonColor={colorList.primary}
+                  textColor={colorList.white}
+                >
+                  Submit
+                </Button>
+              </View>
+            </>
+          )}
+        </View>
+        {imageViews && imagePreview && (
+          <CustomImageViewer
+            visible={imageViews}
+            close={() => setImageViews(false)}
+            img={[imagePreview]}
+          />
+        )}
+      </SafeAreaView>
+    );
+  }
 };

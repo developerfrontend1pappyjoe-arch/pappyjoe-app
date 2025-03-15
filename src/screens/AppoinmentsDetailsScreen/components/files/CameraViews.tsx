@@ -113,7 +113,6 @@ export const CameraViews = ({ setImageFiles }: any) => {
     }
     setShowPermisionBtn(!granted);
   };
-
   const zoomIn = ()=>{
       if(zoomValue < 16){
          setZoomValue(prev=>prev+1)
@@ -127,7 +126,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
 
   useEffect(() => {
     checkPermision();
-
+    // console.log("inside the camera view")
     return () => {
       setZoomValue(0.1);
     };
@@ -138,11 +137,11 @@ export const CameraViews = ({ setImageFiles }: any) => {
   } else {
     return (
       <SafeAreaView
-        // style={{
-        //   flex: 1,
-        //   width: Dimensions.get("screen").width,
-        //   height: Dimensions.get("screen").height,
-        // }}
+        style={{
+          flex: 1,
+          width: Dimensions.get("screen").width,
+          height: Dimensions.get("screen").height,
+        }}
       >
         {photoUri ? (
           <View

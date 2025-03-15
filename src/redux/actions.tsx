@@ -12,6 +12,7 @@ import {
   BILLING_MODAL,
   SET_INVOICENO,
   SET_BILLING_DATE,
+  REFETCH_PATIENT_LIST,
 } from "./types";
 
 export const handleHomeAppoinmentFilter = (payload: any) => {
@@ -91,3 +92,10 @@ export const setBillingDate = (payload: string) => {
     payload,
   };
 };
+
+export const controlRefetch = (payload:boolean)=>{
+  return {
+    type: REFETCH_PATIENT_LIST,
+    payload,
+  };
+}

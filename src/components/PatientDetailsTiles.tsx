@@ -18,6 +18,7 @@ import { colorList } from "styles/global.styles";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NavigationList } from "routes/NavigationList";
 import { useSelector } from "react-redux";
+import { Avatar } from "react-native-paper";
 
 interface PatientDetailsTileProps {
   isLoading?: boolean;
@@ -53,6 +54,19 @@ export const PatientDetailsTiles = memo(
         `whatsapp://send?text=Hai&phone=${checkCountryCode(patientDetails?.country_code)}${patientDetails?.mobile}`
       );
 
+      const getFirstLetter = (name:string)=>{
+          if(name){
+              try{
+                 const firstLetter = name[0]
+                 return firstLetter
+              }catch(error){
+                 return ""
+              }
+          }
+
+          return ""
+      }
+
     if (isLoading) return <View style={{padding:4}}><CustomContentLoader tWidth={"50%"} pHeight={15} /></View>;
     else
       return (
@@ -68,7 +82,7 @@ export const PatientDetailsTiles = memo(
                   backgroundColor: colorList.socondary,
                   padding: 4,
                   borderRadius: 5,
-                  marginRight:5
+                  marginRight: 5,
                 }}
               >
                 <IonIcon name="receipt" color={colorList.white} size={20} />
@@ -78,7 +92,10 @@ export const PatientDetailsTiles = memo(
               <TouchableOpacity
                 style={{ marginRight: 8 }}
                 onPress={() => {
-                  // console.log("clicked----------------------------------------");
+                  // console.log(
+                  //   "clicked----------------------------------------",
+                  //   patientDetails?.Photo
+                  // );
 
                   patientDetails?.Photo !== ""
                     ? (setImageViewData([{ uri: patientDetails?.Photo }]),
@@ -86,14 +103,27 @@ export const PatientDetailsTiles = memo(
                     : Alert.alert("No Image Found");
                 }}
               >
-                <Image
+                {Boolean(patientDetails?.Photo) ? (
+                  <Avatar.Image
+                    size={55}
+                    source={{ uri: patientDetails?.Photo }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    color={colorList.white}
+                    style={{ backgroundColor: colorList.palette.primary.main }}
+                    size={55}
+                    label={getFirstLetter(patientDetails?.Name || "")}
+                  />
+                )}
+                {/* <Image
                   source={
                     patientDetails?.Photo
                       ? { uri: patientDetails?.Photo }
                       : ProfileAvatar
                   }
                   style={styles.profileImage}
-                />
+                /> */}
               </TouchableOpacity>
               <View>
                 <View style={styles.profileNameFilnoWrapper}>

@@ -13,6 +13,7 @@ import {
   BILLING_MODAL,
   SET_INVOICENO,
   SET_BILLING_DATE,
+  REFETCH_PATIENT_LIST,
 } from "./types";
 import moment from "moment";
 import { PatientDataProps } from "types/PatientDetailsTypes";
@@ -31,6 +32,7 @@ export interface StoreTypes {
     billingModalOpen:boolean,
     invoiceNo:string | null,
   };
+  refetchPatientLit:boolean
 }
 
 const initialState: StoreTypes = {
@@ -52,6 +54,7 @@ const initialState: StoreTypes = {
     invoiceNo:null,
     editDate:moment().format("YYYY-MM-DD")
   },
+  refetchPatientLit:true
 };
 
 const commonReducer = (state = initialState, action: any) => {
@@ -129,6 +132,11 @@ const commonReducer = (state = initialState, action: any) => {
           ...state.billing,
           editDate: action.payload,
         },
+      };
+    case REFETCH_PATIENT_LIST:
+      return {
+        ...state,
+        refetchPatientLit : action.payload
       };
     default:
       return state;
