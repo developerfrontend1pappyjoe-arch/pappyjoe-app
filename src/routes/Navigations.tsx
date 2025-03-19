@@ -27,7 +27,7 @@ import { PatientDetails } from "../screens/PatientDetails";
 import { SplashScreen } from "../screens/SplashScreen";
 import { AddPatients } from "../screens/AddPatientScreen";
 import { AddNewAppoinments } from "../screens/AddAppoinments";
-import { ProfileProfile } from "../screens/PatientProfileEdit";
+import { PatientProfilePhoto } from "../screens/PatientProfileEdit";
 import UpdateScreen from "components/UpdateScreen";
 import SpInAppUpdates, {
   AndroidInAppUpdateExtras,
@@ -231,8 +231,13 @@ export const NavigationContainers = () => {
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
-          name={NavigationList.patientProfile}
-          component={ProfileProfile}
+          name={NavigationList.patientProfilePhoto}
+          component={PatientProfilePhoto}
+          options={{ headerShown: false, animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name={NavigationList.patientEdit}
+          component={AddPatients}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen

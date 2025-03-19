@@ -29,6 +29,8 @@ import { NavigationList } from "../routes/NavigationList";
 import MetrialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useModal } from "hooks";
+import { assignPatientDetails } from "redux/actions";
+import { useDispatch } from "react-redux";
 const btnIconSize = 23;
 const AddAllModal = ({ closeModal, navigate }: any) => {
   return (
@@ -93,7 +95,11 @@ export const CustomTabBar = ({ navigation }: any) => {
   };
   const { CustomModal } = useModal();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const openModal = () => setIsModalVisible(true);
+  const dispatch = useDispatch()
+  const openModal = () => {
+    dispatch(assignPatientDetails(null))
+    setIsModalVisible(true)
+  };
   const closeModal = () => setIsModalVisible(false);
 
   return (

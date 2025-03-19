@@ -21,7 +21,7 @@ import ImageResizer from "react-native-image-resizer";
 import { useDispatch } from "react-redux";
 import { assignPatientDetails, controlRefetch } from "redux/actions";
 
-export const ProfileProfile = ({ navigation, route }: any) => {
+export const PatientProfilePhoto = ({ navigation, route }: any) => {
   const { patientDetails } = route.params;
   const [isLoading, setLoading] = useState(false);
   const [showCamera, setShowCamera] = useState<boolean>(false);
@@ -87,7 +87,7 @@ const dispatch = useDispatch()
         setLoading(false);
         dispatch(assignPatientDetails({
           ...patientDetails,
-          Photo:imageFile.uri
+          Photo:imageFile?.uri || ""
         }))
         dispatch(controlRefetch(true))
         Alert.alert("Success", data?.message, [
@@ -149,8 +149,8 @@ const dispatch = useDispatch()
 
   const getFileDetails = async () => {
     const result = await downloadFiles(
-      patientDetails.Photo,
-      patientDetails.Photo?.split("/").pop()
+      patientDetails?.Photo,
+      patientDetails?.Photo?.split("/").pop()
     );
     const fileInfo = await RNFS.stat(result);
     if (fileInfo) {
@@ -158,9 +158,9 @@ const dispatch = useDispatch()
     }
     const { size } = fileInfo;
     const obj = {
-      name: patientDetails.Photo?.split("/").pop(),
+      name: patientDetails?.Photo?.split("/").pop(),
       size: size,
-      type: `image/${patientDetails.Photo?.split("/").pop().split(".").pop()}`,
+      type: `image/${patientDetails?.Photo?.split("/").pop().split(".").pop()}`,
       uri: `file://${result}`,
     };
     setImagePreview(obj);
@@ -172,7 +172,7 @@ const dispatch = useDispatch()
       urlContent = imageFile.uri;
     }
     if (patientDetails?.Photo) {
-      urlContent = patientDetails.Photo;
+      urlContent = patientDetails?.Photo;
     }
     if (imagePreview?.uri) {
       urlContent = imagePreview?.uri;
@@ -182,7 +182,7 @@ const dispatch = useDispatch()
   }, [patientDetails, imageFile, imagePreview]);
 
   useEffect(() => {
-    if (patientDetails.Photo) {
+    if (patientDetails?.Photo) {
       getFileDetails();
     }
     // console.log(patientDetails);

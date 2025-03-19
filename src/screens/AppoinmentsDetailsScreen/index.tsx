@@ -114,7 +114,7 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
                 ? navigation.navigate(NavigationList.bookingAppoinment, {
                     data: { data: appointmentDetails, mode: "edit" },
                   })
-                : navigation.navigate(NavigationList.patientProfile, {
+                : navigation.navigate(NavigationList.patientEdit, {
                     patientDetails,
                     mode: "edit",
                   })

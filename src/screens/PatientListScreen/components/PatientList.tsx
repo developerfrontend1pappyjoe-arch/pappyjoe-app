@@ -24,6 +24,10 @@ export const PatientList = memo(({ data, navigate }: PatientListProps) => {
     );
   };
 
+  const handleEditPatient = ()=>{
+    console.log("----on long press----")
+  }
+
   return (
     // <Surface style={styles.listContainer} >
 
@@ -70,7 +74,7 @@ export const PatientList = memo(({ data, navigate }: PatientListProps) => {
     //     )}
     //   </View>
     // </Surface>
-    <TouchableOpacity onPress={navigate}>
+    <TouchableOpacity onLongPress={handleEditPatient} onPress={navigate}>
       <List.Item
         title={
              <Text

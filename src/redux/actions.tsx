@@ -14,6 +14,7 @@ import {
   SET_BILLING_DATE,
   REFETCH_PATIENT_LIST,
 } from "./types";
+import { PatientDataProps } from "types/PatientDetailsTypes";
 
 export const handleHomeAppoinmentFilter = (payload: any) => {
   return {
@@ -51,7 +52,7 @@ export const setPatientId = (payload: string | null) => {
   };
 };
 
-export const assignPatientDetails = (payload: any) => {
+export const assignPatientDetails = (payload:  PatientDataProps | null) => {
   return {
     type: PATIENT_DETAILS,
     payload,

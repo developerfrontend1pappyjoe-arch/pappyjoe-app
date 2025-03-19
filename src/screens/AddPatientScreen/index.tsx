@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Alert,
@@ -21,6 +21,11 @@ import { ArrowLeftIcon } from "../../assets";
 import { CustomLoaderRound } from "../../components/CustomLoaderRound";
 import { axiosInstance } from "../../config/axios.config.custom";
 import { CameraViews } from "../AppoinmentsDetailsScreen/components/files/CameraViews";
+import { useDispatch, useSelector } from "react-redux";
+import { StoreTypes } from "redux/reducer";
+import { NavigationList } from "routes/NavigationList";
+import { assignPatientDetails, controlRefetch } from "redux/actions";
+import { PatientDataProps } from "types/PatientDetailsTypes";
 type ErrorMessageObjectType = {
   name: string;
   // owner: '',
@@ -34,7 +39,8 @@ type ErrorMessageObjectType = {
   // patientId: '',
   address: string;
 };
-export const AddPatients = ({ navigation }: any) => {
+export const AddPatients = ({ navigation,route }: any) => {
+
   const axios = axiosInstance;
   const genderOptions = [
     { id: 1, name: "Male" },
@@ -71,6 +77,10 @@ export const AddPatients = ({ navigation }: any) => {
     address: "",
   });
 
+  const patientDetails = useSelector(
+    (state: StoreTypes) => state.patientDetails
+  );
+const dispatch = useDispatch()
   const [dateTimeModal, setDateTimeModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -100,7 +110,7 @@ export const AddPatients = ({ navigation }: any) => {
         ...(errorMessages as ErrorMessageObjectType),
         [field]: "",
       });
-      return;
+      return "";
     }
     if (field === "dob") {
       const birthDate = moment(value);
@@ -157,21 +167,50 @@ export const AddPatients = ({ navigation }: any) => {
 
     Object.entries(formData).map(([key, val]: any[]) => {
       if (key == "gender") {
-        const gender = val ? val?.name : val;
+        let gender = val ? val?.name : val;
+        gender == "0" && (gender = "");
         formDetails.append(`${key}`, `${gender}`);
       } else formDetails.append(`${key}`, `${val}`);
     });
     // console.log(formDetails);
+    // console.log("patientDetails ------------>",patientDetails);
     try {
-      const res = await axios.post(API_URL.addPatient, formDetails, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      let res = null;
 
-      if (res && res.status === 200) {
+      if (Boolean(patientDetails?.id)) {
+        formDetails.append("patient_id", patientDetails?.id);
+        res = await axios.put(API_URL.addPatient, formDetails, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      } else {
+        res = await axios.post(API_URL.addPatient, formDetails, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      if (res && res?.status === 200) {
         setLoading(false);
         // console.log('Resss', res.data);
+        dispatch(controlRefetch(true))
+        if(Boolean(patientDetails?.id)){
+          const updateData = {
+            ...patientDetails,
+            address:formData?.address as string,
+            age:formData?.age  as string,
+            mobile:formData?.mobile  as string,
+            gender:formData?.gender?.name || ""  as string,
+            country_code:formData?.country_code  as string,
+            Name:formData.name  as string,
+            File_No:formData?.fileno  as string,
+            Dob:formData?.dob  as string,
+            email:formData?.email  as string,
+         }
+          dispatch(assignPatientDetails(updateData as PatientDataProps))
+        }
         Alert.alert("Success", res?.data?.message || "Added Successfully", [
           { text: "OK", onPress: () => navigation.goBack() },
         ]);
@@ -186,6 +225,25 @@ export const AddPatients = ({ navigation }: any) => {
     }
   };
 
+  useEffect(() => {
+    if (Boolean(patientDetails)) {
+      setFormData({
+        address: patientDetails?.address as string,
+        age: patientDetails?.age as string,
+        country_code: patientDetails?.country_code as string,
+        email: patientDetails?.email as string,
+        fileno: patientDetails?.File_No as string,
+        gender: { name: patientDetails?.gender },
+        mobile: patientDetails?.mobile as string,
+        name: patientDetails?.Name as string,
+        dob:
+          patientDetails?.Dob == "0000-00-00"
+            ? ""
+            : (patientDetails?.Dob as string),
+      });
+    }
+  }, [patientDetails]);
+
   const renderField = (
     label: string,
     field: keyof typeof formData,
@@ -194,6 +252,7 @@ export const AddPatients = ({ navigation }: any) => {
     <View style={styles.fieldContainer}>
       <TextInput
         mode="outlined"
+        editable={!Boolean(field == "email" && patientDetails?.id)}
         label={label}
         style={styles.input}
         onChangeText={(text) => handleChange(field, text)}
@@ -207,16 +266,25 @@ export const AddPatients = ({ navigation }: any) => {
     </View>
   );
 
+  const handleEditPhoto = () => {
+    navigation.navigate(NavigationList.patientProfilePhoto, {
+      patientDetails
+    });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: colorList.white }}>
         <CustomHeader
-          headerText="Add New Patient"
+          headerText={Boolean(route?.params?.mode && route?.params?.mode == "edit") ? "Edit Patient" : "Add New Patient"}
           leftIcon={ArrowLeftIcon}
           leftIconAction={() => navigation.goBack()}
         />
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
+            {Boolean(patientDetails?.id) && <View style={{paddingBottom:6,display:"flex",justifyContent:"flex-end",alignItems:"flex-end"}}>
+              <Button onPress={handleEditPhoto}>Edit photo</Button>
+            </View>}
             {renderField("Name", "name")}
             {renderField("Email", "email", "email-address")}
 
@@ -272,9 +340,9 @@ export const AddPatients = ({ navigation }: any) => {
                 <TextInput
                   mode="outlined"
                   value={
-                    formData?.dob != ""
+                    Boolean(formData?.dob)
                       ? moment(formData?.dob).format("DD-MM-YYYY")
-                      : formData?.dob.toString()
+                      : ""
                   }
                   onPressIn={() => setDateTimeModal(true)}
                   placeholder="DD-MM-YYYY"
@@ -329,7 +397,9 @@ export const AddPatients = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom:20,
+    paddingTop:5,
     flex: 1,
   },
   label: {
