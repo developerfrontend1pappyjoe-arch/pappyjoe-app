@@ -28,7 +28,7 @@ import ShareComponent from "../../component/ShareComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { editInvoiceList, openBillingModal, setBillingDate, setInvoiceNo } from "redux/actions";
 import { useQueryClient } from "@tanstack/react-query";
-import { moderateScale } from "react-native-size-matters";
+// import { moderateScale } from "react-native-size-matters";
 const btnSize = 22;
 function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
   const patientDetails = useSelector((state: any) => state.patientDetails);
@@ -218,7 +218,7 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
                               invoice.status as keyof typeof statusColor
                             ].main,
                         }}
-                      >{`Total: ${invoice.invoicetotal}`}</Text>
+                      >{`Total: ${invoice?.invoicetotal}`}</Text>
                       <Text
                         style={{
                           fontSize: 9,
@@ -228,7 +228,7 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
                               invoice.status as keyof typeof statusColor
                             ].main,
                         }}
-                      >{`Balance: ${invoice.invoicetotal}`}</Text>
+                      >{`Balance: ${invoice?.invoicebalance}`}</Text>
                     </View>
                   ) : (
                     <Text
@@ -242,8 +242,8 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
                       }}
                     >
                       {invoice.status == "paid"
-                        ? `Total: ${invoice.invoicetotal}`
-                        : `Balance: ${invoice.invoicetotal}`}
+                        ? `Total: ${invoice?.invoicetotal}`
+                        : `Balance: ${invoice?.invoicebalance}`}
                     </Text>
                   )}
                 </View>

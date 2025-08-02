@@ -169,3 +169,4 @@ yarn-error.log
 
 # testing
 /coverage
+android/app/release
