@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Camera, useCameraDevice } from "react-native-vision-camera";
+import { Camera, CameraDevice, useCameraDevice, useCameraFormat } from "react-native-vision-camera";
 import {
   Dimensions,
   PermissionsAndroid,
@@ -12,17 +12,28 @@ import {
 import ImageViewer from "react-native-image-zoom-viewer";
 import { Button, Icon, Surface, Text, TextInput } from "react-native-paper";
 import RNFS from "react-native-fs";
-import { colorList } from "../../../../styles/global.styles";
+// import { colorList } from "../../../../styles/global.styles";
 import Slider from "@react-native-community/slider";
+import { SCREEN_HEIGHT,SCREEN_WIDTH } from "../../../../constants";
 
 export const CameraViews = ({ setImageFiles }: any) => {
   const device = useCameraDevice("back");
-  const cameraRef = useRef(null);
-  const [photoUri, setPhotoUri] = useState(null);
+  const cameraRef = useRef<Camera>(null);
+  const [photoUri, setPhotoUri] = useState<any>(null);
   const [imageFileName, setImageFileName] = useState("");
   const [showPermisionBtn, setShowPermisionBtn] = useState(true);
   const [imgExtention, setImgExtention] = useState<string>("");
   const [zoomValue, setZoomValue] = useState<number>(device?.neutralZoom || 1);
+    const [targetFps, setTargetFps] = useState(60);
+ const screenAspectRatio = SCREEN_HEIGHT / SCREEN_WIDTH;
+  const format = useCameraFormat(device, [
+    { fps: targetFps },
+    // { videoAspectRatio: screenAspectRatio },
+    { videoResolution: "max" },
+    { photoAspectRatio: screenAspectRatio },
+    { photoResolution: "max" },
+  ]);
+  // const fps = Math.min(format?.maxFps ?? 1, targetFps);
   async function requestCameraPermission() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -45,14 +56,15 @@ export const CameraViews = ({ setImageFiles }: any) => {
   }
 
   const takePicture = async () => {
-    if (cameraRef !== null) {
+    if (cameraRef.current !== null) {
       const photo = await cameraRef.current.takePhoto();
       handleFileDetails(photo?.path);
     }
   };
 
   const handleConfirm = async () => {
-    const photos = { ...photoUri };
+     if(photoUri){
+         const photos = { ...photoUri };
     const fileExtension = photoUri?.name.split(".")?.pop();
     const fileName = `${imageFileName}.${fileExtension}`;
     if (imageFileName !== "") {
@@ -62,6 +74,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
       photos.name = fileName;
       setImageFiles(photos);
     } else setImageFiles(photoUri);
+     }
   };
 
   const handleFileDetails = async (filePath: any) => {
@@ -189,13 +202,15 @@ export const CameraViews = ({ setImageFiles }: any) => {
                 width: Dimensions.get("screen").width,
                 height: Dimensions.get("screen").height,
               }}
-              device={device}
+              device={device as CameraDevice }
               isActive={true}
-              minZoom={1}
+              // minZoom={0}
               zoom={zoomValue}
               enableZoomGesture
               resizeMode="cover"
               enableHighQualityPhotos
+              format={format}
+              // fps={fps}
             />
             <View
               style={
@@ -250,7 +265,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
                       height: 80,
                       borderRadius: 100,
                     }}
-                  />
+                  ><></></Surface>
                 ) : null}
               </TouchableOpacity>
             </View>
