@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
-  SafeAreaView,
-  StatusBar,
   Platform,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
@@ -159,15 +157,10 @@ useEffect(() => {
 }, [params]);
 
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
       }}>
-      <StatusBar
-        backgroundColor={'#fff'}
-        barStyle={'dark-content'}
-        showHideTransition={'slide'}
-      />
       <View style={styles.container}>
         {isLoading ? (
           <CustomLoaderRound center />
@@ -337,7 +330,7 @@ useEffect(() => {
           </KeyboardAvoidingView>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

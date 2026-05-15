@@ -39,6 +39,12 @@ import { colorList } from "styles/global.styles";
 import BillingPatientList from "screens/Billing/component/BillingPatientList";
 import PatientListScreen from "../screens/PatientListScreen";
 import AddInvoice from "screens/Billing/Invoice/components/AddInvoice";
+import {
+  HEADER_SAFE_AREA_EDGES,
+  TAB_HOME_SCREEN_EDGES,
+  TAB_SCREEN_HEADER_EDGES,
+  withAppSafeArea,
+} from "../components/AppSafeArea";
 const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,14 +57,14 @@ const BottomHomeNavigation = () => {
     >
       <Tab.Screen
         name={NavigationList.home}
-        component={HomeScreen}
+        component={withAppSafeArea(HomeScreen, TAB_HOME_SCREEN_EDGES)}
         options={{
           headerShown: false,
         }}
       />
       <Tab.Screen
         name={NavigationList.patientList}
-        component={PatientListScreen}
+        component={withAppSafeArea(PatientListScreen, TAB_SCREEN_HEADER_EDGES)}
         options={{
           title: "Patient List",
           headerShown: true,
@@ -70,7 +76,7 @@ const BottomHomeNavigation = () => {
       />
       <Tab.Screen
         name={NavigationList.billingList}
-        component={BillingPatientList}
+        component={withAppSafeArea(BillingPatientList, TAB_SCREEN_HEADER_EDGES)}
         options={{
           title: "Billing Area",
           headerShown: true,
@@ -82,7 +88,7 @@ const BottomHomeNavigation = () => {
       />
       <Tab.Screen
         name={NavigationList.profile}
-        component={ProfileScreen}
+        component={withAppSafeArea(ProfileScreen, TAB_SCREEN_HEADER_EDGES)}
         options={{
           title: "My Profile",
           headerShown: true,
@@ -151,17 +157,17 @@ const AuthCheck = ({ navigation }: any) => {
     <Stack.Navigator initialRouteName={NavigationList.splash}>
       <Stack.Screen
         name={NavigationList.splash}
-        component={SplashScreen}
+        component={withAppSafeArea(SplashScreen)}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name={NavigationList.welcome}
-        component={WelcomeScreen}
+        component={withAppSafeArea(WelcomeScreen)}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name={NavigationList.login}
-        component={LoginScreen}
+        component={withAppSafeArea(LoginScreen)}
         options={{ headerShown: false, animation: "slide_from_right" }}
       />
       <Stack.Screen
@@ -184,32 +190,32 @@ export const NavigationContainers = () => {
         />
         <Stack.Screen
           name={NavigationList.register}
-          component={RegisterScreen}
+          component={withAppSafeArea(RegisterScreen)}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name={NavigationList.otpVerification}
-          component={OTPVerificationScreen}
+          component={withAppSafeArea(OTPVerificationScreen)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.otpSuccess}
-          component={OTPSuccesScreen}
+          component={withAppSafeArea(OTPSuccesScreen)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.forgotPassword}
-          component={ForgotPasswordScreen}
+          component={withAppSafeArea(ForgotPasswordScreen)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.forgotPasswordSuccess}
-          component={ForgotPasswordSuccesScreen}
+          component={withAppSafeArea(ForgotPasswordSuccesScreen)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.appoinmentDetails}
-          component={AppoinmentDetails}
+          component={withAppSafeArea(AppoinmentDetails)}
           options={{
             headerShown: false,
             animation: "slide_from_right",
@@ -217,32 +223,32 @@ export const NavigationContainers = () => {
         />
         <Stack.Screen
           name={NavigationList.addpatient}
-          component={AddPatients}
+          component={withAppSafeArea(AddPatients)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.patientDetails}
-          component={PatientDetails}
+          component={withAppSafeArea(PatientDetails)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.bookingAppoinment}
-          component={AddNewAppoinments}
+          component={withAppSafeArea(AddNewAppoinments)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.patientProfilePhoto}
-          component={PatientProfilePhoto}
+          component={withAppSafeArea(PatientProfilePhoto)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.patientEdit}
-          component={AddPatients}
+          component={withAppSafeArea(AddPatients)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
         <Stack.Screen
           name={NavigationList.billing}
-          component={Billing}
+          component={withAppSafeArea(Billing, HEADER_SAFE_AREA_EDGES)}
           options={{
             title: "Billing",
             headerShown: true,
@@ -255,7 +261,7 @@ export const NavigationContainers = () => {
         />
         <Stack.Screen
           name={NavigationList.addInvoice}
-          component={AddInvoice}
+          component={withAppSafeArea(AddInvoice, HEADER_SAFE_AREA_EDGES)}
           options={{
             title: "Add invoice",
             headerShown: true,
@@ -268,7 +274,7 @@ export const NavigationContainers = () => {
         />
         <Stack.Screen
           name={NavigationList.update}
-          component={UpdateScreen}
+          component={withAppSafeArea(UpdateScreen)}
           options={{ headerShown: false, animation: "slide_from_right" }}
         />
       </Stack.Navigator>

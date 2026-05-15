@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Image,
-  SafeAreaView,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -192,7 +191,7 @@ const dispatch = useDispatch()
     return <CameraViews setImageFiles={handleConfirmImage} />;
   } else {
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
         }}
@@ -295,7 +294,7 @@ const dispatch = useDispatch()
             img={[imagePreview]}
           />
         )}
-      </SafeAreaView>
+      </View>
     );
   }
 };

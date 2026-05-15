@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, memo } from "react";
-import { View, RefreshControl, BackHandler, SafeAreaView } from "react-native";
+import { View, RefreshControl, BackHandler } from "react-native";
 import moment from "moment";
 import { HomeHeader } from "./components/Header";
 import { FilterSection } from "./components/FilterSection";
@@ -145,7 +145,7 @@ export const HomeScreen = memo(({ navigation }: any) => {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <CustomModal
         title={<Text variant="bodyLarge">Fetch patient details</Text>}
         // open={true}
@@ -250,7 +250,7 @@ export const HomeScreen = memo(({ navigation }: any) => {
           )}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 });
 

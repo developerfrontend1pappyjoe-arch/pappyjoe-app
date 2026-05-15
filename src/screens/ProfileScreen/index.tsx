@@ -7,7 +7,6 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
 } from "react-native";
 // import {CustomHeader} from '../../components/CustomHeader';
 import { ArrowRightLgIcon, LogOutIcon } from "../../assets";
@@ -208,7 +207,7 @@ export const ProfileScreen = ({ navigation }: any) => {
   };
   const handleClose = () => setOpen(false);
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <CustomModal
         handleCloseModal={handleClose}
         open={open}
@@ -259,7 +258,7 @@ export const ProfileScreen = ({ navigation }: any) => {
           <ProfileFeatersList navigation={logoutNavigation} />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

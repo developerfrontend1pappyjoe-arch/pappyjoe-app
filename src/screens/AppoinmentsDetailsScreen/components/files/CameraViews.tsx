@@ -5,10 +5,10 @@ import {
   Dimensions,
   PermissionsAndroid,
   Platform,
-  SafeAreaView,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { Button, Icon, Surface, Text, TextInput } from "react-native-paper";
 import RNFS from "react-native-fs";
@@ -17,6 +17,7 @@ import Slider from "@react-native-community/slider";
 import { SCREEN_HEIGHT,SCREEN_WIDTH } from "../../../../constants";
 
 export const CameraViews = ({ setImageFiles }: any) => {
+  const insets = useSafeAreaInsets();
   const device = useCameraDevice("back");
   const cameraRef = useRef<Camera>(null);
   const [photoUri, setPhotoUri] = useState<any>(null);
@@ -149,7 +150,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
     return <PendingView />;
   } else {
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
           width: Dimensions.get("screen").width,
@@ -213,27 +214,14 @@ export const CameraViews = ({ setImageFiles }: any) => {
               // fps={fps}
             />
             <View
-              style={
-                Platform.OS === "ios"
-                  ? {
-                      position: "absolute",
-                      bottom: 30,
-                      left: "40%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-                  : {
-                      position: "absolute",
-                      bottom: 50,
-                      left: "40%",
-                      width: 80,
-                      height: 80,
-                      borderRadius: 100,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }
-              }
+              style={{
+                position: "absolute",
+                bottom: Math.max(insets.bottom, 16) + 16,
+                left: "40%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
             <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
               <TouchableOpacity onPress={zoomOut}>
@@ -271,7 +259,7 @@ export const CameraViews = ({ setImageFiles }: any) => {
             </View>
           </>
         )}
-      </SafeAreaView>
+      </View>
     );
   }
 };

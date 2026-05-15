@@ -3,7 +3,6 @@ import {
   Dimensions,
   FlatList,
   RefreshControl,
-  SafeAreaView,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -122,7 +121,7 @@ function BillingPatientList() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
+    <View style={{ flex: 1, backgroundColor: colorList.white }}>
       <View style={{ paddingHorizontal: 10, paddingTop: 10, paddingBottom: 0 }}>
         <View
           style={{
@@ -229,7 +228,7 @@ function BillingPatientList() {
           !isLoading && patientList.length === 0 && <NoDataAvailable refresh={clearSearch} />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

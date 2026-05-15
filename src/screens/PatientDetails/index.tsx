@@ -1,4 +1,4 @@
-import {View, Text, Image, SafeAreaView} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import {
   AgeIcon,
   ArrowLeftIcon,
@@ -27,7 +27,7 @@ export const PatientDetails = ({navigation, route: {params}}: any) => {
   });
 
   return (
-    <SafeAreaView>
+    <View style={{ flex: 1 }}>
       <CustomHeader
         headerText={'Patient Details'}
         // rightIcon={PrintIcon}
@@ -83,6 +83,6 @@ export const PatientDetails = ({navigation, route: {params}}: any) => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };

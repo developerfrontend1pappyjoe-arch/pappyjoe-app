@@ -3,7 +3,6 @@ import {
   Dimensions,
   FlatList,
   RefreshControl,
-  SafeAreaView,
   View,
 } from "react-native";
 import { useMutation } from "@tanstack/react-query";
@@ -148,7 +147,7 @@ const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
   }, [refetch]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
+    <View style={{ flex: 1, backgroundColor: colorList.white }}>
       <View style={{ flex: 1, paddingHorizontal: 10, paddingTop: 10 }}>
         <SearchInput
           onSearch={handleSearch}
@@ -191,7 +190,7 @@ const PatientListScreen: React.FC<NavigationProps> = memo(({ navigation }) => {
           )}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 });
 

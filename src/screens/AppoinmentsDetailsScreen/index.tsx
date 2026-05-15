@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StyleSheet,
   useWindowDimensions,
 } from "react-native";
@@ -98,7 +97,7 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
     return <CustomLoaderRound center />;
   } else {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <View style={{backgroundColor:"red" }}>
           <CustomHeader
             headerText={
@@ -181,7 +180,7 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
             ) : null}
           </View>
         )} */}
-      </SafeAreaView>
+      </View>
     );
   }
 };

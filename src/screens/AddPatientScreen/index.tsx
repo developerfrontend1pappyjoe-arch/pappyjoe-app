@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   KeyboardTypeOptions,
 } from "react-native";
 
@@ -273,7 +272,7 @@ const dispatch = useDispatch()
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: colorList.white }}>
         <CustomHeader
           headerText={Boolean(route?.params?.mode && route?.params?.mode == "edit") ? "Edit Patient" : "Add New Patient"}
@@ -391,7 +390,7 @@ const dispatch = useDispatch()
           </ScrollView>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

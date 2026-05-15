@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -375,7 +374,7 @@ return ()=>{
     );
   };
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colorList.white }}>
+    <View style={{ flex: 1, backgroundColor: colorList.white }}>
       <CustomHeader
         headerText={data?.mode ? "Edit Appointment" : "Add New Appointment"}
         leftIcon={ArrowLeftIcon}
@@ -677,7 +676,7 @@ return ()=>{
         )}
         {/* </ScrollView> */}
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

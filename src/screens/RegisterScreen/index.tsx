@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Image,
   ScrollView,
-  SafeAreaView,
   Platform,
 } from "react-native";
 
@@ -158,7 +157,7 @@ export const RegisterScreen = ({ navigation }: any) => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isLoading ? (
         <CustomLoader />
       ) : (
@@ -359,6 +358,6 @@ export const RegisterScreen = ({ navigation }: any) => {
           </ScrollView>
         </KeyboardAvoidingView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };

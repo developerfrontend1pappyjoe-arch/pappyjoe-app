@@ -1,9 +1,10 @@
-import React, { FC, PropsWithChildren, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { NavigationContainers } from "./src/routes/Navigations";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ToastProvider } from "react-native-toast-notifications";
-import { Text, View, Appearance } from "react-native";
+import { Text, View, Appearance, StatusBar, Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./src/redux/store";
 import { Provider } from "react-redux";
@@ -16,7 +17,8 @@ import { colorList } from "./src/styles/global.styles";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ModalProvider from "providers/ModalProviders";
 
-export default function App() {
+function AppContent() {
+  const insets = useSafeAreaInsets();
   const queryClient = new QueryClient();
   useEffect(() => Appearance.setColorScheme("light"), []);
   const theme = {
@@ -32,7 +34,12 @@ export default function App() {
   };
 
   return (
-    <Provider store={store}>
+    <>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={colorList.white}
+        translucent={Platform.OS === "android"}
+      />
       <QueryClientProvider client={queryClient}>
         <ToastProvider
           placement="top"
@@ -40,7 +47,7 @@ export default function App() {
           animationType="slide-in"
           animationDuration={500}
           swipeEnabled={true}
-          offsetTop={15}
+          offsetTop={insets.top + 8}
           renderType={{
             custom_type: (toast) => {
               return (
@@ -60,16 +67,24 @@ export default function App() {
           <PaperProvider theme={theme}>
             <PersistGate loading={null} persistor={persistor}>
               <ModalProvider>
-                <SafeAreaProvider>
-                  <GestureHandlerRootView>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
                     <NavigationContainers />
                   </GestureHandlerRootView>
-                </SafeAreaProvider>
               </ModalProvider>
             </PersistGate>
           </PaperProvider>
         </ToastProvider>
       </QueryClientProvider>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <AppContent />
+      </SafeAreaProvider>
     </Provider>
   );
 }

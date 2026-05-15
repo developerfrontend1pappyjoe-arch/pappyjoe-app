@@ -31,6 +31,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { useModal } from "hooks";
 import { assignPatientDetails } from "redux/actions";
 import { useDispatch } from "react-redux";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 const btnIconSize = 23;
 const AddAllModal = ({ closeModal, navigate }: any) => {
   return (
@@ -88,6 +89,7 @@ const AddAllModal = ({ closeModal, navigate }: any) => {
 };
 
 export const CustomTabBar = ({ navigation }: any) => {
+  const insets = useSafeAreaInsets();
   const [index, setIndex] = useState(1);
   const handleClickRoute = (route: any, index: number) => {
     setIndex(index);
@@ -110,7 +112,8 @@ export const CustomTabBar = ({ navigation }: any) => {
         borderTopWidth: 1,
         borderTopColor: "#ccc",
         justifyContent: "space-evenly",
-        paddingVertical: 8,
+        paddingTop: 8,
+        paddingBottom: Math.max(insets.bottom, 8),
       }}
     >
       <TouchableOpacity
