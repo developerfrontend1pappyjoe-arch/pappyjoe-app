@@ -17,3 +17,15 @@ export type PatientListObjectType = {
   bloodgroup: string;
 
 };
+
+export type QrPaymentItemType = {
+  inv_number: string;
+  balance: string;
+  total: string;
+  name: string;
+  age: string;
+  gender: string;
+  mobile: string;
+  pay_url: string;
+  qr_url: string;
+};

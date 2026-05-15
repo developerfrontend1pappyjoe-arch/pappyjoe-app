@@ -35,7 +35,8 @@ const API_URL = {
   invoiceMasterList:`${BASE_URL}/invoiceitems`,
   financeMaster:`${BASE_URL}/financialmaster`,
   saveInvoice:`${BASE_URL}/invoice`,
-  saveReceipt:`${BASE_URL}/receipts`
+  saveReceipt:`${BASE_URL}/receipts`,
+  qrList: `${BASE_URL}/qrlist`,
 };
 
 export {BASE_URL, API_URL};
