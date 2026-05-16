@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 
 import { NavigationContainers } from "./src/routes/Navigations";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./src/config/queryClient";
 import { ToastProvider } from "react-native-toast-notifications";
 import { Text, View, Appearance, StatusBar, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,7 +20,6 @@ import ModalProvider from "providers/ModalProviders";
 
 function AppContent() {
   const insets = useSafeAreaInsets();
-  const queryClient = new QueryClient();
   useEffect(() => Appearance.setColorScheme("light"), []);
   const theme = {
     ...DefaultTheme,

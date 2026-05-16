@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { NoDataAvailable } from "../../components/NoDataAvailable";
 import { CustomLoaderRound } from "../../components/CustomLoaderRound";
 import { handleHomeAppoinmentFilter } from "../../redux/actions";
-import { useFocusEffect } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { getAppoinments } from "./services/getAppoinmentsList";
 import { getPatientListService } from "screens/PatientListScreen/service/patientList.service";
@@ -86,14 +85,9 @@ export const HomeScreen = memo(({ navigation }: any) => {
     mutate(params);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchAppointments();
-      return () => {
-        console.log("Screen unfocused");
-      };
-    }, [])
-  );
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   const handleSetFilterParamsToday = () => {
     const temp = { ...homeAppoinmentFilter } as any;
@@ -121,10 +115,15 @@ export const HomeScreen = memo(({ navigation }: any) => {
 
   useEffect(() => {
     fetchAppointments();
-    return () => {
-      setRefetch(false);
-    };
-  }, [isFocused, refetch]);
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (!refetch) {
+      return;
+    }
+    fetchAppointments();
+    setRefetch(false);
+  }, [refetch]);
 
   useEffect(() => {
     const backAction = () => {

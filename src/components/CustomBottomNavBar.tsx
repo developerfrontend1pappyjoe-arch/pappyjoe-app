@@ -1,38 +1,33 @@
-import React, {
-  // useEffect,
-  useState,
-} from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
   StyleSheet,
-  // Alert,
-  // Modal,
   Dimensions,
 } from "react-native";
-
-import {
-  AddIcon,
-  // CloseLargeImage,
-  // CommingSoonIcon,
-  // HomeFillIcon,
-  // HomeIcon,
-  // PatientListFillIcon,
-  // PatientListIcon,
-  // ProfileIcon,
-} from "../assets";
-import { colorList } from "../styles/global.styles";
-import { NavigationList } from "../routes/NavigationList";
-// import { CustomModal } from "./CustomModal";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import MetrialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+
+import { AddIcon } from "../assets";
+import { colorList } from "../styles/global.styles";
+import { NavigationList } from "../routes/NavigationList";
 import { useModal } from "hooks";
 import { assignPatientDetails } from "redux/actions";
-import { useDispatch } from "react-redux";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 const btnIconSize = 23;
+
+const ROUTE_TAB_INDEX: Record<string, number> = {
+  [NavigationList.home]: 1,
+  [NavigationList.patientList]: 2,
+  [NavigationList.billingList]: 3,
+  [NavigationList.profile]: 4,
+};
+
 const AddAllModal = ({ closeModal, navigate }: any) => {
   return (
     <View
@@ -88,21 +83,47 @@ const AddAllModal = ({ closeModal, navigate }: any) => {
   );
 };
 
-export const CustomTabBar = ({ navigation }: any) => {
+export const CustomTabBar = memo(function CustomTabBar({
+  state,
+  navigation,
+}: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
-  const [index, setIndex] = useState(1);
-  const handleClickRoute = (route: any, index: number) => {
-    setIndex(index);
-    navigation.navigate(route, { index: index });
-  };
   const { CustomModal } = useModal();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const activeTabIndex =
+    ROUTE_TAB_INDEX[state.routes[state.index]?.name ?? ""] ?? 1;
+
+  const navigateToTab = useCallback(
+    (routeName: string) => {
+      const routeIndex = state.routes.findIndex((r) => r.name === routeName);
+      if (routeIndex < 0) {
+        return;
+      }
+
+      const route = state.routes[routeIndex];
+      const isFocused = state.index === routeIndex;
+
+      const event = navigation.emit({
+        type: "tabPress",
+        target: route.key,
+        canPreventDefault: true,
+      });
+
+      if (!isFocused && !event.defaultPrevented) {
+        navigation.navigate(route.name);
+      }
+    },
+    [navigation, state.index, state.routes]
+  );
+
   const openModal = () => {
-    dispatch(assignPatientDetails(null))
-    setIsModalVisible(true)
+    dispatch(assignPatientDetails(null));
+    setIsModalVisible(true);
   };
   const closeModal = () => setIsModalVisible(false);
+  const rootNavigation = navigation.getParent() ?? navigation;
 
   return (
     <View
@@ -118,23 +139,19 @@ export const CustomTabBar = ({ navigation }: any) => {
     >
       <TouchableOpacity
         accessibilityRole="button"
-        style={[styles.wrapper]}
-        onPress={() => handleClickRoute(NavigationList.home, 1)}
+        style={styles.wrapper}
+        onPress={() => navigateToTab(NavigationList.home)}
       >
-        {/* <Image
-          source={index === 1 ? HomeFillIcon : HomeIcon}
-          style={[styles.iconStyle]}
-        /> */}
         <MetrialIcon
           style={{ margin: 0, padding: 0 }}
-          name={index == 1 ? "home-variant" : "home-variant-outline"}
+          name={activeTabIndex === 1 ? "home-variant" : "home-variant-outline"}
           size={btnIconSize + 1}
-          color={index === 1 ? colorList.primary : colorList.Grey1}
+          color={activeTabIndex === 1 ? colorList.primary : colorList.Grey1}
         />
         <Text
           style={[
             styles.labelStyle,
-            index === 1 && { color: colorList.primary },
+            activeTabIndex === 1 && { color: colorList.primary },
           ]}
         >
           Home
@@ -144,22 +161,20 @@ export const CustomTabBar = ({ navigation }: any) => {
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.patientList, 2)}
+        onPress={() => navigateToTab(NavigationList.patientList)}
       >
-        {/* <Image
-          source={index === 2 ? PatientListFillIcon : PatientListIcon}
-          style={styles.iconStyle}
-        /> */}
         <MetrialIcon
           style={{ margin: 0, padding: 0 }}
-          name={index === 2 ? "clipboard-text" : "clipboard-text-outline"}
-          color={index === 2 ? colorList.primary : colorList.Grey1}
+          name={
+            activeTabIndex === 2 ? "clipboard-text" : "clipboard-text-outline"
+          }
+          color={activeTabIndex === 2 ? colorList.primary : colorList.Grey1}
           size={btnIconSize}
         />
         <Text
           style={[
             styles.labelStyle,
-            index === 2 && { color: colorList.primary },
+            activeTabIndex === 2 && { color: colorList.primary },
           ]}
         >
           Patient List
@@ -179,19 +194,18 @@ export const CustomTabBar = ({ navigation }: any) => {
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.billingList, 3)}
+        onPress={() => navigateToTab(NavigationList.billingList)}
       >
-        {/* <Image source={CommingSoonIcon} style={styles.iconStyle} /> */}
         <IonIcon
           style={{ margin: 0, padding: 0 }}
-          name={index === 3 ? "receipt" : "receipt-outline"}
-          color={index === 3 ? colorList.primary : colorList.Grey1}
+          name={activeTabIndex === 3 ? "receipt" : "receipt-outline"}
+          color={activeTabIndex === 3 ? colorList.primary : colorList.Grey1}
           size={btnIconSize - 1}
         />
         <Text
           style={[
             styles.labelStyle,
-            index === 3 && { color: colorList.primary },
+            activeTabIndex === 3 && { color: colorList.primary },
           ]}
         >
           Billing
@@ -201,19 +215,22 @@ export const CustomTabBar = ({ navigation }: any) => {
       <TouchableOpacity
         accessibilityRole="button"
         style={styles.wrapper}
-        onPress={() => handleClickRoute(NavigationList.profile, 4)}
+        onPress={() => navigateToTab(NavigationList.profile)}
       >
-        {/* <Image source={ProfileIcon} style={styles.iconStyle} /> */}
         <IonIcon
           style={{ margin: 0, padding: 0 }}
-          name={index === 4 ? "person-circle-sharp" : "person-circle-outline"}
-          color={index === 4 ? colorList.primary : colorList.Grey1}
+          name={
+            activeTabIndex === 4
+              ? "person-circle-sharp"
+              : "person-circle-outline"
+          }
+          color={activeTabIndex === 4 ? colorList.primary : colorList.Grey1}
           size={btnIconSize + 3}
         />
         <Text
           style={[
             styles.labelStyle,
-            index === 4 && { color: colorList.primary },
+            activeTabIndex === 4 && { color: colorList.primary },
           ]}
         >
           Profile
@@ -225,11 +242,14 @@ export const CustomTabBar = ({ navigation }: any) => {
         open={isModalVisible}
         handleCloseModal={closeModal}
       >
-        <AddAllModal closeModal={closeModal} {...navigation} />
+        <AddAllModal
+          closeModal={closeModal}
+          navigate={rootNavigation.navigate}
+        />
       </CustomModal>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   wrapper: {

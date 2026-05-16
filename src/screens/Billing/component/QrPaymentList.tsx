@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Alert,
   FlatList,
@@ -17,6 +17,7 @@ import { CustomContentLoader } from "components/CustomContentLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { getQrPaymentListService } from "../service/qrPayment.service";
 import { QrPaymentItemType } from "../types";
+import isArray from "lodash/isArray";
 
 const openUrl = async (url: string, label: string) => {
   if (!url) {
@@ -35,12 +36,12 @@ function QrPaymentListItem({ item }: { item: QrPaymentItemType }) {
     <Card style={styles.card} mode="elevated">
       <Card.Content>
         <View style={styles.row}>
-          <Avatar.Text
+          {/* <Avatar.Text
             size={44}
             label={item.name?.[0]?.toUpperCase() || "?"}
             color={colorList.white}
             style={{ backgroundColor: colorList.palette.primary.main }}
-          />
+          /> */}
           <View style={styles.info}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.meta}>
@@ -101,6 +102,9 @@ function QrPaymentList() {
     ["qrPaymentList"],
     getQrPaymentListService,
     {
+      staleTime: 2 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
+      refetchOnMount: false,
       onSettled: () => setRefreshing(false),
     }
   );
@@ -109,6 +113,9 @@ function QrPaymentList() {
 
   const filteredList = useMemo(() => {
     const term = search.trim().toLowerCase();
+    if(isArray(qrList[0])) {
+      return [];
+    }
     if (!term) {
       return qrList;
     }

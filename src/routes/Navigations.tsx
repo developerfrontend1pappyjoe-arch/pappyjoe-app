@@ -1,6 +1,10 @@
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { navigationRef } from "../navigation/navigationRef";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabBarProps,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import React, {
   FC,
   PropsWithChildren,
@@ -49,53 +53,69 @@ const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const HomeTabScreen = withAppSafeArea(HomeScreen, TAB_HOME_SCREEN_EDGES);
+const PatientListTabScreen = withAppSafeArea(
+  PatientListScreen,
+  TAB_SCREEN_HEADER_EDGES
+);
+const BillingListTabScreen = withAppSafeArea(
+  BillingPatientList,
+  TAB_SCREEN_HEADER_EDGES
+);
+const ProfileTabScreen = withAppSafeArea(ProfileScreen, TAB_SCREEN_HEADER_EDGES);
+
+const tabHeaderOptions = {
+  headerShown: true,
+  headerTintColor: colorList.white,
+  headerStyle: {
+    backgroundColor: colorList.primary,
+  },
+};
+
+const renderCustomTabBar = (props: BottomTabBarProps) => (
+  <CustomTabBar {...props} />
+);
+
 const BottomHomeNavigation = () => {
   return (
     <Tab.Navigator
       initialRouteName={NavigationList.home}
-      tabBar={(props) => <CustomTabBar {...props} />}
+      tabBar={renderCustomTabBar}
+      screenOptions={{
+        lazy: true,
+        freezeOnBlur: true,
+        headerTitleAlign: "center",
+      }}
     >
       <Tab.Screen
         name={NavigationList.home}
-        component={withAppSafeArea(HomeScreen, TAB_HOME_SCREEN_EDGES)}
+        component={HomeTabScreen}
         options={{
           headerShown: false,
         }}
       />
       <Tab.Screen
         name={NavigationList.patientList}
-        component={withAppSafeArea(PatientListScreen, TAB_SCREEN_HEADER_EDGES)}
+        component={PatientListTabScreen}
         options={{
+          ...tabHeaderOptions,
           title: "Patient List",
-          headerShown: true,
-          headerTintColor: colorList.white,
-          headerStyle: {
-            backgroundColor: colorList.primary,
-          },
         }}
       />
       <Tab.Screen
         name={NavigationList.billingList}
-        component={withAppSafeArea(BillingPatientList, TAB_SCREEN_HEADER_EDGES)}
+        component={BillingListTabScreen}
         options={{
+          ...tabHeaderOptions,
           title: "Billing Area",
-          headerShown: true,
-          headerTintColor: colorList.white,
-          headerStyle: {
-            backgroundColor: colorList.primary,
-          },
         }}
       />
       <Tab.Screen
         name={NavigationList.profile}
-        component={withAppSafeArea(ProfileScreen, TAB_SCREEN_HEADER_EDGES)}
+        component={ProfileTabScreen}
         options={{
+          ...tabHeaderOptions,
           title: "My Profile",
-          headerShown: true,
-          headerTintColor: colorList.white,
-          headerStyle: {
-            backgroundColor: colorList.primary,
-          },
         }}
       />
     </Tab.Navigator>
@@ -181,7 +201,7 @@ const AuthCheck = ({ navigation }: any) => {
 
 export const NavigationContainers = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName={NavigationList.auth}>
         <Stack.Screen
           name={NavigationList.auth}

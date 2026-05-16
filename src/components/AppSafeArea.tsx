@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import React, { ComponentType, memo } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import {
   Edge,
@@ -40,11 +40,11 @@ export function withAppSafeArea<P extends object>(
   ScreenComponent: ComponentType<P>,
   edges: Edge[] = DEFAULT_SAFE_AREA_EDGES
 ) {
-  const WrappedScreen = (props: P) => (
+  const WrappedScreen = memo((props: P) => (
     <AppSafeArea edges={edges}>
       <ScreenComponent {...props} />
     </AppSafeArea>
-  );
+  ));
 
   WrappedScreen.displayName = `withAppSafeArea(${
     ScreenComponent.displayName || ScreenComponent.name || "Screen"

@@ -1,20 +1,23 @@
 // axiosInstance.js
-import axios from 'axios';
-import {store} from '../redux/store'; // assuming you have a Redux store set up
+import axios from "axios";
+import { store } from "../redux/store";
+import { attachUnauthorizedInterceptor } from "../services/sessionAuth.service";
 
- const axiosInstance = axios.create();
+const axiosInstance = axios.create();
 
 axiosInstance.interceptors.request.use(
-  config => {
-    const token = store.getState().loginData?.Authorization_Bearer;
+  (config) => {
+    const token = (store.getState() as { loginData?: { Authorization_Bearer?: string } })
+      ?.loginData?.Authorization_Bearer;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  error => {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error)
 );
 
-export {axiosInstance}
+attachUnauthorizedInterceptor(axiosInstance);
+attachUnauthorizedInterceptor(axios);
+
+export { axiosInstance };

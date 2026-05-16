@@ -39,6 +39,9 @@ const ClinicList = () => {
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["clinicLists"],
     queryFn: getClinicList,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 15 * 60 * 1000,
+    refetchOnMount: false,
   });
 
   const getNameLetters = (name: string) => {
