@@ -85,6 +85,16 @@ const BottomHomeNavigation = () => {
         lazy: true,
         freezeOnBlur: true,
         headerTitleAlign: "center",
+        tabBarStyle: {
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: "100%",
+          backgroundColor: "transparent",
+          borderTopWidth: 0,
+          elevation: 0,
+        },
       }}
     >
       <Tab.Screen
