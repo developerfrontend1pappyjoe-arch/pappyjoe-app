@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import {colorList} from '../../styles/global.styles';
+import {colorList, elevationCard} from '../../styles/global.styles';
 
 export const styles = StyleSheet.create({
   //Header Styles
@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 15,
     width: Dimensions.get('screen').width * 0.43,
+    ...elevationCard,
   },
   counterNumber: {
     fontSize: 32,

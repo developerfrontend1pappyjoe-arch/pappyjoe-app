@@ -22,6 +22,8 @@ export const CustomSearch = ({
         backgroundColor: colorList.white,
         borderRadius: 12,
         minHeight: 50,
+        borderWidth: 1,
+        borderColor: colorList.Grey4,
       }}>
       <TextInput
         placeholder="Appointment Search Here.."

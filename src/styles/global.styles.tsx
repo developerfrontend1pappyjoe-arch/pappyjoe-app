@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet, ViewStyle} from 'react-native';
 
 export const ToasterTypes = {
   success: 'success',
@@ -73,4 +73,36 @@ export const colorList = {
         main:"#B82132"
       }
   }
+};
+
+/** Shared elevation for cards and raised surfaces */
+export const elevationCard: ViewStyle = {
+  backgroundColor: colorList.white,
+  ...Platform.select({
+    ios: {
+      shadowColor: colorList.dark,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.12,
+      shadowRadius: 8,
+    },
+    android: {
+      elevation: 6,
+    },
+  }),
+};
+
+/** Top edge shadow for bottom navigation bar */
+export const elevationNavBar: ViewStyle = {
+  backgroundColor: colorList.white,
+  ...Platform.select({
+    ios: {
+      shadowColor: colorList.dark,
+      shadowOffset: { width: 0, height: -4 },
+      shadowOpacity: 0.14,
+      shadowRadius: 12,
+    },
+    android: {
+      elevation: 18,
+    },
+  }),
 };

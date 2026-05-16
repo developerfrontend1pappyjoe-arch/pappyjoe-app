@@ -7,13 +7,12 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import MetrialIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
-import { colorList } from "../styles/global.styles";
+import { colorList, elevationNavBar } from "../styles/global.styles";
 import { NavigationList } from "../routes/NavigationList";
 import { useModal } from "hooks";
 import { assignPatientDetails } from "redux/actions";
@@ -24,10 +23,16 @@ const FAB_ICON_SIZE = 28;
 const NOTCH_WIDTH = FAB_SIZE + 28;
 
 const ROUTE_TAB_INDEX: Record<string, number> = {
-  [NavigationList.home]: 1,
-  [NavigationList.patientList]: 2,
-  [NavigationList.billingList]: 3,
-  [NavigationList.profile]: 4,
+  [NavigationList.home]: 0,
+  [NavigationList.patientList]: 1,
+  [NavigationList.billingList]: 2,
+  [NavigationList.profile]: 3,
+};
+
+export type CustomTabBarProps = {
+  activeIndex: number;
+  onTabPress: (index: number) => void;
+  rootNavigation: { navigate: (name: string, params?: object) => void };
 };
 
 type TabConfig = {
@@ -42,7 +47,7 @@ type TabConfig = {
 const LEFT_TABS: TabConfig[] = [
   {
     routeName: NavigationList.home,
-    tabIndex: 1,
+    tabIndex: 0,
     label: "Home",
     type: "material",
     iconActive: "home-variant",
@@ -50,7 +55,7 @@ const LEFT_TABS: TabConfig[] = [
   },
   {
     routeName: NavigationList.patientList,
-    tabIndex: 2,
+    tabIndex: 1,
     label: "Patients",
     type: "material",
     iconActive: "clipboard-account",
@@ -61,7 +66,7 @@ const LEFT_TABS: TabConfig[] = [
 const RIGHT_TABS: TabConfig[] = [
   {
     routeName: NavigationList.billingList,
-    tabIndex: 3,
+    tabIndex: 2,
     label: "Billing",
     type: "ion",
     iconActive: "receipt",
@@ -69,7 +74,7 @@ const RIGHT_TABS: TabConfig[] = [
   },
   {
     routeName: NavigationList.profile,
-    tabIndex: 4,
+    tabIndex: 3,
     label: "Profile",
     type: "ion",
     iconActive: "person-circle",
@@ -132,6 +137,7 @@ const TabItem = memo(function TabItem({
       accessibilityRole="button"
       accessibilityState={{ selected: isActive }}
       onPress={onPress}
+      android_ripple={{ color: `${colorList.primary}22`, borderless: true }}
       style={({ pressed }) => [
         styles.tabItem,
         pressed && styles.tabItemPressed,
@@ -154,38 +160,29 @@ const TabItem = memo(function TabItem({
 });
 
 export const CustomTabBar = memo(function CustomTabBar({
-  state,
-  navigation,
-}: BottomTabBarProps) {
+  activeIndex,
+  onTabPress,
+  rootNavigation,
+}: CustomTabBarProps) {
   const insets = useSafeAreaInsets();
   const { CustomModal } = useModal();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const activeTabIndex =
-    ROUTE_TAB_INDEX[state.routes[state.index]?.name ?? ""] ?? 1;
-
   const navigateToTab = useCallback(
     (routeName: string) => {
-      const routeIndex = state.routes.findIndex((r) => r.name === routeName);
-      if (routeIndex < 0) {
+      const tabIndex = ROUTE_TAB_INDEX[routeName];
+      if (tabIndex === undefined || tabIndex === activeIndex) {
         return;
       }
-
-      const route = state.routes[routeIndex];
-      const isFocused = state.index === routeIndex;
-
-      const event = navigation.emit({
-        type: "tabPress",
-        target: route.key,
-        canPreventDefault: true,
-      });
-
-      if (!isFocused && !event.defaultPrevented) {
-        navigation.navigate(route.name);
-      }
+      onTabPress(tabIndex);
     },
-    [navigation, state.index, state.routes]
+    [activeIndex, onTabPress]
+  );
+
+  const handleTabPress = useCallback(
+    (routeName: string) => () => navigateToTab(routeName),
+    [navigateToTab]
   );
 
   const openModal = () => {
@@ -193,7 +190,6 @@ export const CustomTabBar = memo(function CustomTabBar({
     setIsModalVisible(true);
   };
   const closeModal = () => setIsModalVisible(false);
-  const rootNavigation = navigation.getParent() ?? navigation;
 
   return (
     <View
@@ -213,8 +209,8 @@ export const CustomTabBar = memo(function CustomTabBar({
                 <TabItem
                   key={tab.routeName}
                   config={tab}
-                  isActive={activeTabIndex === tab.tabIndex}
-                  onPress={() => navigateToTab(tab.routeName)}
+                  isActive={activeIndex === tab.tabIndex}
+                  onPress={handleTabPress(tab.routeName)}
                 />
               ))}
             </View>
@@ -242,8 +238,8 @@ export const CustomTabBar = memo(function CustomTabBar({
                 <TabItem
                   key={tab.routeName}
                   config={tab}
-                  isActive={activeTabIndex === tab.tabIndex}
-                  onPress={() => navigateToTab(tab.routeName)}
+                  isActive={activeIndex === tab.tabIndex}
+                  onPress={handleTabPress(tab.routeName)}
                 />
               ))}
             </View>
@@ -268,24 +264,15 @@ export const CustomTabBar = memo(function CustomTabBar({
 const styles = StyleSheet.create({
   outer: {
     width: "100%",
-    backgroundColor: colorList.white,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colorList.Grey6,
-    ...Platform.select({
-      ios: {
-        shadowColor: colorList.dark,
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 12,
-      },
-    }),
+    overflow: "visible",
+    backgroundColor: "transparent",
   },
   barShadow: {
     width: "100%",
-    backgroundColor: colorList.white,
+    overflow: "visible",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colorList.Grey6,
+    ...elevationNavBar,
   },
   bar: {
     width: "100%",

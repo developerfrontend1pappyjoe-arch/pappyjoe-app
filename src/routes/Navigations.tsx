@@ -1,10 +1,6 @@
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { navigationRef } from "../navigation/navigationRef";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  BottomTabBarProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
 import React, {
   FC,
   PropsWithChildren,
@@ -23,7 +19,7 @@ import { OTPSuccesScreen } from "../screens/OTPSuccessScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 // import { CommingSoonScreen } from "../screens/CommingSoonScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
-import { CustomTabBar } from "../components/CustomBottomNavBar";
+import { BottomHomeNavigation } from "../navigation/BottomHomeNavigation";
 import { useDispatch, useSelector } from "react-redux";
 import { handleLoggedInStatus } from "../redux/actions";
 import { AppoinmentDetails } from "../screens/AppoinmentsDetailsScreen";
@@ -40,97 +36,13 @@ import { Platform, Text, View, Dimensions } from "react-native";
 import { NativeModules } from "react-native";
 import Billing from "screens/Billing";
 import { colorList } from "styles/global.styles";
-import BillingPatientList from "screens/Billing/component/BillingPatientList";
-import PatientListScreen from "../screens/PatientListScreen";
 import AddInvoice from "screens/Billing/Invoice/components/AddInvoice";
 import {
   HEADER_SAFE_AREA_EDGES,
-  TAB_HOME_SCREEN_EDGES,
-  TAB_SCREEN_HEADER_EDGES,
   withAppSafeArea,
 } from "../components/AppSafeArea";
 const inAppUpdates = new SpInAppUpdates(false);
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
-
-const HomeTabScreen = withAppSafeArea(HomeScreen, TAB_HOME_SCREEN_EDGES);
-const PatientListTabScreen = withAppSafeArea(
-  PatientListScreen,
-  TAB_SCREEN_HEADER_EDGES
-);
-const BillingListTabScreen = withAppSafeArea(
-  BillingPatientList,
-  TAB_SCREEN_HEADER_EDGES
-);
-const ProfileTabScreen = withAppSafeArea(ProfileScreen, TAB_SCREEN_HEADER_EDGES);
-
-const tabHeaderOptions = {
-  headerShown: true,
-  headerTintColor: colorList.white,
-  headerStyle: {
-    backgroundColor: colorList.primary,
-  },
-};
-
-const renderCustomTabBar = (props: BottomTabBarProps) => (
-  <CustomTabBar {...props} />
-);
-
-const BottomHomeNavigation = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName={NavigationList.home}
-      tabBar={renderCustomTabBar}
-      screenOptions={{
-        lazy: true,
-        freezeOnBlur: true,
-        headerTitleAlign: "center",
-        tabBarStyle: {
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          width: "100%",
-          backgroundColor: "transparent",
-          borderTopWidth: 0,
-          elevation: 0,
-        },
-      }}
-    >
-      <Tab.Screen
-        name={NavigationList.home}
-        component={HomeTabScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name={NavigationList.patientList}
-        component={PatientListTabScreen}
-        options={{
-          ...tabHeaderOptions,
-          title: "Patient List",
-        }}
-      />
-      <Tab.Screen
-        name={NavigationList.billingList}
-        component={BillingListTabScreen}
-        options={{
-          ...tabHeaderOptions,
-          title: "Billing Area",
-        }}
-      />
-      <Tab.Screen
-        name={NavigationList.profile}
-        component={ProfileTabScreen}
-        options={{
-          ...tabHeaderOptions,
-          title: "My Profile",
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
 
 const AuthCheck = ({ navigation }: any) => {
   const { AppInfo } = NativeModules;

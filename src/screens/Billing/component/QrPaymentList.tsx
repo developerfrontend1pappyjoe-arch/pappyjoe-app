@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/MaterialIcons";
 
-import { colorList } from "styles/global.styles";
+import { colorList, elevationCard } from "styles/global.styles";
 import { CustomContentLoader } from "components/CustomContentLoader";
 import { NoDataAvailable } from "components/NoDataAvailable";
 import { getQrPaymentListService } from "../service/qrPayment.service";
@@ -33,7 +33,7 @@ const openUrl = async (url: string, label: string) => {
 
 function QrPaymentListItem({ item }: { item: QrPaymentItemType }) {
   return (
-    <Card style={styles.card} mode="elevated">
+    <Card style={styles.card} mode="elevated" elevation={4}>
       <Card.Content>
         <View style={styles.row}>
           {/* <Avatar.Text
@@ -212,7 +212,8 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 10,
-    backgroundColor: colorList.white,
+    borderRadius: 12,
+    ...elevationCard,
   },
   row: {
     flexDirection: "row",

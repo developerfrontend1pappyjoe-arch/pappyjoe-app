@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {colorList} from '../../styles/global.styles';
+import {colorList, elevationCard} from '../../styles/global.styles';
 export const styles = StyleSheet.create({
   container: {
     padding: 5,
@@ -57,10 +57,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: colorList.white,
     borderRadius: 12,
     paddingVertical: 5,
     paddingRight: 15,
+    borderWidth: 1,
+    borderColor: colorList.Grey6,
+    ...elevationCard,
   },
   profIconLabelContainer: {flexDirection: 'row', alignItems: 'center',paddingVertical:8},
   profIconContainer: {
