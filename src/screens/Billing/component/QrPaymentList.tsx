@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -94,7 +94,11 @@ function QrPaymentListItem({ item }: { item: QrPaymentItemType }) {
   );
 }
 
-function QrPaymentList() {
+type QrPaymentListProps = {
+  isActive?: boolean;
+};
+
+function QrPaymentList({ isActive = true }: QrPaymentListProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -102,11 +106,11 @@ function QrPaymentList() {
     ["qrPaymentList"],
     getQrPaymentListService,
     {
-      staleTime: 2 * 60 * 1000,
-      cacheTime: 10 * 60 * 1000,
-      refetchOnMount: false,
+      enabled: isActive,
+      staleTime: 0,
+      refetchOnMount: "always",
       onSettled: () => setRefreshing(false),
-    }
+    },
   );
 
   const qrList = data ?? [];
@@ -134,7 +138,7 @@ function QrPaymentList() {
 
   const clearSearch = () => setSearch("");
 
-  if (isLoading && !refreshing) {
+  if (isLoading && !refreshing && isActive) {
     return <CustomContentLoader listSize={8} />;
   }
 

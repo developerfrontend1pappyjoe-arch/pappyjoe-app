@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import { TabBar, TabView } from "react-native-tab-view";
 
 import { colorList } from "styles/global.styles";
 import BillingPatientSearch from "./BillingPatientSearch";
 import QrPaymentList from "./QrPaymentList";
 
-const renderScene = SceneMap({
-  patients: BillingPatientSearch,
-  qrPayments: QrPaymentList,
-});
+const QR_PAYMENTS_TAB_INDEX = 1;
 
 function BillingPatientList() {
   const layout = useWindowDimensions();
@@ -18,6 +15,22 @@ function BillingPatientList() {
     { key: "patients", title: "Patients" },
     { key: "qrPayments", title: "QR Payments" },
   ]);
+
+  const renderScene = useCallback(
+    ({ route }: { route: { key: string } }) => {
+      switch (route.key) {
+        case "patients":
+          return <BillingPatientSearch />;
+        case "qrPayments":
+          return (
+            <QrPaymentList isActive={index === QR_PAYMENTS_TAB_INDEX} />
+          );
+        default:
+          return null;
+      }
+    },
+    [index],
+  );
 
   return (
     <View style={styles.container}>
