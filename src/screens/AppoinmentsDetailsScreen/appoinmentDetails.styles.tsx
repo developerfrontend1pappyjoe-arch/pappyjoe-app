@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   profileNameText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: colorList.dark,
     textTransform: 'capitalize',
@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
   },
   profileFileNo: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
     marginHorizontal: 4,
     color: colorList.socondary,
@@ -48,13 +48,13 @@ export const styles = StyleSheet.create({
     marginTop: 8,
   },
   profilePatientIdLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.Grey1,
     marginRight: 5,
   },
   profilePatientId: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: colorList.dark,
   },
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
     height: 16,
   },
   leftSidePhoneLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '400',
     color: colorList.Grey1,
     marginLeft: 8,
@@ -86,7 +86,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   leftSidePhoneText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: colorList.dark,
     marginRight: 8,
@@ -110,23 +110,23 @@ export const styles = StyleSheet.create({
     height: 40,
   },
   HorizontalMenusFocusedText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: colorList.primary,
   },
   HorizontalMenusNormalText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.Grey1,
   },
   menuListDetailsChiefComplainsLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: colorList.dark,
     marginTop: 10,
   },
   menuListDetailsChiefComplainsText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.Grey1,
     marginTop: 8,
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
     minHeight: 300,
     flex: 1,
   },
-  menuListDetailsChiefComplainsProfileLabel: {fontSize: 12, fontWeight: '500'},
+  menuListDetailsChiefComplainsProfileLabel: {fontSize: 11, fontWeight: '500'},
   MenuListDetailsChiefComplaintsAddBtnContainer: {
     position: 'absolute',
     bottom: 0,
@@ -147,18 +147,18 @@ export const styles = StyleSheet.create({
   },
   addComplaintPopupsContainer: {width: Dimensions.get('screen').width * 0.8},
   AddComplaintPopupsHeader: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: colorList.dark,
     textAlign: 'center',
   },
   AddComplaintPopupsHeaderLabel: {
     marginTop: 16,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
   },
   AddComplaintPopupsLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: colorList.dark,
     marginBottom: 12,

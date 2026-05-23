@@ -162,15 +162,15 @@ function BillingPatientSearch() {
               >
                 <List.Item
                   title={
-                    <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
                       {item.Name}
                     </Text>
                   }
                   description={
-                    <Text style={{ fontSize: 11 }}>Mobile : {item.mobile}</Text>
+                    <Text style={{ fontSize: 10 }}>Mobile : {item.mobile}</Text>
                   }
                   right={() => (
-                    <Text style={{ fontSize: 12 }}>ID : {item.Patient_Id}</Text>
+                    <Text style={{ fontSize: 11 }}>ID : {item.Patient_Id}</Text>
                   )}
                   left={() =>
                     item.Photo ? (

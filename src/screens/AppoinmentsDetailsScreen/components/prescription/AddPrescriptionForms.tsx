@@ -348,7 +348,7 @@ const stylesInetrnal = StyleSheet.create({
     borderColor: colorList.Grey4,
     borderRadius: 8,
     color: colorList.Black,
-    fontSize: 13,
+    fontSize: 12,
   },
   errorMessage: {
     color: 'red',
@@ -364,16 +364,16 @@ const stylesInetrnal = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
-    fontSize: 13,
+    fontSize: 12,
     color: colorList.dark,
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
   selectedTextStyle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
@@ -383,7 +383,7 @@ const stylesInetrnal = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 35,
-    fontSize: 13,
+    fontSize: 12,
     borderRadius: 8,
     color: colorList.dark,
   },
@@ -392,6 +392,6 @@ const stylesInetrnal = StyleSheet.create({
   },
   dropdownItemTextStyle: {
     color: colorList.dark,
-    fontSize: 13,
+    fontSize: 12,
   },
 });

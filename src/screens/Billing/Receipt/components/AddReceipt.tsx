@@ -318,7 +318,7 @@ const dispatch = useDispatch()
                 ? style.dropdownError
                 : style.dropdownNormal,
             ]}
-            selectedTextStyle={[style.selectedTextStyle, { fontSize: 12 }]}
+            selectedTextStyle={[style.selectedTextStyle, { fontSize: 11 }]}
             containerStyle={{
               marginTop: 8,
               borderRadius: 8,
@@ -335,7 +335,7 @@ const dispatch = useDispatch()
               <>
                 <Text
                   style={{
-                    fontSize: 13,
+                    fontSize: 12,
                     paddingVertical: 15,
                     paddingHorizontal: 8,
                   }}
@@ -471,14 +471,14 @@ const style = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     // borderWidth: 0.5,
     borderColor: colorList.Grey1,
     borderRadius: 8,
     color: colorList.dark,
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 14,
     color: colorList.dark,
   },
 });

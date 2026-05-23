@@ -17,6 +17,7 @@ import {
   Modal,
   TextInput,
   Button,
+  Avatar,
 } from 'react-native-paper';
 
 import {styles} from '../home.style';
@@ -29,9 +30,9 @@ import {axiosInstance as axios} from '../../../config/axios.config.custom';
 import {checkCountryCode} from 'utils/commonUtils';
 
 const ICON = {
-  action: moderateScale(20),
-  meta: moderateScale(16),
-  doctor: moderateScale(20),
+  action: moderateScale(18),
+  meta: moderateScale(14),
+  doctor: moderateScale(18),
 };
 
 const queueStatusColor: Record<string, string> = {
@@ -61,6 +62,15 @@ const getAppointmentStatusTheme = (status: string) =>
     bg: colorList.Grey5,
     text: colorList.GreyDark1,
   };
+
+const PATIENT_AVATAR_SIZE = moderateScale(44);
+
+const getPatientInitials = (name?: string) => {
+  if (!name?.trim()) return '?';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
+};
 
 export const AppoinmentList = ({data, navigate, refetch}: any) => {
   const [isCancelNote, setIsCancelNote] = useState(false);
@@ -196,6 +206,25 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
         style={styles.appoinmentPatientRow}
         activeOpacity={0.85}
         onPress={navigate}>
+        {data?.Patient_Photo ? (
+          <Avatar.Image
+            size={PATIENT_AVATAR_SIZE}
+            style={styles.appoinmentPatientAvatar}
+            source={{uri: data.Patient_Photo}}
+          />
+        ) : (
+          <Avatar.Text
+            size={PATIENT_AVATAR_SIZE}
+            style={[
+              styles.appoinmentPatientAvatar,
+              {backgroundColor: colorList.palette.primary.main},
+            ]}
+            color={colorList.white}
+            labelStyle={{fontSize: moderateScale(14), fontWeight: '700'}}
+            label={getPatientInitials(data?.Patient_Name)}
+          />
+        )}
+
         <View style={styles.appoinmentPatientInfo}>
           <Text style={styles.appoinmentNameLabel}>Patient</Text>
           <Text

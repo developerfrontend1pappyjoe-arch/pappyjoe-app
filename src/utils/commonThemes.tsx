@@ -1,14 +1,12 @@
+import {FONT_SIZE, FONTSIZE, FONT_FAMILY} from '../styles/typography';
+
 const COLORS = {
   primary: '#02AEED',
   secondary: '',
 };
 
-const FONTSIZE = {
-  fs16: 16,
-  fs28: 28,
-};
-
 const FONTWEIGHT = {
   fw700: 700,
 };
-export {FONTSIZE, COLORS, FONTWEIGHT};
+
+export {COLORS, FONTWEIGHT, FONTSIZE, FONT_SIZE, FONT_FAMILY};

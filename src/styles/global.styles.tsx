@@ -1,4 +1,7 @@
 import {Platform, StyleSheet, ViewStyle} from 'react-native';
+import {FONT_FAMILY, FONT_SIZE, LINE_HEIGHT} from './typography';
+
+export {FONT_SIZE, LINE_HEIGHT, FONT_FAMILY} from './typography';
 
 export const ToasterTypes = {
   success: 'success',
@@ -6,28 +9,32 @@ export const ToasterTypes = {
 };
 
 const fontWeight = {
-  400: 'Inter-Regular',
-  500: 'Inter-Medium',
-  600: 'Inter-SemiBold',
-  700: 'Inter-Bold',
+  400: FONT_FAMILY.regular,
+  500: FONT_FAMILY.medium,
+  600: FONT_FAMILY.semiBold,
+  700: FONT_FAMILY.bold,
 };
 
 export const globalStyles = StyleSheet.create({
   text24: {
-    fontSize: 24,
-    fontFamily: 'Inter-SemiBold', // 600
+    fontSize: FONT_SIZE.h1,
+    lineHeight: LINE_HEIGHT.h1,
+    fontFamily: fontWeight[600],
   },
   text22: {
-    fontSize: 22,
+    fontSize: FONT_SIZE.h2,
+    lineHeight: LINE_HEIGHT.h2,
     fontFamily: fontWeight[600],
   },
   text14: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.md,
+    lineHeight: LINE_HEIGHT.md,
     fontFamily: fontWeight[400],
   },
   errorText: {
     color: 'red',
-    fontSize: 14,
+    fontSize: FONT_SIZE.md,
+    lineHeight: LINE_HEIGHT.md,
     paddingVertical: 5,
   },
 });

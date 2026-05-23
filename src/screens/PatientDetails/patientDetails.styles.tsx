@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   labelText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: colorList.Grey1,
     marginLeft: 10,

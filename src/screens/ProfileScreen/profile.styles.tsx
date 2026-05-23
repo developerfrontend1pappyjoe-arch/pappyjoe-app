@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   clinicHeading: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: colorList.dark,
   },
@@ -26,12 +26,12 @@ export const styles = StyleSheet.create({
     padding:10
   },
   clinicLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: colorList.dark,
   },
   clinicText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '400',
     color: colorList.Grey1,
     marginTop: 8,
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addMoreClicnicBtn: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '700',
     color: colorList.primary,
     marginTop: 8,
@@ -79,7 +79,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   profFeaturelabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
     color: colorList.dark,
     marginLeft: 12,

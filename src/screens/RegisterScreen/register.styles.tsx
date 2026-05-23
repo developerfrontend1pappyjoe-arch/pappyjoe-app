@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     objectFit: 'contain',
   },
   headerImageHead: {
-    fontSize: 24,
+    fontSize: 20,
     lineHeight: 26,
     textAlign: 'center',
     fontWeight: '700',
@@ -25,8 +25,8 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   headerImageDesc: {
-    fontSize: 14,
-    lineHeight: 14,
+    fontSize: 12,
+    lineHeight: 13,
     fontWeight: '400',
     color: colorList.Grey1,
   },
@@ -58,8 +58,8 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   inputs: {
-    fontSize: 14,
-    lineHeight: 15,
+    fontSize: 12,
+    lineHeight: 14,
     fontWeight: '500',
     color: colorList.dark,
     borderWidth: 0,
@@ -81,16 +81,16 @@ export const styles = StyleSheet.create({
     marginTop: 32,
   },
   registerBtnLabel1: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: colorList.Grey2,
-    lineHeight: 17,
+    lineHeight: 15,
   },
   registerBtnLabel2: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: '700',
     color: colorList.dark,
-    lineHeight: 17,
+    lineHeight: 15,
     marginLeft: 6,
   },
   dropdownWrapper: {
@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 16,
+    fontSize: 14,
     marginVertical: 5,
     color: colorList.Black,
   },
@@ -123,8 +123,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     color: colorList.Black,
-    fontSize: 14,
-    lineHeight: 15,
+    fontSize: 12,
+    lineHeight: 14,
     fontWeight: '500',
   },
   errorMessage: {
@@ -144,17 +144,17 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 10,
-    fontSize: 14,
+    fontSize: 12,
     color: colorList.Grey2,
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: 12,
     color: colorList.Grey1,
-    lineHeight: 15,
+    lineHeight: 14,
     fontWeight: '500',
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
@@ -164,7 +164,7 @@ export const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     // borderWidth: 0.5,
     borderRadius: 8,
     // paddingLeft: 10,

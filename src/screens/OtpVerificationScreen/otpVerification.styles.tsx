@@ -50,13 +50,13 @@ export const styles = StyleSheet.create({
   },
   termsAndConditionLabel1: {
     ...globalStyles.text14,
-    lineHeight: 17,
+    lineHeight: 15,
     color: colorList.blue_200,
     marginHorizontal: 8,
   },
   termsAndConditionLabel2: {
     ...globalStyles.text14,
-    lineHeight: 17,
+    lineHeight: 15,
     color: colorList.socondary,
     textDecorationLine: 'underline',
   },
@@ -74,14 +74,14 @@ export const styles = StyleSheet.create({
   },
   loginLabel1: {
     ...globalStyles.text14,
-    lineHeight: 17,
+    lineHeight: 15,
     color: colorList.blue_300,
   },
   loginLabel2: {
     ...globalStyles.text14,
     fontWeight: '500',
     color: colorList.primary,
-    lineHeight: 17,
+    lineHeight: 15,
     marginLeft: 10,
     textDecorationLine: 'underline',
   },

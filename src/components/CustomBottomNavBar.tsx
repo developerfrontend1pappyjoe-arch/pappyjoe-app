@@ -408,7 +408,7 @@ const modalStyles = StyleSheet.create({
     backgroundColor: colorList.socondary,
   },
   actionText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
     color: colorList.white,
   },

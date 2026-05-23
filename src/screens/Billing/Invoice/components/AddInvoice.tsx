@@ -327,7 +327,7 @@ const style = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     // borderWidth: 0.5,
     borderColor: colorList.Grey1,
     borderRadius: 8,

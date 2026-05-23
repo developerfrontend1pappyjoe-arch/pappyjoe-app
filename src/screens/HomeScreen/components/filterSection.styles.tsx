@@ -22,14 +22,14 @@ export const filterStyles = StyleSheet.create({
     width: '90%',
   },
   filterHeader: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
-    lineHeight: 17,
+    lineHeight: 15,
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    lineHeight: 17,
+    lineHeight: 15,
     color: colorList.dark,
     marginBottom: 10,
   },
@@ -41,7 +41,7 @@ export const filterStyles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: 12,
-    fontSize: 14,
+    fontSize: 12,
     color: colorList.dark,
   },
   dropdownContainerStyle: {
@@ -54,12 +54,12 @@ export const filterStyles = StyleSheet.create({
     marginRight: 5,
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
@@ -69,7 +69,7 @@ export const filterStyles = StyleSheet.create({
   },
   inputSearchStyle: {
     // height: 50,
-    // fontSize: 16,
+    // fontSize: 14,
     // borderWidth: 0.5,
     // borderRadius: 8,
     // paddingLeft: 10,
@@ -98,7 +98,7 @@ export const filterStyles = StyleSheet.create({
     marginRight: 10,
   },
   labels: {
-    fontSize: 16,
+    fontSize: 14,
     color: colorList.Grey1,
   },
 });

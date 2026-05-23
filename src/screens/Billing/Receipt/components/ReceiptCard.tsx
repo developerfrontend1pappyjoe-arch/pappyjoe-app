@@ -124,7 +124,7 @@ const style = StyleSheet.create({
   },
   dateTextColor: {
     color: colorList.white,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "bold",
   },
   cardContainer: {
@@ -147,7 +147,7 @@ const style = StyleSheet.create({
     borderColor: colorList.socondary,
   },
   receiptDateText: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "bold",
     color: colorList.socondary,
     margin: 0,

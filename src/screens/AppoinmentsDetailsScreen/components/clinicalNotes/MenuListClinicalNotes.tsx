@@ -234,7 +234,7 @@ const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
                       margin: 5,
                     }}
                   >
-                    <Text style={{ fontSize: 17 }}>
+                    <Text style={{ fontSize: 14 }}>
                       {moment(k).format("DD-MM-YYYY")}
                     </Text>
                   </View>

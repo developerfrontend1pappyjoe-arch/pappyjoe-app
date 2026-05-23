@@ -236,13 +236,13 @@ const styles = StyleSheet.create({
     top: 8,
     zIndex: 999,
     paddingHorizontal: 8,
-    fontSize: 14,
+    fontSize: 12,
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 14,
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 14,
   },
   iconStyle: {
     width: 20,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: 14,
     borderRadius: 8,
   },
 
@@ -261,6 +261,6 @@ const styles = StyleSheet.create({
     top: 5,
     zIndex: 999,
     paddingHorizontal: 2,
-    fontSize: 14,
+    fontSize: 12,
   },
 });

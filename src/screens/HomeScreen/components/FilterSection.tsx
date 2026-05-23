@@ -365,7 +365,7 @@ export const FilterSection = memo(
                           <Text
                             style={{
                               color: colorList.Grey1,
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: '700',
                             }}>
                             Reset
@@ -386,7 +386,7 @@ export const FilterSection = memo(
                           <Text
                             style={{
                               color: colorList.white,
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: '700',
                             }}>
                             Apply

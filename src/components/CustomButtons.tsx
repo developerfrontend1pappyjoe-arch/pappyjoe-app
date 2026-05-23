@@ -19,7 +19,7 @@ export const CustomButtons = ({onClick, btnName, width, noBg}: any) => {
       <Text
         style={{
           color: noBg ? colorList.Grey1 : colorList.white,
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: '700',
         }}>
         {btnName}

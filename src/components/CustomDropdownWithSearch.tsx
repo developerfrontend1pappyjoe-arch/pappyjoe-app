@@ -76,7 +76,7 @@ export const CustomDropdownWithSearch = ({
                         onClose={() => OnChangeRemove(it)}
                         closeIcon={() => <Icons name="close" size={15} />}
                         style={{margin: 2, padding: 0}}
-                        textStyle={{fontSize: 10, marginLeft: 10}}>
+                        textStyle={{fontSize: 9, marginLeft: 10}}>
                         {it?.label}
                       </Chip>
                     );

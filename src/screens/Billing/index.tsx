@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     height: 4, // Thickness of the active tab indicator
   },
   label: {
-    fontSize: 14, // Font size for the tab labels
+    fontSize: 12, // Font size for the tab labels
     fontWeight: "bold", // Bold text
   },
 });

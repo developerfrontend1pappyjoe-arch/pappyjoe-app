@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: colorList.white,
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: "600",
   },
 });

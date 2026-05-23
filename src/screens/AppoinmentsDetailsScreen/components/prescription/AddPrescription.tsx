@@ -918,7 +918,7 @@ const stylesInetrnal = StyleSheet.create({
   },
 
   label: {
-    // fontSize: 16,
+    // fontSize: 14,
     marginVertical: 5,
     color: colorList.Black,
   },
@@ -943,16 +943,16 @@ const stylesInetrnal = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     // marginTop: 2,
-    fontSize: 14,
+    fontSize: 12,
     color: colorList.dark,
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '400',
     color: colorList.dark,
   },
@@ -962,7 +962,7 @@ const stylesInetrnal = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     // borderWidth: 0.5,
     borderRadius: 8,
     // paddingLeft: 10,

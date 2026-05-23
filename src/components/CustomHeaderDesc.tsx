@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     ...globalStyles.text14,
     color: colorList.blue_300,
     textAlign: 'center',
-    lineHeight: 17,
+    lineHeight: 15,
     marginTop: 12,
     opacity: 0.5,
   },

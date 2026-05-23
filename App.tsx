@@ -10,29 +10,15 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./src/redux/store";
 import { Provider } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import {
-  PaperProvider,
-  MD3LightTheme as DefaultTheme,
-} from "react-native-paper";
+import { PaperProvider } from "react-native-paper";
 import { colorList } from "./src/styles/global.styles";
+import { appTheme } from "./src/styles/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ModalProvider from "providers/ModalProviders";
 
 function AppContent() {
   const insets = useSafeAreaInsets();
   useEffect(() => Appearance.setColorScheme("light"), []);
-  const theme = {
-    ...DefaultTheme,
-    myOwnProperty: true,
-    roundness: 4,
-    colors: {
-      ...DefaultTheme.colors,
-      background: "white",
-      onSurface: colorList.dark,
-      outlineVariant: colorList.Grey4,
-    },
-  };
-
   return (
     <>
       <StatusBar
@@ -64,7 +50,7 @@ function AppContent() {
             },
           }}
         >
-          <PaperProvider theme={theme}>
+          <PaperProvider theme={appTheme}>
             <PersistGate loading={null} persistor={persistor}>
               <ModalProvider>
                   <GestureHandlerRootView style={{ flex: 1 }}>

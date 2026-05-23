@@ -151,7 +151,7 @@ const AddInvoiceForm = ({
           inputSearchStyle={style.inputSearchStyle}
           style={style.dropdownContainer}
           selectedTextStyle={{
-            fontSize: 13,
+            fontSize: 12,
             color: colorList.dark,
           }}
           containerStyle={{
@@ -283,7 +283,7 @@ const AddInvoiceForm = ({
               { paddingVertical: 2, borderWidth: 0.8, marginTop: 5 },
             ]}
             selectedTextStyle={{
-              fontSize: 13,
+              fontSize: 12,
               color: colorList.dark,
             }}
             containerStyle={{
@@ -377,7 +377,7 @@ const style = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     // borderWidth: 0.5,
     borderColor: colorList.Grey1,
     borderRadius: 8,

@@ -221,7 +221,7 @@ export const ProfileScreen = ({ navigation }: any) => {
         open={open}
         title={
           <Text
-            style={{ fontWeight: "600", fontSize: 17, paddingHorizontal: 5 }}
+            style={{ fontWeight: "600", fontSize: 14, paddingHorizontal: 5 }}
           >
             Logout !
           </Text>

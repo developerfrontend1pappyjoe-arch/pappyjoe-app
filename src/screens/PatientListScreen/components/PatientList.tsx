@@ -78,11 +78,11 @@ export const PatientList = memo(({ data, navigate }: PatientListProps) => {
       <List.Item
         title={
              <Text
-              style={{ fontSize: 14, fontWeight: "bold" }}
+              style={{ fontSize: 12, fontWeight: "bold" }}
             >{`${data.Name}`} </Text>
         }
         description={
-            <Text style={{ fontSize: 11}}> {`Mobile: ${data.mobile} [ ID : ${data.Patient_Id} ]`}</Text>
+            <Text style={{ fontSize: 10}}> {`Mobile: ${data.mobile} [ ID : ${data.Patient_Id} ]`}</Text>
         }
         right={() => (
           <View>

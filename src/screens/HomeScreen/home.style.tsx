@@ -1,6 +1,6 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters';
-import {colorList, elevationCard} from '../../styles/global.styles';
+import {colorList, elevationCard, FONT_SIZE, LINE_HEIGHT} from '../../styles/global.styles';
 
 export const styles = StyleSheet.create({
   //Header Styles
@@ -18,8 +18,8 @@ export const styles = StyleSheet.create({
   },
   HeaderDropdownText: {
     fontWeight: '600',
-    fontSize: 14,
-    lineHeight: 16,
+    fontSize: FONT_SIZE.md,
+    lineHeight: LINE_HEIGHT.md,
     color: colorList.dark,
     marginRight: 4,
   },
@@ -32,28 +32,28 @@ export const styles = StyleSheet.create({
     ...elevationCard,
   },
   counterNumber: {
-    fontSize: 32,
-    lineHeight: 35,
+    fontSize: FONT_SIZE.display,
+    lineHeight: LINE_HEIGHT.display,
     fontWeight: '600',
     color: colorList.white,
     marginBottom: 8,
   },
   counterLabel: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: FONT_SIZE.lg,
+    lineHeight: LINE_HEIGHT.lg,
     fontWeight: '500',
     color: colorList.white,
   },
   counterNumber1: {
-    fontSize: 32,
-    lineHeight: 35,
+    fontSize: FONT_SIZE.display,
+    lineHeight: LINE_HEIGHT.display,
     fontWeight: '600',
     color: colorList.Black,
     marginBottom: 8,
   },
   counterLabel1: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: FONT_SIZE.lg,
+    lineHeight: LINE_HEIGHT.lg,
     fontWeight: '500',
     color: colorList.Grey1,
   },
@@ -64,15 +64,15 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   upcommingAppoinmentsHeaderText: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.xxl,
     fontWeight: '700',
-    lineHeight: 17,
+    lineHeight: LINE_HEIGHT.xl,
     color: colorList.dark,
   },
   upcommingAppoinmentsViewAll: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.md,
     fontWeight: '500',
-    lineHeight: 15,
+    lineHeight: LINE_HEIGHT.md,
     color: colorList.Grey1,
     textDecorationLine: 'underline',
     paddingBottom: 5,
@@ -103,10 +103,10 @@ export const styles = StyleSheet.create({
     borderRadius: scale(20),
   },
   appoinmentStatusChipText: {
-    fontSize: moderateScale(11),
+    fontSize: moderateScale(10),
     fontWeight: '700',
     textTransform: 'capitalize',
-    lineHeight: moderateScale(14),
+    lineHeight: moderateScale(12),
     ...(Platform.OS === 'android' && {includeFontPadding: false}),
   },
   appoinmentCancelButton: {
@@ -120,9 +120,9 @@ export const styles = StyleSheet.create({
   },
   appoinmentCancelButtonText: {
     color: colorList.palette.error.main,
-    fontSize: moderateScale(11),
+    fontSize: moderateScale(10),
     fontWeight: '600',
-    lineHeight: moderateScale(14),
+    lineHeight: moderateScale(12),
   },
   appoinmentPatientRow: {
     flexDirection: 'row',
@@ -131,21 +131,26 @@ export const styles = StyleSheet.create({
     gap: scale(10),
     marginBottom: verticalScale(10),
   },
+  appoinmentPatientAvatar: {
+    borderWidth: 1,
+    borderColor: colorList.Grey4,
+    backgroundColor: colorList.Grey5,
+  },
   appoinmentPatientInfo: {
     flex: 1,
     minWidth: 0,
   },
   appoinmentNameLabel: {
-    fontSize: moderateScale(11),
+    fontSize: moderateScale(10),
     fontWeight: '500',
-    lineHeight: moderateScale(14),
+    lineHeight: moderateScale(12),
     color: colorList.Grey1,
     letterSpacing: 0.2,
   },
   appoinmentNameText: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     fontWeight: '700',
-    lineHeight: moderateScale(20),
+    lineHeight: moderateScale(18),
     marginTop: verticalScale(2),
     color: colorList.dark,
   },
@@ -192,14 +197,14 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontWeight: '600',
     fontSize: moderateScale(12),
-    lineHeight: moderateScale(16),
+    lineHeight: moderateScale(14),
     color: colorList.dark,
   },
   appoinmentTime: {
     flex: 1,
     fontWeight: '600',
     fontSize: moderateScale(12),
-    lineHeight: moderateScale(16),
+    lineHeight: moderateScale(14),
     color: colorList.dark,
   },
   appoinmentFooterRow: {
@@ -231,15 +236,15 @@ export const styles = StyleSheet.create({
     minWidth: 0,
   },
   appoinmentToLabel: {
-    fontSize: moderateScale(10),
-    lineHeight: moderateScale(13),
+    fontSize: moderateScale(9),
+    lineHeight: moderateScale(12),
     fontWeight: '500',
     color: colorList.Grey1,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   appoinmentToText: {
-    fontSize: moderateScale(13),
+    fontSize: moderateScale(12),
     lineHeight: moderateScale(17),
     fontWeight: '600',
     color: colorList.dark,
@@ -253,11 +258,11 @@ export const styles = StyleSheet.create({
     backgroundColor: colorList.Grey5,
   },
   appoinmentQueueBadgeText: {
-    fontSize: moderateScale(10),
+    fontSize: moderateScale(9),
     fontWeight: '700',
     textAlign: 'center',
     textTransform: 'capitalize',
-    lineHeight: moderateScale(13),
+    lineHeight: moderateScale(12),
   },
   appoinmentQueueModalDivider: {
     borderBottomWidth: 1,
@@ -283,7 +288,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     textTransform: 'capitalize',
     color: colorList.Grey1,
-    fontSize: moderateScale(13),
+    fontSize: moderateScale(12),
   },
   appoinmentCancelModal: {
     justifyContent: 'center',
@@ -300,7 +305,7 @@ export const styles = StyleSheet.create({
   },
   appoinmentCancelModalTitle: {
     paddingVertical: verticalScale(5),
-    fontSize: moderateScale(14),
+    fontSize: moderateScale(12),
     fontWeight: '600',
     color: colorList.dark,
   },
@@ -309,7 +314,7 @@ export const styles = StyleSheet.create({
   },
   appoinmentCancelRequiredText: {
     color: colorList.red,
-    fontSize: moderateScale(11),
+    fontSize: moderateScale(10),
     marginTop: verticalScale(4),
   },
   appoinmentCancelModalActions: {

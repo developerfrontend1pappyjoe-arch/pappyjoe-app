@@ -20,13 +20,13 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: '700',
     fontSize: FONTSIZE.fs28,
-    lineHeight: 32,
+    lineHeight: 26,
     color: colorList.dark,
   },
   welcomeDesc: {
     fontWeight: '700',
     fontSize: FONTSIZE.fs16,
-    lineHeight: 16,
+    lineHeight: 14,
     color: colorList.Grey1,
   },
   buttonWrapper: {
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: colorList.white,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 12,
   },
   registerBtnBg: {
     backgroundColor: colorList.white,
@@ -59,6 +59,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: colorList.primary,
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 12,
   },
 });

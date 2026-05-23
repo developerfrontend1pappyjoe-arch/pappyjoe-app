@@ -1,14 +1,14 @@
 import {StyleSheet} from 'react-native';
-import {colorList} from './global.styles';
+import {colorList, FONT_SIZE} from './global.styles';
 
 export const FormStyles = StyleSheet.create({
   label: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.md,
     marginVertical: 10,
     color: colorList.GreyDark1,
   },
   input: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.md,
     height: 40,
   },
 });

@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     objectFit: 'contain',
   },
   headerImageHead: {
-    fontSize: 24,
+    fontSize: 20,
     lineHeight: 26,
     textAlign: 'center',
     fontWeight: '700',
@@ -25,8 +25,8 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   headerImageDesc: {
-    fontSize: 12,
-    lineHeight: 14,
+    fontSize: 11,
+    lineHeight: 13,
     fontWeight: '400',
     color: colorList.blue_300,
   },
@@ -54,8 +54,8 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   inputs: {
-    fontSize: 14,
-    lineHeight: 15,
+    fontSize: 12,
+    lineHeight: 14,
     fontWeight: '500',
     color: colorList.dark,
     borderWidth: 0,
@@ -84,8 +84,8 @@ export const styles = StyleSheet.create({
   forgotPassText: {
     color: colorList.primary,
     fontWeight: '500',
-    fontSize: 14,
-    lineHeight: 15,
+    fontSize: 12,
+    lineHeight: 14,
     textAlign: 'right',
     textDecorationLine: 'underline',
   },
@@ -99,16 +99,16 @@ export const styles = StyleSheet.create({
     marginTop: 32,
   },
   registerBtnLabel1: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: colorList.Grey2,
-    lineHeight: 17,
+    lineHeight: 15,
   },
   registerBtnLabel2: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: '700',
     color: colorList.dark,
-    lineHeight: 17,
+    lineHeight: 15,
     marginLeft: 6,
   },
   socialMediaContainer: {

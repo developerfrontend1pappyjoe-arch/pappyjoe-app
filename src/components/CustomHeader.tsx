@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontWeight: '600',
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 20,
     color: colorList.white,
   },
   rightText: {
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 20,
     color: colorList.white,
   },

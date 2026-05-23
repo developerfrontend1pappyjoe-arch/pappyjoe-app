@@ -8,12 +8,12 @@ export const headerStyles = StyleSheet.create({
     alignItems: 'center',
   },
   clinicLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: colorList.dark,
   },
   clinicText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '400',
     color: colorList.Grey1,
     marginTop: 8,

@@ -224,12 +224,12 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   name: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "bold",
     color: colorList.dark,
   },
   meta: {
-    fontSize: 12,
+    fontSize: 11,
     color: colorList.Grey1,
     marginTop: 2,
   },
@@ -241,11 +241,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   label: {
-    fontSize: 11,
+    fontSize: 10,
     color: colorList.Grey1,
   },
   value: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "600",
     color: colorList.dark,
     marginTop: 2,

@@ -209,7 +209,7 @@ const style = StyleSheet.create({
     height: 4, 
   },
   label: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "bold",
   },
 });

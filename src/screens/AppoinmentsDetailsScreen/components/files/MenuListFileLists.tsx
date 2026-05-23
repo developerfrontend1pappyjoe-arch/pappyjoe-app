@@ -208,15 +208,15 @@ const filesStyles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     marginTop: 12,
-    fontSize: 14,
+    fontSize: 12,
     color: colorList.dark,
   },
   placeholderStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "400",
   },
   selectedTextStyle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "400",
     color: colorList.dark,
   },
@@ -226,7 +226,7 @@ const filesStyles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 50,
-    fontSize: 16,
+    fontSize: 14,
     borderWidth: 0.5,
     borderRadius: 8,
     paddingLeft: 10,

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     height: 3,
   },
   label: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "bold",
     textTransform: "none",
   },

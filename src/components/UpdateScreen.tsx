@@ -64,7 +64,7 @@ function UpdateScreen() {
         >
           <Text
             style={{
-              fontSize: 24,
+              fontSize: 20,
               lineHeight: 26,
               textAlign: "center",
               fontWeight: "700",
@@ -76,8 +76,8 @@ function UpdateScreen() {
 
           <Text
             style={{
-              fontSize: 12,
-              lineHeight: 18,
+              fontSize: 11,
+              lineHeight: 16,
               fontWeight: "400",
               color: colorList.Grey1,
               textAlign: "center",

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     margin:0,
   },
   text:{
-     fontSize:20,
+     fontSize: 18,
      fontWeight:"bold",
      color:colorList.blue
   }
