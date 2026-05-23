@@ -16,7 +16,7 @@ import { PatientDetailsTiles } from "components/PatientDetailsTiles";
 import { Divider, FAB } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { useModal } from "hooks";
-import { useQuery } from "@tanstack/react-query/build/lib/useQuery";
+import { useQuery } from "@tanstack/react-query";
 import { getFinaceMaster } from "./services";
 import { useToast } from "react-native-toast-notifications";
 import { closeBillingModal, editInvoiceList, openBillingModal, setBillingDate, setInvoiceNo } from "redux/actions";

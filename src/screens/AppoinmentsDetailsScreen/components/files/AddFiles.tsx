@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {API_URL} from '../../../../utils/constants';
 import {Alert, Dimensions, Image, TouchableOpacity, View,ScrollView} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
-import DocumentPicker from 'react-native-document-picker';
+import {pick, types} from '@react-native-documents/picker';
 import {useCameraPermission} from 'react-native-vision-camera';
 import {launchImageLibrary} from 'react-native-image-picker';
 
@@ -88,10 +88,14 @@ export const AddFilesPopup = ({close, patientDetails, refetch}: any) => {
   };
 
   const openDocPicker = async () => {
-    const res = await DocumentPicker.pick({
-      type: [DocumentPicker.types.pdf],
-    });
-    setFiles(res);
+    try {
+      const res = await pick({
+        type: [types.pdf],
+      });
+      setFiles(res);
+    } catch {
+      // User cancelled the picker
+    }
   };
 
   const handleConfirmImage = (image: any) => {

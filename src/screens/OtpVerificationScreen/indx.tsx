@@ -9,7 +9,7 @@ import { CustomButton } from "../../components/CustomButton";
 import { NavigationList } from "../../routes/NavigationList";
 import { styles } from "./otpVerification.styles";
 import { CustomHeaderDesc } from "../../components/CustomHeaderDesc";
-import OTPInputView from "@twotalltotems/react-native-otp-input";
+import { OtpInput } from "react-native-otp-entry";
 import React, { useCallback, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { API_URL } from "../../utils/constants";
@@ -74,16 +74,6 @@ export const OTPVerificationScreen = ({
       setOtp(code);
     },[otp,data]);
 
-  // const extractOtpFromMessage = (message: string) => {
-  //   const otpRegex = /\d+/;
-  //   const match = message.match(otpRegex);
-  //   if (match) {
-  //     return match[0];
-  //   }
-  //   return "";
-  // };
-
-
   return (
     <>
       <View style={styles.imageContainer}>
@@ -95,23 +85,16 @@ export const OTPVerificationScreen = ({
           desc={`Enter the 7 digit code we've sent to your mobile +${data?.country} ${data?.phoneNumber} `}
         />
 
-        {/* <TouchableOpacity style={styles.resendBtnContainer}>
-          <Text style={styles.resendBtn}>Resend</Text>
-        </TouchableOpacity> */}
-
         <View style={styles.otpInputContainer}>
-          <OTPInputView
-            style={{ width: "100%", height: 200 }}
-            pinCount={7}
-            code={otp}
-            onCodeChanged={handleChangeOtp}
-            autoFocusOnLoad={false}
-            codeInputFieldStyle={styles.otpInput}
-            codeInputHighlightStyle={styles.otpInputHighlighted}
-            onCodeFilled={handleVerify}
-            editable
-            keyboardAppearance="default"
-            keyboardType="number-pad"
+          <OtpInput
+            numberOfDigits={7}
+            onTextChange={handleChangeOtp}
+            onFilled={handleVerify}
+            autoFocus={false}
+            theme={{
+              pinCodeContainerStyle: styles.otpInput,
+              focusedPinCodeContainerStyle: styles.otpInputHighlighted,
+            }}
           />
         </View>
 
@@ -137,3 +120,5 @@ export const OTPVerificationScreen = ({
     </>
   );
 };
+
+
