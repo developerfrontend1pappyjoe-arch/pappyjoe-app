@@ -9,7 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import CalendarPicker from 'react-native-calendar-picker';
+import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 
 import {CustomSearch} from '../../../components/CustomSearch';
@@ -46,7 +46,7 @@ export const FilterSection = memo(
     const [selectedDate, setSelectedDate] = useState<string | null>(
       moment().format('DD-MM-YYYY'),
     );
-    const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+    const [datePickerOpen, setDatePickerOpen] = useState(false);
 
     const [statusList, setSelectedStatusList] = useState([
       {id: 1, status: 'Scheduled', isSelected: false},
@@ -87,17 +87,16 @@ export const FilterSection = memo(
     const openModal = () => setShowFilterPopup(true);
     const closeModal = () => setShowFilterPopup(false);
 
-    const handleInputClick = () => setDatePickerVisible(true);
-    const handleDatePickerClose = () => setDatePickerVisible(false);
+    const handleInputClick = () => setDatePickerOpen(true);
 
     const handleChangeDoctor = (item: any) => {
       setValue(item.doctorid);
       setIsFocus(false);
     };
 
-    const onDateChange = (date: any) => {
+    const onDateChange = (date: Date) => {
       setSelectedDate(moment(date).format('DD-MM-YYYY'));
-      handleDatePickerClose();
+      setDatePickerOpen(false);
     };
 
     const handleChangeStatus = (id: any) => {
@@ -247,17 +246,9 @@ export const FilterSection = memo(
               {isLoading ? (
                 <CustomLoaderRound />
               ) : (
-                <View
-                  style={[
-                    filterStyles.modalContent,
-                    isDatePickerVisible && {width: '95%'},
-                  ]}>
+                <View style={filterStyles.modalContent}>
                   <TouchableOpacity
-                    onPress={() =>
-                      isDatePickerVisible
-                        ? setDatePickerVisible(false)
-                        : closeModal()
-                    }
+                    onPress={closeModal}
                     style={{
                       position: 'absolute',
                       top: -30,
@@ -277,12 +268,7 @@ export const FilterSection = memo(
                     />
                   </TouchableOpacity>
 
-                  {isDatePickerVisible ? (
-                    <View>
-                      <CalendarPicker onDateChange={onDateChange} />
-                    </View>
-                  ) : (
-                    <View style={{flexDirection: 'column'}}>
+                  <View style={{flexDirection: 'column'}}>
                       <View style={{marginTop: 16}}>
                         <Text style={filterStyles.label}>Select Doctor</Text>
                         <Dropdown
@@ -408,12 +394,23 @@ export const FilterSection = memo(
                         </TouchableOpacity>
                       </View>
                     </View>
-                  )}
                 </View>
               )}
             </TouchableOpacity>
           </Modal>
         )}
+        <DatePicker
+          modal
+          mode="date"
+          open={datePickerOpen}
+          date={
+            selectedDate
+              ? moment(selectedDate, 'DD-MM-YYYY').toDate()
+              : new Date()
+          }
+          onConfirm={onDateChange}
+          onCancel={() => setDatePickerOpen(false)}
+        />
       </View>
     );
   },

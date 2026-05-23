@@ -16,7 +16,10 @@ import { useQuery } from "@tanstack/react-query";
 import { CustomLoaderRound } from "../../components/CustomLoaderRound";
 import { NavigationList } from "../../routes/NavigationList";
 import { useDispatch, useSelector } from "react-redux";
-import { removeLoginDetails } from "../../redux/actions";
+import {
+  handleLoggedInStatus,
+  removeLoginDetails,
+} from "../../redux/actions";
 import { axiosInstance as axios } from "../../config/axios.config.custom";
 import { Avatar, Button, Card, Divider, IconButton } from "react-native-paper";
 import { StoreTypes } from "redux/reducer";
@@ -203,10 +206,12 @@ export const ProfileScreen = ({ navigation }: any) => {
 
   const dispatch = useDispatch();
   const logouts = () => {
-    navigation.navigate(NavigationList.welcome);
-    setTimeout(()=>{
-      dispatch(removeLoginDetails());
-    },500)
+    dispatch(removeLoginDetails());
+    dispatch(handleLoggedInStatus(false));
+    navigation.reset({
+      index: 0,
+      routes: [{ name: NavigationList.welcome }],
+    });
   };
   const handleClose = () => setOpen(false);
   return (

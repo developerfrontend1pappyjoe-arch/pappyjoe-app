@@ -27,7 +27,7 @@ import {
   WhiteTickIcon,
 } from '../../assets';
 import {ToasterTypes, colorList} from '../../styles/global.styles';
-import {addLoginDetails} from '../../redux/actions';
+import {addLoginDetails, handleLoggedInStatus} from '../../redux/actions';
 import {CustomLoaderRound} from '@components/CustomLoaderRound';
 import {clearStoreData, getStoreData, storeData} from '../../utils/commonUtil';
 import {Button} from 'react-native-paper';
@@ -44,8 +44,9 @@ const LoginScreen = ({navigation,route:{params}}: any) => {
         type: ToasterTypes.success,
       });
       saveLoginDataToStore(res.data.data);
+      dispatch(handleLoggedInStatus(true));
       setTimeout(() => {
-        navigation.navigate(NavigationList.homeBottomNav);
+        navigation.replace(NavigationList.homeBottomNav);
       }, 250);
     },
     onError: (err: any) => {

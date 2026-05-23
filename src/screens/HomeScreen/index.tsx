@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect, memo } from "react";
 import { View, RefreshControl, BackHandler } from "react-native";
 import moment from "moment";
-import { HomeHeader } from "./components/Header";
-import { FilterSection } from "./components/FilterSection";
+import { HomeHeader } from "screens/HomeScreen/components/Header";
+import { FilterSection } from "screens/HomeScreen/components/FilterSection";
 import { FlatList } from "react-native";
-import { CounterContainer } from "./components/CounterContainer";
-import { AppoinmentList } from "./components/AppoinmentList";
+import { CounterContainer } from "screens/HomeScreen/components/CounterContainer";
+import { AppoinmentList } from "screens/HomeScreen/components/AppoinmentList";
 import { NavigationList } from "../../routes/NavigationList";
 import { useDispatch, useSelector } from "react-redux";
 import { NoDataAvailable } from "../../components/NoDataAvailable";
