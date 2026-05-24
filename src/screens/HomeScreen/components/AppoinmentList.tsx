@@ -169,7 +169,11 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
   };
 
   if (isLoading) {
-    return <CustomLoaderRound />;
+    return (
+      <Surface style={styles.appoinmentContainer}>
+        <CustomLoaderRound />
+      </Surface>
+    );
   }
 
   const showQueueBadge =
@@ -202,38 +206,40 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={styles.appoinmentPatientRow}
-        activeOpacity={0.85}
-        onPress={navigate}>
-        {data?.Patient_Photo ? (
-          <Avatar.Image
-            size={PATIENT_AVATAR_SIZE}
-            style={styles.appoinmentPatientAvatar}
-            source={{uri: data.Patient_Photo}}
-          />
-        ) : (
-          <Avatar.Text
-            size={PATIENT_AVATAR_SIZE}
-            style={[
-              styles.appoinmentPatientAvatar,
-              {backgroundColor: colorList.palette.primary.main},
-            ]}
-            color={colorList.white}
-            labelStyle={{fontSize: moderateScale(14), fontWeight: '700'}}
-            label={getPatientInitials(data?.Patient_Name)}
-          />
-        )}
+      <View style={styles.appoinmentPatientRow}>
+        <TouchableOpacity
+          style={styles.appoinmentPatientMain}
+          activeOpacity={0.85}
+          onPress={navigate}>
+          {data?.Patient_Photo ? (
+            <Avatar.Image
+              size={PATIENT_AVATAR_SIZE}
+              style={styles.appoinmentPatientAvatar}
+              source={{uri: data.Patient_Photo}}
+            />
+          ) : (
+            <Avatar.Text
+              size={PATIENT_AVATAR_SIZE}
+              style={[
+                styles.appoinmentPatientAvatar,
+                {backgroundColor: colorList.palette.primary.main},
+              ]}
+              color={colorList.white}
+              labelStyle={{fontSize: moderateScale(14), fontWeight: '700'}}
+              label={getPatientInitials(data?.Patient_Name)}
+            />
+          )}
 
-        <View style={styles.appoinmentPatientInfo}>
-          <Text style={styles.appoinmentNameLabel}>Patient</Text>
-          <Text
-            style={styles.appoinmentNameText}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {data?.Patient_Name}
-          </Text>
-        </View>
+          <View style={styles.appoinmentPatientInfo}>
+            <Text style={styles.appoinmentNameLabel}>Patient</Text>
+            <Text
+              style={styles.appoinmentNameText}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {data?.Patient_Name}
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         <View style={styles.appoinmentActions}>
           <TouchableOpacity
@@ -266,7 +272,7 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
             <Icon color={colorList.primary} size={ICON.action} name="phone" />
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
 
       <TouchableOpacity
         activeOpacity={0.85}

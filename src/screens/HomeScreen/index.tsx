@@ -58,27 +58,52 @@ export const HomeScreen = memo(({ navigation }: any) => {
   });
 
   const { mutate: getPatientById, isLoading: patientDetailsLoading } =
-    useMutation(getPatientListService, {
-      onSuccess: (result) => {
-        if (
-          result.status >= 200 ||
-          (result.status < 300 && !_.isEqual([[]], result?.data))
-        ) {
-          const patientData = result.data[0];
-          console.log(result);
-          navigation.navigate(NavigationList.appoinmentDetails, {
-            patientId: patientData?.id,
-            patientData,
-            appointmentDetails,
-          });
-        }
-      },
-      onError: () => {
-        toast.show("Failed to fetch patient details !", {
-          type: "error",
-        });
-      },
-    });
+    useMutation(getPatientListService);
+
+  const handleFetchPatientDetails = useCallback(
+    (appointmentItem: any) => {
+      setAppointmentDetails(appointmentItem);
+      getPatientById(
+        {
+          pid: appointmentItem?.Patient_Id,
+          limit: 0,
+          search: "",
+          start: 0,
+        },
+        {
+          onSuccess: (result) => {
+            const hasValidData =
+              result?.status >= 200 &&
+              result?.status < 300 &&
+              Array.isArray(result?.data) &&
+              result.data.length > 0 &&
+              !_.isEqual([[]], result.data);
+
+            if (!hasValidData) {
+              toast.show("Patient details not found!", { type: "error" });
+              return;
+            }
+
+            const patientData = result.data[0];
+            navigation.navigate(NavigationList.appoinmentDetails, {
+              patientId:
+                patientData?.id ??
+                patientData?.Patient_Id ??
+                appointmentItem?.Patient_Id,
+              patientData,
+              appointmentDetails: appointmentItem,
+            });
+          },
+          onError: () => {
+            toast.show("Failed to fetch patient details !", {
+              type: "error",
+            });
+          },
+        },
+      );
+    },
+    [getPatientById, navigation, toast],
+  );
 
   const fetchAppointments = () => {
     const params = { ...homeAppoinmentFilter, limit: 300 };
@@ -101,16 +126,6 @@ export const HomeScreen = memo(({ navigation }: any) => {
     temp.from_date = moment().add(1, "day").format("DD-MM-YYYY");
     temp.to_date = "";
     dispatch(handleHomeAppoinmentFilter(temp));
-  };
-
-  const handleFetchPatientDetails = (paientDetails: any) => {
-    console.log(paientDetails.Patient_Id);
-    getPatientById({
-      pid: paientDetails.Patient_Id,
-      limit: 0,
-      search: "",
-      start: 0,
-    });
   };
 
   useEffect(() => {
@@ -148,7 +163,7 @@ export const HomeScreen = memo(({ navigation }: any) => {
       <CustomModal
         title={<Text variant="bodyLarge">Fetch patient details</Text>}
         // open={true}
-        open={patientDetailsLoading}
+        open={false}
       >
         <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
           <CustomLoader />
@@ -216,14 +231,9 @@ export const HomeScreen = memo(({ navigation }: any) => {
               renderItem={({ item }: any) => (
                 <AppoinmentList
                   data={{ ...item, ...{ isFocused: isFocused } }}
-                  {...navigation}
                   navigate={() => {
                     setAppointmentDetails(item);
                     handleFetchPatientDetails(item);
-                    // navigation.navigate(NavigationList.appoinmentDetails, {
-                    //   patientId: item?.Patient_Id,
-                    //   appointmentDetails: item,
-                    // })
                   }}
                   refetch={() => setRefetch(true)}
                 />

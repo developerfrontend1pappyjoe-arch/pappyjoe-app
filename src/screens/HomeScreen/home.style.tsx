@@ -131,6 +131,13 @@ export const styles = StyleSheet.create({
     gap: scale(10),
     marginBottom: verticalScale(10),
   },
+  appoinmentPatientMain: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(10),
+    minWidth: 0,
+  },
   appoinmentPatientAvatar: {
     borderWidth: 1,
     borderColor: colorList.Grey4,
