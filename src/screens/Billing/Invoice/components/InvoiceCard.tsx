@@ -302,7 +302,7 @@ function InvoiceCard({ data, print }: { data: ResultArrayType; print: any }) {
                 </View>
               ) : (
                 <View>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => handlePrint(invoice.inviceNo)}>
                     <Icon
                       name="printer"
                       size={btnSize}
