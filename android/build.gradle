@@ -23,8 +23,9 @@ apply plugin: "com.facebook.react.rootproject"
 subprojects { subproject ->
     subproject.configurations.configureEach {
         resolutionStrategy {
-            force "androidx.core:core:1.15.0"
-            force "androidx.core:core-ktx:1.15.0"
+            // 1.15.x can misbehave on API 29–30; 1.13.x is stable on Android 11.
+            force "androidx.core:core:1.13.1"
+            force "androidx.core:core-ktx:1.13.1"
         }
     }
 }

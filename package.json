@@ -17,6 +17,7 @@
     "release-windows": "cd android && ./gradlew clean && cd.. && npx react-native build-android --mode=release",
     "android:bundle-release": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& { . ./scripts/android-build-env.ps1; Set-Location android; ./gradlew.bat bundleRelease }\"",
     "android:debug-apk": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& { . ./scripts/android-build-env.ps1; Set-Location android; ./gradlew.bat assembleDebug }\"",
+    "android:logcat-crash": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/android-logcat-crash.ps1",
     "restart": "yarn start --reset-cache",
     "lint:check": "eslint ./src",
     "lint:fix": "eslint --fix ./src",

@@ -15,6 +15,7 @@ import { colorList } from "./src/styles/global.styles";
 import { appTheme } from "./src/styles/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ModalProvider from "providers/ModalProviders";
+import { AppErrorBoundary } from "./src/components/AppErrorBoundary";
 
 function AppContent() {
   const insets = useSafeAreaInsets();
@@ -67,10 +68,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <SafeAreaProvider>
-        <AppContent />
-      </SafeAreaProvider>
-    </Provider>
+    <AppErrorBoundary>
+      <Provider store={store}>
+        <SafeAreaProvider>
+          <AppContent />
+        </SafeAreaProvider>
+      </Provider>
+    </AppErrorBoundary>
   );
 }

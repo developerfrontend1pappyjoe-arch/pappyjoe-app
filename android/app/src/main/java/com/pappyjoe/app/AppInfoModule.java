@@ -1,9 +1,13 @@
 package com.pappyjoe.app;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Promise;
 
 public class AppInfoModule extends ReactContextBaseJavaModule {
 
@@ -16,23 +20,39 @@ public class AppInfoModule extends ReactContextBaseJavaModule {
     return "AppInfo";
   }
 
+  private PackageInfo getPackageInfo() throws PackageManager.NameNotFoundException {
+    ReactApplicationContext context = getReactApplicationContext();
+    PackageManager packageManager = context.getPackageManager();
+    String packageName = context.getPackageName();
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      return packageManager.getPackageInfo(
+          packageName,
+          PackageManager.PackageInfoFlags.of(0));
+    }
+    return packageManager.getPackageInfo(packageName, 0);
+  }
+
   @ReactMethod
   public void getVersion(Promise promise) {
     try {
-      String version = getCurrentActivity().getPackageManager().getPackageInfo(getCurrentActivity().getPackageName(), 0).versionName;
-      promise.resolve(version);
+      promise.resolve(getPackageInfo().versionName);
     } catch (Exception e) {
-      promise.reject("Error", e);
+      promise.reject("APP_INFO_ERROR", e);
     }
   }
 
   @ReactMethod
   public void getBuildNumber(Promise promise) {
     try {
-      int buildNumber = getCurrentActivity().getPackageManager().getPackageInfo(getCurrentActivity().getPackageName(), 0).versionCode;
-      promise.resolve(Integer.toString(buildNumber));
+      PackageInfo packageInfo = getPackageInfo();
+      long buildNumber =
+          Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+              ? packageInfo.getLongVersionCode()
+              : packageInfo.versionCode;
+      promise.resolve(Long.toString(buildNumber));
     } catch (Exception e) {
-      promise.reject("Error", e);
+      promise.reject("APP_INFO_ERROR", e);
     }
   }
 }

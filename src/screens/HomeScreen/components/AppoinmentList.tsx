@@ -143,9 +143,18 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
   };
 
   const handleChangeQueueStatus = (status: string) => {
+    const payload = {
+      app_id: data?.Appointment_Id,
+      queuestatus: status,
+    };
+
+    if (status === 'checkout') {
+      console.log('Checkout payload:', payload);
+    }
+
     const formData = new FormData();
-    formData.append('app_id', data?.Appointment_Id);
-    formData.append('queuestatus', status);
+    formData.append('app_id', payload.app_id);
+    formData.append('queuestatus', payload.queuestatus);
     mutate({payload: formData, method: 'put'});
   };
 
