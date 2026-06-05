@@ -28,6 +28,11 @@ import {CustomLoaderRound} from '../../../components/CustomLoaderRound';
 import {API_URL} from '../../../utils/constants';
 import {axiosInstance as axios} from '../../../config/axios.config.custom';
 import {checkCountryCode} from 'utils/commonUtils';
+import {useSelector} from 'react-redux';
+import {
+  APPOINTMENT_ACCESS_DENIED_MESSAGE,
+  canManageAppointment,
+} from 'utils/appointmentUtils';
 
 const ICON = {
   action: moderateScale(18),
@@ -76,6 +81,20 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
   const [isCancelNote, setIsCancelNote] = useState(false);
   const [cancelNote, setCancelNote] = useState('');
   const [openQueueModal, setQueueModal] = useState(false);
+  const loginData = useSelector((state: any) => state.loginData);
+  const canManage = canManageAppointment(data, loginData);
+
+  const showAccessDenied = () => {
+    Alert.alert('Access denied', APPOINTMENT_ACCESS_DENIED_MESSAGE);
+  };
+
+  const handleOpenAppointment = () => {
+    if (!canManage) {
+      showAccessDenied();
+      return;
+    }
+    navigate();
+  };
 
   const statusTheme = getAppointmentStatusTheme(data?.Appointment_Status);
   const queueColor =
@@ -143,14 +162,16 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
   };
 
   const handleChangeQueueStatus = (status: string) => {
+    if (!canManage) {
+      setQueueModal(false);
+      showAccessDenied();
+      return;
+    }
+
     const payload = {
       app_id: data?.Appointment_Id,
       queuestatus: status,
     };
-
-    if (status === 'checkout') {
-      console.log('Checkout payload:', payload);
-    }
 
     const formData = new FormData();
     formData.append('app_id', payload.app_id);
@@ -167,6 +188,11 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
   };
 
   const handleCancelAppoinments = () => {
+    if (!canManage) {
+      showAccessDenied();
+      return;
+    }
+
     Alert.alert(
       'Warning',
       'Are you sure, you want to cancel this Appointment ?',
@@ -186,7 +212,9 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
   }
 
   const showQueueBadge =
-    data?.Appointment_Status != 'Cancelled' && data?.isFocused != '1';
+    canManage &&
+    data?.Appointment_Status != 'Cancelled' &&
+    data?.isFocused != '1';
 
   return (
     <Surface style={styles.appoinmentContainer}>
@@ -207,19 +235,21 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          onPress={handleCancelAppoinments}
-          style={styles.appoinmentCancelButton}
-          hitSlop={{top: 6, bottom: 6, left: 6, right: 6}}>
-          <Text style={styles.appoinmentCancelButtonText}>Cancel</Text>
-        </TouchableOpacity>
+        {canManage && (
+          <TouchableOpacity
+            onPress={handleCancelAppoinments}
+            style={styles.appoinmentCancelButton}
+            hitSlop={{top: 6, bottom: 6, left: 6, right: 6}}>
+            <Text style={styles.appoinmentCancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.appoinmentPatientRow}>
         <TouchableOpacity
           style={styles.appoinmentPatientMain}
           activeOpacity={0.85}
-          onPress={navigate}>
+          onPress={handleOpenAppointment}>
           {data?.Patient_Photo ? (
             <Avatar.Image
               size={PATIENT_AVATAR_SIZE}
@@ -285,7 +315,7 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
 
       <TouchableOpacity
         activeOpacity={0.85}
-        onPress={navigate}
+        onPress={handleOpenAppointment}
         style={styles.appoinmentMetaRow}>
         <View style={styles.appoinmentMetaItem}>
           <Icon
@@ -317,7 +347,7 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
 
       <View style={styles.appoinmentFooterRow}>
         <TouchableOpacity
-          onPress={navigate}
+          onPress={handleOpenAppointment}
           style={styles.appoinmentDoctorRow}
           activeOpacity={0.85}>
           <View style={styles.appoinmentDoctorAvatar}>
@@ -340,7 +370,7 @@ export const AppoinmentList = ({data, navigate, refetch}: any) => {
 
         {showQueueBadge && (
           <TouchableOpacity
-            onPress={() => setQueueModal(true)}
+            onPress={() => canManage && setQueueModal(true)}
             style={styles.appoinmentQueueBadge}
             hitSlop={6}>
             <Text

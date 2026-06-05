@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, memo } from "react";
+import React, { useState, useCallback, useEffect, useMemo, memo } from "react";
 import { View, RefreshControl, BackHandler } from "react-native";
 import moment from "moment";
 import { HomeHeader } from "screens/HomeScreen/components/Header";
@@ -20,8 +20,14 @@ import { ActivityIndicator, Text } from "react-native-paper";
 import _ from "lodash";
 import LottieView from "lottie-react-native";
 import { CustomLoader } from "components/CustomLoader";
+import {
+  APPOINTMENT_ACCESS_DENIED_MESSAGE,
+  canManageAppointment,
+} from "utils/appointmentUtils";
+
 export const HomeScreen = memo(({ navigation }: any) => {
   const dispatch = useDispatch();
+  const loginData = useSelector((state: any) => state.loginData);
   const [isFocused, setIsFocused] = useState("0");
   const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [isFilterOn, setIsFilterOn] = useState(false);
@@ -30,6 +36,7 @@ export const HomeScreen = memo(({ navigation }: any) => {
   const [appointmentDetails, setAppointmentDetails] = useState<any>();
   const homeAppoinmentFilter =
     useSelector<any>((state) => state.homeAppoinmentFilter) || {};
+
   const { CustomModal } = useModal();
   const toast = useToast();
   const handleFilterIsOn = () => {
@@ -62,6 +69,11 @@ export const HomeScreen = memo(({ navigation }: any) => {
 
   const handleFetchPatientDetails = useCallback(
     (appointmentItem: any) => {
+      if (!canManageAppointment(appointmentItem, loginData)) {
+        toast.show(APPOINTMENT_ACCESS_DENIED_MESSAGE, { type: "error" });
+        return;
+      }
+
       setAppointmentDetails(appointmentItem);
       getPatientById(
         {
@@ -102,7 +114,7 @@ export const HomeScreen = memo(({ navigation }: any) => {
         },
       );
     },
-    [getPatientById, navigation, toast],
+    [getPatientById, loginData, navigation, toast],
   );
 
   const fetchAppointments = () => {
@@ -113,6 +125,18 @@ export const HomeScreen = memo(({ navigation }: any) => {
   useEffect(() => {
     fetchAppointments();
   }, []);
+
+  useEffect(() => {
+    console.log("Appointment list:", appoinmentList);
+  }, [appoinmentList]);
+
+  const appointmentRows = useMemo(() => {
+    const rows = appoinmentList?.data;
+    if (!Array.isArray(rows) || _.isEqual(rows, [[]])) {
+      return [];
+    }
+    return rows;
+  }, [appoinmentList?.data]);
 
   const handleSetFilterParamsToday = () => {
     const temp = { ...homeAppoinmentFilter } as any;
@@ -151,7 +175,7 @@ export const HomeScreen = memo(({ navigation }: any) => {
 
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
-      backAction
+      backAction,
     );
     return () => {
       backHandler.remove();
@@ -222,11 +246,13 @@ export const HomeScreen = memo(({ navigation }: any) => {
         <View style={{ flex: 1, paddingHorizontal: 5 }}>
           {isLoading ? (
             <CustomLoaderRound />
-          ) : appoinmentList?.data ? (
+          ) : appointmentRows.length > 0 ? (
             <FlatList
-              data={appoinmentList?.data}
+              data={appointmentRows}
               contentContainerStyle={{ paddingBottom: 23 }}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, index) =>
+                item?.Appointment_Id?.toString() ?? index.toString()
+              }
               showsVerticalScrollIndicator={false}
               renderItem={({ item }: any) => (
                 <AppoinmentList

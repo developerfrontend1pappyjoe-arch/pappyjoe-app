@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   useWindowDimensions,
+  Alert,
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { styles } from "./appoinmentDetails.styles";
@@ -25,6 +26,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { colorList } from "styles/global.styles";
+import {
+  APPOINTMENT_ACCESS_DENIED_MESSAGE,
+  canManageAppointment,
+} from "utils/appointmentUtils";
+
 const MenuList = [
   { id: 1, name: "Vital Signs" },
   { id: 2, name: "Clinical notes" }, //'Chief Complaints'
@@ -74,6 +80,22 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
   const layout = useWindowDimensions();
   const [isFocused, setIsFocused] = useState(1);
   const dispatch = useDispatch();
+  const loginData = useSelector((state: any) => state.loginData);
+  const canManage = canManageAppointment(appointmentDetails, loginData);
+  const showEditAction = appointmentDetails
+    ? canManage
+    : loginData?.roles?.patient === "1" || loginData?.roles?.admin === "1";
+
+  useEffect(() => {
+    if (!appointmentDetails || canManage) {
+      return;
+    }
+
+    Alert.alert("Access denied", APPOINTMENT_ACCESS_DENIED_MESSAGE, [
+      { text: "OK", onPress: () => navigation.goBack() },
+    ]);
+  }, [appointmentDetails, canManage, navigation]);
+
   let isLoading = false;
   const [index, setIndex] = useState<number>(0)
   const [routes] = useState([
@@ -95,8 +117,13 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
 
   if (isLoading) {
     return <CustomLoaderRound center />;
-  } else {
-    return (
+  }
+
+  if (appointmentDetails && !canManage) {
+    return <CustomLoaderRound center />;
+  }
+
+  return (
       <View style={{ flex: 1 }}>
         <View style={{backgroundColor:"red" }}>
           <CustomHeader
@@ -107,16 +134,19 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
             }
             leftIcon={ArrowLeftIcon}
             leftIconAction={() => navigation.goBack()}
-            rightText={"Edit"}
-            rightTextAction={() =>
-              appointmentDetails
-                ? navigation.navigate(NavigationList.bookingAppoinment, {
-                    data: { data: appointmentDetails, mode: "edit" },
-                  })
-                : navigation.navigate(NavigationList.patientEdit, {
-                    patientDetails,
-                    mode: "edit",
-                  })
+            rightText={showEditAction ? "Edit" : undefined}
+            rightTextAction={
+              showEditAction
+                ? () =>
+                    appointmentDetails
+                      ? navigation.navigate(NavigationList.bookingAppoinment, {
+                          data: { data: appointmentDetails, mode: "edit" },
+                        })
+                      : navigation.navigate(NavigationList.patientEdit, {
+                          patientDetails,
+                          mode: "edit",
+                        })
+                : undefined
             }
           />
         </View>
@@ -182,7 +212,6 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
         )} */}
       </View>
     );
-  }
 };
 
 const style = StyleSheet.create({
