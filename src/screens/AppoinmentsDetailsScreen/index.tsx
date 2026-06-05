@@ -24,7 +24,7 @@ import { NavigationList } from "../../routes/NavigationList";
 import { MenuListPrescription } from "./components/prescription/MenuListPrescription";
 import { useDispatch, useSelector } from "react-redux";
 import { assignPatientDetails, setPatientId } from "redux/actions";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import { TabView, TabBar } from "react-native-tab-view";
 import { colorList } from "styles/global.styles";
 import {
   APPOINTMENT_ACCESS_DENIED_MESSAGE,
@@ -38,14 +38,6 @@ const MenuList = [
   { id: 4, name: "Prescription" },
   { id: 5, name: "Add X-Rays/Photos/Files" },
 ];
-
-const renderScene = SceneMap({
-  "Vitals": MenuListDetailsVitalSigns,
-  "ChiefComplaints": MenuListDetailsChiefComplaints,
-  "Procedure":MenuListDetailsProcedure,
-  "Prescription":MenuListPrescription,
-  "Files":MenuListDetailsFileList
-});
 
 const HorizontalMenus = ({ id, name, focused, isFocused }: any) => {
   const focusedItem = isFocused === id;
@@ -77,6 +69,7 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
     appointmentDetails = null,
     from = "",
   } = route.params;
+  
   const layout = useWindowDimensions();
   const [isFocused, setIsFocused] = useState(1);
   const dispatch = useDispatch();
@@ -97,7 +90,8 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
   }, [appointmentDetails, canManage, navigation]);
 
   let isLoading = false;
-  const [index, setIndex] = useState<number>(0)
+  const [index, setIndex] = useState<number>(0);
+  const [listFetchKey, setListFetchKey] = useState(0);
   const [routes] = useState([
     { key: "Vitals", title: "Vital Signs" },
     { key: "ChiefComplaints", title: "Clinical notes" },
@@ -105,10 +99,32 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
     { key: "Prescription", title: "Prescription" },
     { key: "Files", title: "Add X-Rays/Photos/Files" },
   ]);
+
+  const renderScene = useCallback(
+    ({ route }: { route: { key: string } }) => {
+      switch (route.key) {
+        case "Vitals":
+          return <MenuListDetailsVitalSigns listFetchKey={listFetchKey} />;
+        case "ChiefComplaints":
+          return <MenuListDetailsChiefComplaints listFetchKey={listFetchKey} />;
+        case "Procedure":
+          return <MenuListDetailsProcedure listFetchKey={listFetchKey} />;
+        case "Prescription":
+          return <MenuListPrescription listFetchKey={listFetchKey} />;
+        case "Files":
+          return <MenuListDetailsFileList listFetchKey={listFetchKey} />;
+        default:
+          return null;
+      }
+    },
+    [listFetchKey]
+  );
+
   useEffect(() => {
     if (Boolean(patientDetails)) {
       dispatch(setPatientId(patientDetails?.id || ""));
       dispatch(assignPatientDetails(patientDetails));
+      setListFetchKey((key) => key + 1);
     }
     return () => {
       dispatch(assignPatientDetails(null));
@@ -180,7 +196,9 @@ export const AppoinmentDetails = ({ navigation, route }: any) => {
                   renderScene={renderScene}
                   onIndexChange={setIndex}
                   initialLayout={{ width: layout.width }}
-                  swipeEnabled={true} // Enables swiping
+                  lazy
+                  lazyPreloadDistance={0}
+                  swipeEnabled={true}
                   style={style.tabView}
                   renderTabBar={(props) => (
                     <TabBar

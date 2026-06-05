@@ -1,5 +1,5 @@
 // import axios from 'axios';
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { API_URL } from "../../../../utils/constants";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
   Linking,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -51,7 +52,11 @@ const noteTite = {
   diagnose: "Diagnosis",
   note: "Notes",
 };
-export const MenuListDetailsChiefComplaints = () => {
+export const MenuListDetailsChiefComplaints = ({
+  listFetchKey = 0,
+}: {
+  listFetchKey?: number;
+}) => {
   const [isPopup, setIspoup] = useState(false);
   const [printList, setPrints] = useState(null);
   const [clinicalNotesList, setClinicalNotes] = useState([]);
@@ -71,9 +76,11 @@ const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
   };
 
   const { isLoading, isFetching, refetch } = useQuery({
-    queryKey: ["getClinicNotesDetails"],
+    queryKey: ["getClinicNotesDetails", patientDetails?.id],
     queryFn: getClinicNotesDetails,
+    enabled: false,
     onSuccess({ data }) {
+      console.log("Clinical notes list:", data);
       if (loadash.isEqual(data.data, [[]])) {
         setClinicalNotes([]);
       } else {
@@ -125,6 +132,19 @@ const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
       }
     },
   });
+
+  useEffect(() => {
+    if (!listFetchKey || !patientDetails?.id) {
+      return;
+    }
+    refetch();
+  }, [listFetchKey, patientDetails?.id, refetch]);
+
+  const onRefresh = useCallback(() => {
+    if (patientDetails?.id) {
+      refetch();
+    }
+  }, [patientDetails?.id, refetch]);
 
   const handleDeleteChiefComplaintApi = async (id: string) => {
     try {
@@ -213,6 +233,12 @@ const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
             maxHeight: Dimensions.get("screen").height * 0.65,
           }}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading || isFetching}
+              onRefresh={onRefresh}
+            />
+          }
         >
           {Object.entries(clinicalNotesList)?.length ? (
             Object.entries(clinicalNotesList).map(([k, v], index: number) => {

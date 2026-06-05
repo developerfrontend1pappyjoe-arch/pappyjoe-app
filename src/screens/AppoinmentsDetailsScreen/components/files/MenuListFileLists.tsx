@@ -33,7 +33,12 @@ import { ExtentionTypes, allFileTypes } from "./fileExtentionTypes";
 import { StoreTypes } from "redux/reducer";
 import { useSelector } from "react-redux";
 type ShowFileViewerType = { type: ExtentionTypes | null; url: string };
-export const MenuListDetailsFileList = () => {
+
+export const MenuListDetailsFileList = ({
+  listFetchKey = 0,
+}: {
+  listFetchKey?: number;
+}) => {
   const [isLoading, setLoading] = useState(false);
   const [isPopup, setIspoup] = useState(false);
   const [refetch, setRefetch] = useState(false);
@@ -99,15 +104,25 @@ export const MenuListDetailsFileList = () => {
   );
 
   const onRefresh = useCallback(() => {
-    getFileListApi();
+    setRefetch(true);
   }, []);
 
   useEffect(() => {
+    if (!listFetchKey || !patientDetails?.id) {
+      return;
+    }
+    setRefetch(true);
+  }, [listFetchKey, patientDetails?.id]);
+
+  useEffect(() => {
+    if (!refetch || !patientDetails?.id) {
+      return;
+    }
     getFileListApi();
     setTimeout(() => {
       setRefetch(false);
-    }, 1000);
-  }, [refetch]);
+    }, 100);
+  }, [refetch, patientDetails?.id]);
 
   return (
     <View style={{ flex: 1, borderRadius: 10 }}>

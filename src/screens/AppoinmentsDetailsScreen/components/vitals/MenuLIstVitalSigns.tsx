@@ -1,10 +1,17 @@
 // import axios from 'axios';
 import React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { API_URL } from "../../../../utils/constants";
 import loadsh from "lodash";
 import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
-import { Alert, Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import { CustomAddButton } from "../../../../components/CustomAddButton";
 import { NoDataAvailable } from "../../../../components/NoDataAvailable";
@@ -20,8 +27,11 @@ import { axiosInstance } from "../../../../config/axios.config.custom";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { useSelector } from "react-redux";
 import { StoreTypes } from "redux/reducer";
-
-export const MenuListDetailsVitalSigns = () => {
+export const MenuListDetailsVitalSigns = ({
+  listFetchKey = 0,
+}: {
+  listFetchKey?: number;
+}) => {
   const axios = axiosInstance;
   const [isPopup, setIspoup] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -151,11 +161,25 @@ export const MenuListDetailsVitalSigns = () => {
     ]);
   };
 
+  const onRefresh = useCallback(() => {
+    setRefetch(true);
+  }, []);
+
   useEffect(() => {
+    if (!listFetchKey || !patientDetails?.id) {
+      return;
+    }
+    setRefetch(true);
+  }, [listFetchKey, patientDetails?.id]);
+
+  useEffect(() => {
+    if (!refetch || !patientDetails?.id) {
+      return;
+    }
     getVitalsListApi();
     setTimeout(() => {
       setRefetch(false);
-    }, 1000);
+    }, 100);
   }, [refetch, patientDetails?.id]);
 
   if (isLoading) {
@@ -172,6 +196,9 @@ export const MenuListDetailsVitalSigns = () => {
         <ScrollView
           style={{ maxHeight: Dimensions.get("screen").height - 10}}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          }
         >
           {Object.keys(vitalsList)?.length ? (
             Object.entries(vitalsList)?.map(([k, v], ids) => {

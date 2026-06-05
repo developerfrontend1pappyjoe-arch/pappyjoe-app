@@ -1,9 +1,16 @@
 // import axios from 'axios';
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { API_URL } from "../../../../utils/constants";
 import loadsh from "lodash";
 import { CustomLoaderRound } from "../../../../components/CustomLoaderRound";
-import { Alert, Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import moment from "moment";
 import { Button, Divider, FAB, Surface, Text } from "react-native-paper";
 import Icons from "react-native-vector-icons/MaterialIcons";
@@ -18,8 +25,11 @@ import { ShareModal } from "../ShareModal";
 import { axiosInstance } from "../../../../config/axios.config.custom";
 import { useSelector } from "react-redux";
 import { StoreTypes } from "redux/reducer";
-
-export const MenuListDetailsProcedure = () => {
+export const MenuListDetailsProcedure = ({
+  listFetchKey = 0,
+}: {
+  listFetchKey?: number;
+}) => {
   const axios = axiosInstance;
   const [isPopup, setIspoup] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -36,12 +46,26 @@ export const MenuListDetailsProcedure = () => {
     (state: StoreTypes) => state.patientDetails
   );
 
+  const onRefresh = useCallback(() => {
+    setRefetch(true);
+  }, []);
+
   useEffect(() => {
+    if (!listFetchKey || !patientDetails?.id) {
+      return;
+    }
+    setRefetch(true);
+  }, [listFetchKey, patientDetails?.id]);
+
+  useEffect(() => {
+    if (!refetch || !patientDetails?.id) {
+      return;
+    }
     getProcedureListApi();
     setTimeout(() => {
       setRefetch(false);
     }, 100);
-  }, [refetch]);
+  }, [refetch, patientDetails?.id]);
 
   const getProcedureListApi = async () => {
     setLoading(true);
@@ -50,6 +74,7 @@ export const MenuListDetailsProcedure = () => {
         `${API_URL.treatmentList}?patient_id=${patientDetails?.id}`
       );
       setLoading(false);
+      console.log("Procedure list:", res?.data);
 
       if (loadsh.isEqual(res?.data?.data, [[]])) {
         setProcedureList({
@@ -252,6 +277,9 @@ export const MenuListDetailsProcedure = () => {
         <ScrollView
           style={{ maxHeight: Dimensions.get("screen").height }}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          }
         >
           {procedureList?.processed ? (
             Object.entries(procedureList?.processed)?.map(

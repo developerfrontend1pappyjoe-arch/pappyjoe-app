@@ -1,9 +1,9 @@
 import React from 'react';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {API_URL} from '../../../../utils/constants';
 import loadsh from 'lodash';
 import {CustomLoaderRound} from '../../../../components/CustomLoaderRound';
-import {Alert, Dimensions, ScrollView, View} from 'react-native';
+import {Alert, Dimensions, RefreshControl, ScrollView, View} from 'react-native';
 import {Button, Divider, Surface, Text} from 'react-native-paper';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 
@@ -19,8 +19,11 @@ import {ShareModal} from '../ShareModal';
 import {axiosInstance as axios} from '../../../../config/axios.config.custom';
 import { useSelector } from 'react-redux';
 import { StoreTypes } from 'redux/reducer';
-
-export const MenuListPrescription = () => {
+export const MenuListPrescription = ({
+  listFetchKey = 0,
+}: {
+  listFetchKey?: number;
+}) => {
   const [isPopup, setIspoup] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [refetch, setRefetch] = useState(false);
@@ -34,13 +37,27 @@ export const MenuListPrescription = () => {
   const handleCloseShareModal = () => setOpenedShareListId(null);
   const [medicineUnitList, setMedicineUnitList] = useState([]);
   const patientDetails = useSelector((state:StoreTypes)=>state.patientDetails)
+  const onRefresh = useCallback(() => {
+    setRefetch(true);
+  }, []);
+
   useEffect(() => {
+    if (!listFetchKey || !patientDetails?.id) {
+      return;
+    }
+    setRefetch(true);
+  }, [listFetchKey, patientDetails?.id]);
+
+  useEffect(() => {
+    if (!refetch || !patientDetails?.id) {
+      return;
+    }
     getPrescriptionListApi();
     getMedicineListApi();
     setTimeout(() => {
       setRefetch(false);
     }, 100);
-  }, [refetch]);
+  }, [refetch, patientDetails?.id]);
 
   const getPrescriptionListApi = async () => {
     setLoading(true);
@@ -49,6 +66,7 @@ export const MenuListPrescription = () => {
         `${API_URL.prescriptionlist}?patient_id=${patientDetails?.id}`,
       );
       setLoading(false);
+      console.log("Prescription list:", res?.data);
 
       if (loadsh.isEqual(res?.data?.data, [[]])) {
         setPrescriptionList({
@@ -275,7 +293,10 @@ export const MenuListPrescription = () => {
         }}>
         <ScrollView
           style={{maxHeight: Dimensions.get('screen').height}}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+          }>
           {prescriptionList?.processed ? (
             Object.entries(prescriptionList?.processed)?.map(
               ([key, val], ids) => {
